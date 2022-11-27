@@ -2,6 +2,10 @@
 #define BOARD_H_
 #include <memory>
 #include <vector>
+#include "squares.h"
+#include "textdisplay.h"
+
+
 class Board{
 	vector<vector<Squares>> board;
 	bool whiteCheck, blackCheck, whiteCheckmate, blackCheckmate, stalemate;
@@ -12,7 +16,7 @@ class Board{
 		void move(std::string from, std::string to, std::string turn);
 		vector<vector<int>> possibleMoves(std::string piece, int row, int col);
 		bool canMove(int row, int col);
-		bool addPiece(int row, int col, shard_ptr<Piece>)
+		bool addPiece(int row, int col, std::shared_ptr<Piece>);
 		std::string getState(int row, int col);
-}
+};
 #endif

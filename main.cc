@@ -4,10 +4,11 @@
 //handle different variations of move
 //add in throw/catch exceptions for input?
 //IMPLEMENT EVERYTHING
+#include <iostream>
+#include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <memory>
-
 using namespace std;
 int main(){
 	string c;
@@ -57,5 +58,5 @@ int main(){
 	}
 	cout << "Final Score:" << endl;
 	cout << "White: " << scoreW << endl;
-	cout << "Black: " << scoreB << end;
+	cout << "Black: " << scoreB << endl;
 }

@@ -9,4 +9,6 @@ class GraphicsDisplay : public Observer{
 	Xwindow *window;
 	public:
 		void notify();
-}
+};
+
+#endif

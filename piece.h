@@ -1,21 +1,26 @@
 #ifndef PIECE_H_
 #define PIECE_H_
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
 class Piece{
 	char color;
 	int col, row;
 	std::string name;
 
-}
+};
 
 class Knight : public Piece{
 	public:
 		Knight(char color);
-}
+};
 
 class Bishop : public Piece{
 	public:
 		Bishop(char color);
-}
+};
 
 class Rook : public Piece{
 	bool castled;
@@ -23,7 +28,7 @@ class Rook : public Piece{
 		Rook(char color);
 		bool getCastle();
 		void setCastle();
-}
+};
 
 class King : public Piece{
 	bool isChecked, castled;
@@ -33,12 +38,12 @@ class King : public Piece{
 		bool getStatusCastle();
 		void setCheck();
 		void setCastle();
-}
+};
 
 class Queen : public Piece{
 	public:
 		Queen(char color);
-}
+};
 
 class Pawn : public Piece{
 	bool firstStep;
@@ -48,5 +53,5 @@ class Pawn : public Piece{
 		bool getFirstStep();
 		void setFirstStep();
 		void setCanPromote();
-}
+};
 #endif
