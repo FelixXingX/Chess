@@ -1,3 +1,5 @@
+#ifndef PIECE_H_
+#define PIECE_H_
 class Piece{
 	char color;
 	int col, row;
@@ -47,3 +49,4 @@ class Pawn : public Piece{
 		void setFirstStep();
 		void setCanPromote();
 }
+#endif
