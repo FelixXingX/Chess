@@ -10,6 +10,7 @@ class Board{
 	std::vector<std::vector<Squares>> board;
 	bool whiteCheck, blackCheck, whiteCheckmate, blackCheckmate, stalemate;
 	TextDisplay *textDisplay;
+	//chicken nugget
 	public:
 		void removePiece(int row, int col);
 		void printMoves();
