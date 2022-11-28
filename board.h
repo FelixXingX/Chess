@@ -15,9 +15,11 @@ class Board{
 		void removePiece(int row, int col);
 		void printMoves();
 		void move(std::string from, std::string to, std::string turn);
-		std::vector<std::vector<int>> possibleMoves(std::string piece, int row, int col);
+		std::vector<Vec> possibleMoves(Piece piece, int row, int col, Board board);
 		bool canMove(int row, int col);
 		bool addPiece(int row, int col, std::shared_ptr<Piece>);
 		std::string getState(int row, int col);
+		int getSquare(int row, int col);
+		Piece getPiece(int row, int col);
 };
 #endif

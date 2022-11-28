@@ -6,10 +6,11 @@
 #include <vector>
 
 class Piece{
-	char color;
+	string color;
 	int col, row;
 	std::string name;
-
+	public:
+		string getColor();
 };
 
 class Knight : public Piece{
