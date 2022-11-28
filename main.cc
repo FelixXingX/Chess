@@ -52,6 +52,10 @@ int main(){
 			//resign
 		}else if(c == "move"){
 			//move stuff
+
+			//check if checked / checkmate etc
+
+			//bot statements probably go here
 		}else{
 			cout << "invalid" << endl;
 		}
