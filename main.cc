@@ -27,6 +27,8 @@ int main(){
 		}
 		board.emplace_back(row);
 	}
+	Board mainBoard{board,false,false,false,false,false};
+	auto text = make_unique<TextDisplay>(mainBoard," ");
 	while(cin >> c){
 		if(c == "setup"){
 			while(cin >> c){

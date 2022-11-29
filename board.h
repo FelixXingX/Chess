@@ -4,12 +4,11 @@
 #include <vector>
 #include "squares.h"
 #include "textdisplay.h"
+#include "subject.h"
 
-
-class Board{
+class Board : public Subject{
 	std::vector<std::vector<std::unique_ptr<Squares>>> board;
 	bool whiteCheck, blackCheck, whiteCheckmate, blackCheckmate, stalemate;
-	std::unique_ptr<TextDisplay>textDisplay;
 	//chicken nugget
 	public:
 		void removePiece(int row, int col);
@@ -18,9 +17,9 @@ class Board{
         //std::vector<Vec> possibleMoves(Piece piece, int row, int col, Board board);
         bool canMove(int fromX, int fromY, int toX, int toY, std::string turn, Board board);
         bool addPiece(int row, int col, std::shared_ptr<Piece>);
-		std::string getState(int row, int col);
+		std::string getState(int row, int col) const override;
 		int getSquare(int row, int col);
 		std::shared_ptr<Piece> getPiece(int row, int col);
-		Board(std::vector<std::vector<std::unique_ptr<Squares>>> board, bool whiteCheck,bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate, std::unique_ptr<TextDisplay> textDisplay);
+		Board(std::vector<std::vector<std::unique_ptr<Squares>>> board, bool whiteCheck,bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate);
 };
 #endif

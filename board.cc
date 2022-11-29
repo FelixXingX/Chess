@@ -14,8 +14,8 @@ struct Vec {
     Vec(int x, int y) : x{x}, y{y} {}
 };
 //ctor
-Board::Board(vector<vector<unique_ptr<Squares>>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate, unique_ptr<TextDisplay> textDisplay):
-board{board}, whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}, textDisplay{std::move(textDisplay)}{}
+Board::Board(vector<vector<unique_ptr<Squares>>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate):
+board{board},whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}{}
 
 // Important!! getSquare: 0 = no piece, 1 = theres a piece; 2 = out of bounds
 int Board::getSquare(int col, int row){
@@ -24,8 +24,27 @@ int Board::getSquare(int col, int row){
     } 
     return 0;
 }
-
-std::shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
+string Board::getState(int row, int col) const{
+    shared_ptr p = board[row][col]->getPiece();
+    if(p == nullptr){
+        if(row % 2 == 0){
+            if(col % 2 == 0){
+                return "_";
+            }else{
+                return " ";
+            }
+        }else{
+            if(col % 2 == 0){
+                return " ";
+            }else {
+                return "_";
+            }
+        }
+    }else{
+        return p->getName();
+    }
+}
+shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
     for(int i = 0; i < board.size(); ++ i){
         for(int j = 0; j < board[i].size(); ++j){
             if(i == row && j == col){
