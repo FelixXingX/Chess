@@ -1,9 +1,4 @@
 #include "board.h"
-
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "squares.h"
 #include "textdisplay.h"
 
@@ -14,8 +9,8 @@ struct Vec {
     Vec(int x, int y) : x{x}, y{y} {}
 };
 //ctor
-Board::Board(vector<vector<unique_ptr<Squares>>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate, unique_ptr<TextDisplay> textDisplay):
-board{board}, whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}, textDisplay{std::move(textDisplay)}{}
+Board::Board(vector<vector<Squares>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate):
+board{board},whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}{}
 
 // Important!! getSquare: 0 = no piece, 1 = theres a piece; 2 = out of bounds
 int Board::getSquare(int col, int row){
@@ -24,15 +19,42 @@ int Board::getSquare(int col, int row){
     } 
     return 0;
 }
-
-std::shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
-    for(int i = 0; i < board.size(); ++ i){
-        for(int j = 0; j < board[i].size(); ++j){
+//GetState get the char or string of the name of the piece
+//Observer pattern just ignore frfr
+string Board::getState(int row, int col) const{
+    auto p = board[row][col].getPiece();
+    if(p == nullptr){
+        if(row % 2 == 0){
+            if(col % 2 == 0){
+                return "_";
+            }else{
+                return " ";
+            }
+        }else{
+            if(col % 2 == 0){
+                return " ";
+            }else {
+                return "_";
+            }
+        }
+    }else{
+        return p->getName();
+    }
+}
+//invariant we are assuming board goes from 8 to 1
+shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
+    for(int i = 8; i < 1; -- i){
+        for(int j = 8; j < 1; --j){
             if(i == row && j == col){
-                return board[i][j]->getPiece();
+                return board[i][j].getPiece();
             }
         }
     }
+    return nullptr;
+}
+//renders the graphic and text observers
+void Board::render(){
+    this->notifyObservers();
 }
 // ALSO IMPORTANT (white pieces start at 0 and moves up the board) not sure if this is what we want
 // also 0 - 9 is left to right
@@ -51,15 +73,16 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
     if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs
         //moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
     }
-    for (int i = 0; i < moves.size(); i++) { // if their piece is in the list produced by possibleMoves
+    for (size_t i = 0; i < moves.size(); i++) { // if their piece is in the list produced by possibleMoves
         if (moves[i].x == toX && moves[i].y == toY) return true;
     }
     return false;
 }
+
 // I have yet to implement checking if the king can castle or not 
 vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){ 
     vector<Vec> moves; // vector of pairs (x y)                                 
-    string name = piece.getName();
+   /*string name = piece.getName();
     string color = piece.getColor();
     if (name == "pawn") {
         if (color == "white"){
@@ -418,6 +441,6 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
                 moves.emplace_back(col - 1, row + 1);
             }
         }
-    }
+    }*/
     return moves;
 }

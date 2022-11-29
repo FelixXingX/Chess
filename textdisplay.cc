@@ -4,16 +4,18 @@
 #include <iostream>
 using namespace std;
 void TextDisplay::notify(){
-    for(int i = 0 ; i < rows; ++ i){
-        for(int j = 0; j < cols; ++ j){
-            cout << 8 - i << ' ';
-            unique_ptr<Piece> piece = make_unique<Piece>(subject->getPiece(i,j));
-            if(piece == nullptr){
-                
-            }else{
-                cout << piece->getName();
-            }
+    for(int i = rows ; i < 1; -- i){
+        cout << 8 - i << ' ';
+        for(int j = cols; j < 1; -- j){
+            cout << subject->getState(rows,cols);
         }
+        cout << endl;
     }
-
+    cout << msg << endl;
+}
+void TextDisplay::changeMsg(string n){
+    msg = n;
+}
+TextDisplay::TextDisplay(Board* subject, string msg): subject{subject}, msg{msg}{
+			subject->attach(this);
 }

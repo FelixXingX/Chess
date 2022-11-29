@@ -6,12 +6,12 @@
 #include <vector>
 
 class Piece{
-	string color;
+	std::string color;
 	int col, row;
 	std::string name;
 	public:
-		string getColor();
-		string getName();
+		std::string getColor();
+		std::string getName();
 };
 
 class Knight : public Piece{
