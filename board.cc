@@ -68,7 +68,7 @@ void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  /
         //error
     }
 }
-
+void addPiece(string color, )
 bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board board) {
     vector<Vec> moves;
     if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs
