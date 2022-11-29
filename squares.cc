@@ -1,6 +1,6 @@
 #include "squares.h"
 
-void Squares::setBoard(std::unique_ptr<Board> board){}
+//void Squares::setBoard(std::unique_ptr<Board> board){}
 std::shared_ptr<Piece> Squares::getPiece() const{
     return piece;
 }

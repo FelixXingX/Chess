@@ -5,11 +5,11 @@
 #include "piece.h"
 
 class Squares{
-	std::unique_ptr<Board> board;
+	//std::unique_ptr<Board> board;
 	int col, row;
 	std::shared_ptr<Piece> piece;
 	public:
-		void setBoard(std::unique_ptr<Board> board);
+		//void setBoard(std::unique_ptr<Board> board);
 		std::shared_ptr<Piece> getPiece() const;
 		void removePiece();
 		void addPiece(std::shared_ptr<Piece> p);

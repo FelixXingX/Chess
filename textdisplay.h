@@ -4,6 +4,7 @@
 class Board;
 class TextDisplay{
 	Board* subject;
+	int cols, rows;
 	public:
 		void notify();
 };
