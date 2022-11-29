@@ -17,7 +17,7 @@ class Board : public Subject{
 		void move(std::string from, std::string to, std::string turn);
         	//std::vector<Vec> possibleMoves(Piece piece, int row, int col, Board board);
         bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn, Board board, bool inCheck);
-        void addPiece(int row, int col, std::shared_ptr<Piece>);
+        void addPiece(int row, int col, char name);
 		char getState(int row, int col) const override;
 		int getSquare(int row, int col);
 		std::shared_ptr<Piece> getPiece(int row, int col);

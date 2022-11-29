@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
+//Note that for pieces, captial are white, lower case are black
 class Piece{
 	std::string color;
 	char name;
