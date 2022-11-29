@@ -26,5 +26,8 @@ class Board : public Subject{
 		Board(std::vector<std::vector<Squares>> board, bool whiteCheck,bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate);
 		bool checked();
 		bool checkmate();
+
+		//temporaty
+        vector<Vec> possibleMoves2(Piece piece, int row, int col, Board board, vector<Vec> moves);
 };
 #endif
