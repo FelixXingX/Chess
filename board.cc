@@ -1,9 +1,4 @@
 #include "board.h"
-
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "squares.h"
 #include "textdisplay.h"
 
@@ -14,7 +9,7 @@ struct Vec {
     Vec(int x, int y) : x{x}, y{y} {}
 };
 //ctor
-Board::Board(vector<vector<unique_ptr<Squares>>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate):
+Board::Board(vector<vector<Squares>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate):
 board{board},whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}{}
 
 // Important!! getSquare: 0 = no piece, 1 = theres a piece; 2 = out of bounds
@@ -27,7 +22,7 @@ int Board::getSquare(int col, int row){
 //GetState get the char or string of the name of the piece
 //Observer pattern just ignore frfr
 string Board::getState(int row, int col) const{
-    shared_ptr p = board[row][col]->getPiece();
+    auto p = board[row][col].getPiece();
     if(p == nullptr){
         if(row % 2 == 0){
             if(col % 2 == 0){
@@ -51,10 +46,11 @@ shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the
     for(int i = 8; i < 1; -- i){
         for(int j = 8; j < 1; --j){
             if(i == row && j == col){
-                return board[i][j]->getPiece();
+                return board[i][j].getPiece();
             }
         }
     }
+    return nullptr;
 }
 //renders the graphic and text observers
 void Board::render(){
@@ -77,7 +73,7 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
     if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs
         //moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
     }
-    for (int i = 0; i < moves.size(); i++) { // if their piece is in the list produced by possibleMoves
+    for (size_t i = 0; i < moves.size(); i++) { // if their piece is in the list produced by possibleMoves
         if (moves[i].x == toX && moves[i].y == toY) return true;
     }
     return false;
@@ -85,8 +81,8 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
 
 // I have yet to implement checking if the king can castle or not 
 vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){ 
-    /*vector<Vec> moves; // vector of pairs (x y)                                 
-    string name = piece.getName();
+    vector<Vec> moves; // vector of pairs (x y)                                 
+   /*string name = piece.getName();
     string color = piece.getColor();
     if (name == "pawn") {
         if (color == "white"){
@@ -445,6 +441,6 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
                 moves.emplace_back(col - 1, row + 1);
             }
         }
-    }
-    return moves;*/
+    }*/
+    return moves;
 }

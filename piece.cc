@@ -11,5 +11,5 @@ string Piece::getName() {  // something like this idk looool
 }
 
 bool Pawn::getFirstStep(){
-    return getFirstStep;
+    return firstStep;
 }

@@ -6,7 +6,7 @@
 #include <vector>
 
 class Piece{
-	string color;
+	std::string color;
 	int col, row;
 	std::string name;
 	public:
