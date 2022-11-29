@@ -9,6 +9,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "squares.h"
+#include "board.h"
+#include "piece.h"
 using namespace std;
 int main(){
 	string c;
@@ -16,7 +19,7 @@ int main(){
 	string p2;
 	int scoreW = 0, scoreB = 0;
 	bool start = false;
-
+	
 	while(cin >> c){
 		if(c == "setup"){
 			while(cin >> c){

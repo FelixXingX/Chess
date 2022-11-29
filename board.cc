@@ -13,6 +13,10 @@ struct Vec {
     int x, y;
     Vec(int x, int y) : x{x}, y{y} {}
 };
+//ctor
+Board::Board(vector<vector<unique_ptr<Squares>>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate, unique_ptr<TextDisplay> textDisplay):
+board{board}, whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}, textDisplay{std::move(textDisplay)}{}
+
 // Important!! getSquare: 0 = no piece, 1 = theres a piece; 2 = out of bounds
 int Board::getSquare(int col, int row){
     if (col > 7 || row > 7) {
@@ -21,14 +25,19 @@ int Board::getSquare(int col, int row){
     return 0;
 }
 
-Piece Board::getPiece(int col, int row){ // returns the piece on the square (not sure how to do this yet lol)
-    Piece piece;
-    return piece;
+std::shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
+    for(int i = 0; i < board.size(); ++ i){
+        for(int j = 0; j < board[i].size(); ++j){
+            if(i == row && j == col){
+                return board[i][j]->getPiece();
+            }
+        }
+    }
 }
 // ALSO IMPORTANT (white pieces start at 0 and moves up the board) not sure if this is what we want
 // also 0 - 9 is left to right
 void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
-    if (board.canMove(fromX,fromY,toX,toY,turn,board) == true){
+    if (board.canMove(fromX,fromY,toX,toY,turn, board) == true){
 
         //move
         //if its a pawn, check if first step or not and set it to false...
@@ -39,8 +48,8 @@ void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  /
 }
 bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board board) {
     vector<Vec> moves;
-    if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY).getColor() == turn) {  // if theyre moving a piece thats theirs
-        moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
+    if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs
+        //moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
     }
     for (int i = 0; i < moves.size(); i++) { // if their piece is in the list produced by possibleMoves
         if (moves[i].x == toX && moves[i].y == toY) return true;
@@ -48,7 +57,7 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
     return false;
 }
 // I have yet to implement checking if the king can castle or not 
-vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){ 
+/*vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){ 
     vector<Vec> moves; // vector of pairs (x y)                                 
     string name = piece.getName();
     string color = piece.getColor();
@@ -411,4 +420,4 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
         }
     }
     return moves;
-}
+}*/
