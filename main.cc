@@ -9,12 +9,24 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "squares.h"
+#include "board.h"
+#include "piece.h"
 using namespace std;
 int main(){
 	string c;
 	string p1;
 	string p2;
 	int scoreW = 0, scoreB = 0;
+	bool start = false;
+	vector<vector<unique_ptr<Squares>>> board;
+	for(int i = 0; i < 9 ; ++i){
+		vector<unique_ptr<Squares>> row;
+		for(int j = 0; j < 9 ; ++j){
+			row.emplace_back(make_unique<Squares>(i,j,nullptr));
+		}
+		board.emplace_back(row);
+	}
 	while(cin >> c){
 		if(c == "setup"){
 			while(cin >> c){

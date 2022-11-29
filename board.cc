@@ -13,6 +13,10 @@ struct Vec {
     int x, y;
     Vec(int x, int y) : x{x}, y{y} {}
 };
+//ctor
+Board::Board(vector<vector<unique_ptr<Squares>>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate, unique_ptr<TextDisplay> textDisplay):
+board{board}, whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}, textDisplay{std::move(textDisplay)}{}
+
 // Important!! getSquare: 0 = no piece, 1 = theres a piece; 2 = out of bounds
 int Board::getSquare(int col, int row){
     if (col > 7 || row > 7) {
@@ -21,14 +25,19 @@ int Board::getSquare(int col, int row){
     return 0;
 }
 
-Piece Board::getPiece(int col, int row){ // returns the piece on the square (not sure how to do this yet lol)
-    Piece piece;
-    return piece;
+std::shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
+    for(int i = 0; i < board.size(); ++ i){
+        for(int j = 0; j < board[i].size(); ++j){
+            if(i == row && j == col){
+                return board[i][j]->getPiece();
+            }
+        }
+    }
 }
 // ALSO IMPORTANT (white pieces start at 0 and moves up the board) not sure if this is what we want
 // also 0 - 9 is left to right
 void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
-    if (board.canMove(fromX,fromY,toX,toY,turn,board) == true){
+    if (board.canMove(fromX,fromY,toX,toY,turn, board) == true){
 
         //move
         //if its a pawn, check if first step or not and set it to false...
@@ -39,8 +48,8 @@ void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  /
 }
 bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board board) {
     vector<Vec> moves;
-    if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY).getColor() == turn) {  // if theyre moving a piece thats theirs
-        moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
+    if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs
+        //moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
     }
     for (int i = 0; i < moves.size(); i++) { // if their piece is in the list produced by possibleMoves
         if (moves[i].x == toX && moves[i].y == toY) return true;
@@ -58,10 +67,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
                 if (board.getSquare(col,row + 1) == 0) { // empty square
                     moves.emplace_back(col, row + 1); // adds move to vector
                 }
-                if (board.getSquare(col + 1, row + 1) == 1 && board.getPiece(col + 1, row + 1).getColor() == "black") {  // checks if there is a capture available;
+                if (board.getSquare(col + 1, row + 1) == 1 && board.getPiece(col + 1, row + 1)->getColor() == "black") {  // checks if there is a capture available;
                     moves.emplace_back(col + 1, row + 1);
                 }
-                if (board.getSquare(col - 1, row + 1) == 1 && board.getPiece(col - 1, row + 1).getColor() == "black") {  // checks if there is a capture available;
+                if (board.getSquare(col - 1, row + 1) == 1 && board.getPiece(col - 1, row + 1)->getColor() == "black") {  // checks if there is a capture available;
                     moves.emplace_back(col - 1, row + 1);
                 }
             } else if (piece.getFirstStep() == 1) {  // first move
@@ -77,10 +86,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
                 if (board.getSquare(col, row - 1) == 0) {  
                     moves.emplace_back(col, row - 1);
                 }
-                if (board.getSquare(col + 1, row - 1) == 1 && board.getPiece(col + 1, row - 1).getColor() == "white") {  
+                if (board.getSquare(col + 1, row - 1) == 1 && board.getPiece(col + 1, row - 1)->getColor() == "white") {  
                     moves.emplace_back(col + 1, row - 1);
                 }
-                if (board.getSquare(col - 1, row - 1) == 1 && board.getPiece(col - 1, row - 1).getColor() == "white") {  
+                if (board.getSquare(col - 1, row - 1) == 1 && board.getPiece(col - 1, row - 1)->getColor() == "white") {  
                     moves.emplace_back(col - 1, row - 1);
                 }
             } else if (piece.getFirstStep() == true) {
@@ -95,42 +104,42 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
     } else if (name == "knight") {
         if (board.getSquare(col + 1, row + 2) == 0) {  // i ordered the checks counter clockwise) hopefully i didnt fuck up lul
             moves.emplace_back(col + 1, row + 2);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 1, row + 2).getColor() != color) {  // checks if there is piece and not out of bounds + its capturable (enemy color)
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 1, row + 2)->getColor() != color) {  // checks if there is piece and not out of bounds + its capturable (enemy color)
             moves.emplace_back(col + 1, row + 2);
         }
         if (board.getSquare(col - 1, row + 2) == 0) {
             moves.emplace_back(col - 1, row + 2);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 1, row + 2).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 1, row + 2)->getColor() != color) {
             moves.emplace_back(col - 1, row + 2);
         }
         if (board.getSquare(col - 2, row + 1) == 0) {
             moves.emplace_back(col - 2, row + 1);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 2, row + 1).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 2, row + 1)->getColor() != color) {
             moves.emplace_back(col - 2, row + 1);
         }
         if (board.getSquare(col - 2, row - 1) == 0) {
             moves.emplace_back(col - 2, row - 1);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 2, row - 1).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 2, row - 1)->getColor() != color) {
             moves.emplace_back(col - 2, row - 1);
         }
         if (board.getSquare(col - 1, row - 2) == 0) {
             moves.emplace_back(col - 1, row - 2);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 1, row - 2).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 1, row - 2)->getColor() != color) {
             moves.emplace_back(col - 1, row - 2);
         }
         if (board.getSquare(col + 1, row - 2) == 0) {
             moves.emplace_back(col + 1, row - 2);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 1, row - 2).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 1, row - 2)->getColor() != color) {
             moves.emplace_back(col + 1, row - 2);
         }
         if (board.getSquare(col + 2, row - 1) == 0) {
             moves.emplace_back(col + 2, row - 1);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 2, row - 1).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 2, row - 1)->getColor() != color) {
             moves.emplace_back(col + 2, row - 1);
         }
         if (board.getSquare(col + 2, row + 1) == 0) {
             moves.emplace_back(col + 2, row + 1);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 2, row + 1).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 2, row + 1)->getColor() != color) {
             moves.emplace_back(col + 2, row + 1);
         }
     } else if (name == "rook") {
@@ -140,10 +149,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col, row + i) == 0){ // empty square
                 moves.emplace_back(col, row + i);
-            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i).getColor() != color){ // capturable piece 
+            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i)->getColor() != color){ // capturable piece 
                 moves.emplace_back(col, row + i);
                 break;
-            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i).getColor() == color) {  // uncapturable piece (ally)
+            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i)->getColor() == color) {  // uncapturable piece (ally)
                 break;
             }
         }
@@ -153,10 +162,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col, row - i) == 0) { 
                 moves.emplace_back(col, row - i);
-            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i).getColor() != color) {  
+            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i)->getColor() != color) {  
                 moves.emplace_back(col, row - i);
                 break;
-            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i).getColor() == color) {  
+            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i)->getColor() == color) {  
                 break;
             }
         }
@@ -166,10 +175,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col - i, row) == 0) {
                 moves.emplace_back(col - i, row);
-            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row).getColor() != color) {
+            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row)->getColor() != color) {
                 moves.emplace_back(col - i, row);
                 break;
-            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row).getColor() == color) {
+            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row)->getColor() == color) {
                 break;
             }
         }
@@ -179,10 +188,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col + i, row) == 0) {
                 moves.emplace_back(col + i, row);
-            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row).getColor() != color) {
+            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row)->getColor() != color) {
                 moves.emplace_back(col + i, row);
                 break;
-            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row).getColor() == color) {
+            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row)->getColor() == color) {
                 break;
             }
         }
@@ -193,10 +202,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col + i, row + i) == 0) {
                 moves.emplace_back(col + i, row + i); // empty square
-            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i).getColor() != color) { //capturable piece
+            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i)->getColor() != color) { //capturable piece
                 moves.emplace_back(col + i, row + i);
                 break;
-            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i).getColor() == color) {  // uncapturable piece (ally)
+            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i)->getColor() == color) {  // uncapturable piece (ally)
                 moves.emplace_back(col + i, row + i);
                 break;
             }
@@ -207,10 +216,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col - i, row + i) == 0) {
                 moves.emplace_back(col - i, row + i);                                                                  
-            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i).getColor() != color) { 
+            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i)->getColor() != color) { 
                 moves.emplace_back(col - i, row + i);
                 break;
-            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i).getColor() == color) { 
+            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i)->getColor() == color) { 
                 moves.emplace_back(col - i, row + i);
                 break;
             }
@@ -221,10 +230,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col - i, row - i) == 0) {
                 moves.emplace_back(col - i, row - i);
-            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i).getColor() != color) {
+            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i)->getColor() != color) {
                 moves.emplace_back(col - i, row - i);
                 break;
-            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i).getColor() == color) {
+            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i)->getColor() == color) {
                 moves.emplace_back(col - i, row - i);
                 break;
             }
@@ -235,10 +244,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col + i, row - i) == 0) {
                 moves.emplace_back(col + i, row - i);
-            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i).getColor() != color) {
+            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i)->getColor() != color) {
                 moves.emplace_back(col + i, row - i);
                 break;
-            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i).getColor() == color) {
+            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i)->getColor() == color) {
                 moves.emplace_back(col + i, row - i);
                 break;
             }
@@ -250,10 +259,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col + i, row + i) == 0) {
                 moves.emplace_back(col + i, row + i);                                                                   // empty square
-            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i).getColor() != color) {  // capturable piece
+            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i)->getColor() != color) {  // capturable piece
                 moves.emplace_back(col + i, row + i);
                 break;
-            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i).getColor() == color) {  // uncapturable piece (ally)
+            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i)->getColor() == color) {  // uncapturable piece (ally)
                 moves.emplace_back(col + i, row + i);
                 break;
             }
@@ -264,10 +273,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col - i, row + i) == 0) {
                 moves.emplace_back(col - i, row + i);
-            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i).getColor() != color) {
+            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i)->getColor() != color) {
                 moves.emplace_back(col - i, row + i);
                 break;
-            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i).getColor() == color) {
+            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i)->getColor() == color) {
                 moves.emplace_back(col - i, row + i);
                 break;
             }
@@ -278,10 +287,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col - i, row - i) == 0) {
                 moves.emplace_back(col - i, row - i);
-            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i).getColor() != color) {
+            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i)->getColor() != color) {
                 moves.emplace_back(col - i, row - i);
                 break;
-            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i).getColor() == color) {
+            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i)->getColor() == color) {
                 moves.emplace_back(col - i, row - i);
                 break;
             }
@@ -292,10 +301,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col + i, row - i) == 0) {
                 moves.emplace_back(col + i, row - i);
-            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i).getColor() != color) {
+            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i)->getColor() != color) {
                 moves.emplace_back(col + i, row - i);
                 break;
-            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i).getColor() == color) {
+            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i)->getColor() == color) {
                 moves.emplace_back(col + i, row - i);
                 break;
             }
@@ -306,10 +315,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col, row + i) == 0) {  // empty square
                 moves.emplace_back(col, row + i);
-            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i).getColor() != color) {  // capturable piece
+            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i)->getColor() != color) {  // capturable piece
                 moves.emplace_back(col, row + i);
                 break;
-            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i).getColor() == color) {  // uncapturable piece (ally)
+            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i)->getColor() == color) {  // uncapturable piece (ally)
                 break;
             }
         }
@@ -319,10 +328,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col, row - i) == 0) {
                 moves.emplace_back(col, row - i);
-            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i).getColor() != color) {
+            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i)->getColor() != color) {
                 moves.emplace_back(col, row - i);
                 break;
-            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i).getColor() == color) {
+            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i)->getColor() == color) {
                 break;
             }
         }
@@ -332,10 +341,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col - i, row) == 0) {
                 moves.emplace_back(col - i, row);
-            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row).getColor() != color) {
+            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row)->getColor() != color) {
                 moves.emplace_back(col - i, row);
                 break;
-            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row).getColor() == color) {
+            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row)->getColor() == color) {
                 break;
             }
         }
@@ -345,10 +354,10 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
             if (board.getSquare(col + i, row) == 0) {
                 moves.emplace_back(col + i, row);
-            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row).getColor() != color) {
+            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row)->getColor() != color) {
                 moves.emplace_back(col + i, row);
                 break;
-            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row).getColor() == color) {
+            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row)->getColor() == color) {
                 break;
             }
         }
@@ -356,56 +365,56 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
         if (board.getSquare(col, row + 1) != 2 && ){ // in bounds and check if king will be checked or not
             if (board.getSquare(col, row + 1) == 0) {  // empty square
                 moves.emplace_back(col, row + 1);
-            } else if (board.getSquare(col, row + 1) == 1 && board.getPiece(col, row + 1).getColor() != color) {  // capturable piece
+            } else if (board.getSquare(col, row + 1) == 1 && board.getPiece(col, row + 1)->getColor() != color) {  // capturable piece
                 moves.emplace_back(col, row + 1);
             }
         }
         if (board.getSquare(col + 1, row + 1) != 2 &&) {   //implement if king will be in check
             if (board.getSquare(col + 1, row + 1) == 0) { 
                 moves.emplace_back(col + 1, row + 1);
-            } else if (board.getSquare(col + 1, row + 1) == 1 && board.getPiece(col + 1, row + 1).getColor() != color) { 
+            } else if (board.getSquare(col + 1, row + 1) == 1 && board.getPiece(col + 1, row + 1)->getColor() != color) { 
                 moves.emplace_back(col + 1, row + 1);
             }
         }
         if (board.getSquare(col + 1, row) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col + 1, row) == 0) {
                 moves.emplace_back(col + 1, row);
-            } else if (board.getSquare(col + 1, row ) == 1 && board.getPiece(col + 1, row).getColor() != color) {
+            } else if (board.getSquare(col + 1, row ) == 1 && board.getPiece(col + 1, row)->getColor() != color) {
                 moves.emplace_back(col + 1, row);
             }
         }
         if (board.getSquare(col + 1, row - 1) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col + 1, row - 1) == 0) {
                 moves.emplace_back(col + 1, row - 1);
-            } else if (board.getSquare(col + 1, row - 1) == 1 && board.getPiece(col + 1, row - 1).getColor() != color) {
+            } else if (board.getSquare(col + 1, row - 1) == 1 && board.getPiece(col + 1, row - 1)->getColor() != color) {
                 moves.emplace_back(col + 1, row - 1);
             }
         }
         if (board.getSquare(col, row - 1) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col, row - 1) == 0) {
                 moves.emplace_back(col, row - 1);
-            } else if (board.getSquare(col, row - 1) == 1 && board.getPiece(col, row - 1).getColor() != color) {
+            } else if (board.getSquare(col, row - 1) == 1 && board.getPiece(col, row - 1)->getColor() != color) {
                 moves.emplace_back(col, row - 1);
             }
         }
         if (board.getSquare(col - 1, row - 1) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col - 1, row - 1) == 0) {
                 moves.emplace_back(col - 1, row - 1);
-            } else if (board.getSquare(col - 1, row - 1) == 1 && board.getPiece(col - 1, row - 1).getColor() != color) {
+            } else if (board.getSquare(col - 1, row - 1) == 1 && board.getPiece(col - 1, row - 1)->getColor() != color) {
                 moves.emplace_back(col - 1, row - 1);
             }
         }
         if (board.getSquare(col - 1, row) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col - 1, row) == 0) {
                 moves.emplace_back(col - 1, row);
-            } else if (board.getSquare(col - 1, row) == 1 && board.getPiece(col - 1, row).getColor() != color) {
+            } else if (board.getSquare(col - 1, row) == 1 && board.getPiece(col - 1, row)->getColor() != color) {
                 moves.emplace_back(col - 1, row);
             }
         }
         if (board.getSquare(col - 1, row + 1) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col - 1, row + 1) == 0) {
                 moves.emplace_back(col - 1, row + 1);
-            } else if (board.getSquare(col - 1, row + 1) == 1 && board.getPiece(col - 1, row + 1).getColor() != color) {
+            } else if (board.getSquare(col - 1, row + 1) == 1 && board.getPiece(col - 1, row + 1)->getColor() != color) {
                 moves.emplace_back(col - 1, row + 1);
             }
         }
