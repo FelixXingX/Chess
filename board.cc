@@ -43,7 +43,7 @@ char Board::getState(int row, int col) const{
 }
 //invariant we are assuming board goes from 8 to 1
 shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
-	for(int i = 8; i < 1; --i){
+	for(int i = 8; i > 1; --i){
         	for(int j = 1; j < 8; ++j){
             		if(i == row && j == col){
                 		return board[i][j].getPiece();
@@ -68,6 +68,7 @@ void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  /
         //error
     }
 }
+
 bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board board) {
     vector<Vec> moves;
     if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs

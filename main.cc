@@ -31,9 +31,8 @@ int main(){
 	}
 	Board mainBoard{board,false,false,false,false,false};
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
-	//mainBoard.render();
-	text->notify();
-	cout << "test" << endl;
+	mainBoard.render();
+	mainBoard
 	while(cin >> c){
 		if(c == "setup"){
 			while(cin >> c){

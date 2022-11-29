@@ -15,9 +15,9 @@ class Board : public Subject{
 		void removePiece(int row, int col);
 		void printMoves();
 		void move(std::string from, std::string to, std::string turn);
-        	//std::vector<Vec> possibleMoves(Piece piece, int row, int col, Board board);
-        	bool canMove(int fromX, int fromY, int toX, int toY, std::string turn, Board board);
-        	bool addPiece(int row, int col, std::shared_ptr<Piece>);
+        //std::vector<Vec> possibleMoves(Piece piece, int row, int col, Board board);
+        bool canMove(int fromX, int fromY, int toX, int toY, std::string turn, Board board);
+        void addPiece(std::string colour, char name, int row, int col);
 		char getState(int row, int col) const override;
 		int getSquare(int row, int col);
 		std::shared_ptr<Piece> getPiece(int row, int col);
