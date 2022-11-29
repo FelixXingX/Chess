@@ -21,20 +21,20 @@ int Board::getSquare(int col, int row){
 }
 //GetState get the char or string of the name of the piece
 //Observer pattern just ignore frfr
-string Board::getState(int row, int col) const{
+char Board::getState(int row, int col) const{
     auto p = board[row][col].getPiece();
     if(p == nullptr){
         if(row % 2 == 0){
             if(col % 2 == 0){
-                return "_";
+                return '_';
             }else{
-                return " ";
+                return ' ';
             }
         }else{
             if(col % 2 == 0){
-                return " ";
+                return ' ';
             }else {
-                return "_";
+                return '_';
             }
         }
     }else{
@@ -43,7 +43,7 @@ string Board::getState(int row, int col) const{
 }
 //invariant we are assuming board goes from 8 to 1
 shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
-	for(int i = 8; i < 1; --i){
+	for(int i = 8; i > 1; --i){
         	for(int j = 1; j < 8; ++j){
             		if(i == row && j == col){
                 		return board[i][j].getPiece();
@@ -52,6 +52,48 @@ shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the
     }
     return nullptr;
 }
+
+void Board::addPiece(int row, int col, char name){
+    switch(name){
+        case 'p':
+            board[row][col].addPiece(make_shared<Pawn>("black", name, row,col));
+            break;
+        case 'P':
+            board[row][col].addPiece(make_shared<Pawn>("white", name, row,col));
+            break;
+        case 'r':
+            board[row][col].addPiece(make_shared<Rook>("black", name, row,col));
+            break;
+        case 'R':
+            board[row][col].addPiece(make_shared<Rook>("white", name, row,col));
+            break;
+        case 'n':
+            board[row][col].addPiece(make_shared<Knight>("black", name, row,col));
+            break;
+        case 'N':
+            board[row][col].addPiece(make_shared<Knight>("white", name, row,col));
+            break;
+        case 'b':
+            board[row][col].addPiece(make_shared<Bishop>("black", name, row,col));
+            break;
+        case 'B':
+            board[row][col].addPiece(make_shared<Bishop>("white", name, row,col));
+            break;
+        case 'q':
+            board[row][col].addPiece(make_shared<Queen>("black", name, row,col));
+            break;
+        case 'Q':
+            board[row][col].addPiece(make_shared<Queen>("white", name, row,col));
+            break;
+        case 'k':
+            board[row][col].addPiece(make_shared<King>("black", name, row,col));
+            break;
+        case 'K':
+            board[row][col].addPiece(make_shared<King>("white", name, row,col));
+            break;
+    }
+}
+
 //renders the graphic and text observers
 void Board::render(){
     this->notifyObservers();
@@ -149,7 +191,7 @@ vector<Vec> Board ::possibleMoves2(Piece piece, int row, int col, Board board,ve
 // I have yet to implement checking if the king can castle or not
 vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board) {
     vector<Vec> moves; // vector of pairs (x y)                                 
-   /*string name = piece.getName();
+   /*char name = piece.getName();
     string color = piece.getColor();
     if (name == "pawn") {
         if (color == "white"){

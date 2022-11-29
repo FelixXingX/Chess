@@ -4,30 +4,31 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
+//Note that for pieces, captial are white, lower case are black
 class Piece{
 	std::string color;
+	char name;
 	int col, row;
-	std::string name;
 	public:
 		std::string getColor();
-		std::string getName();
+		char getName();
+		Piece(std::string color,char name, int col, int row);
 };
 
 class Knight : public Piece{
 	public:
-		Knight(char color);
+		Knight(std::string color,char name, int col, int row);
 };
 
 class Bishop : public Piece{
 	public:
-		Bishop(char color);
+		Bishop(std::string color,char name, int col, int row);
 };
 
 class Rook : public Piece{
 	bool castled;
 	public:
-		Rook(char color);
+		Rook(std::string color,char name, int col, int row);
 		bool getCastle();
 		void setCastle();
 };
@@ -35,7 +36,7 @@ class Rook : public Piece{
 class King : public Piece{
 	bool isChecked, castled;
 	public:
-		King(char color);
+		King(std::string color,char name, int col, int row);
 		bool getStatusCheck();
 		bool getStatusCastle();
 		void setCheck();
@@ -44,14 +45,14 @@ class King : public Piece{
 
 class Queen : public Piece{
 	public:
-		Queen(char color);
+		Queen(std::string color,char name, int col, int row);
 };
 
 class Pawn : public Piece{
 	bool firstStep;
 	bool canPromote;
 	public:
-		Pawn(char color);
+		Pawn(std::string color,char name, int col, int row);
 		bool getFirstStep();
 		void setFirstStep();
 		void setCanPromote();
