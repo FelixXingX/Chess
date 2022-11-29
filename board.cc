@@ -3,7 +3,7 @@
 #include "textdisplay.h"
 
 using namespace std;
-
+//note: col = x, row = y
 struct Vec {
     int x, y;
     Vec(int x, int y) : x{x}, y{y} {}
@@ -56,31 +56,98 @@ shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the
 void Board::render(){
     this->notifyObservers();
 }
-// ALSO IMPORTANT (white pieces start at 0 and moves up the board) not sure if this is what we want
-// also 0 - 9 is left to right
-void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
-    if (board.canMove(fromX,fromY,toX,toY,turn, board) == true){
 
+void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
+    if (board.isLegalMove(fromX, fromY, toX, toY, turn, board, false) == true) {
         //move
+        //is enemy king in check -> is he checkmated
+        if (board.checked() == true){
+            if (board.checkmate() == true){
+                //game over
+            }
+            //set enemy inCheck to true
+        }
         //if its a pawn, check if first step or not and set it to false...
         //if its king check if it can castle or not and set it to false etc...
-    } else{
+    } else {
         //error
     }
 }
-bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board board) {
+bool Board::isLegalMove(int fromX, int fromY, int toX, int toY, string turn, Board board, bool inCheck) {
     vector<Vec> moves;
     if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs
-        //moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
+        moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
+        if (moves.size() == 0){
+            return false;
+        }
+        for (size_t i = 0; i < moves.size(); i++) {  // if their piece is in the list produced by possibleMoves
+            if (moves[i].x == toX && moves[i].y == toY) {
+                //check if you are in check -> does moving prevent you from being in check
+                if(inCheck == true){
+                    // I think for this you would need to create a temp board and check lol.
+                }
+                //check if moving will put your king in check
+                else{
+                    // again create a temp board and check
+                }
+            }
+        }
     }
-    for (size_t i = 0; i < moves.size(); i++) { // if their piece is in the list produced by possibleMoves
-        if (moves[i].x == toX && moves[i].y == toY) return true;
+    return false;
+}
+bool Board::checked(){ //checks if you can capture enemy king.
+    int kingX = getKingx(); //gets enemy kings location
+    int kingY = getKingy();
+    for (int row = 1; row <= 8; row++) {
+        for (int col = 1; col <= 8; col++){
+            auto p = board[col][row].getPiece();
+            if (p != nullptr){
+                vector<Vec> moves = possibleMoves(p, row, col, board);
+                for (size_t i = 0; i < moves.size(); i++) { // checks every piece to see if they can capture enemy king.
+                    if (moves[i].x == kingX && moves[i].y == kingY){
+                        return true;
+                    }
+                }
+            }
+        }
     }
     return false;
 }
 
-// I have yet to implement checking if the king can castle or not 
-vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){ 
+bool Board::checkmate(){ //checks all moves and sees if its a legal move.
+    string color; // do you want to check for black or white pieces. 
+    //if possible moves return empty. youre checkmated
+    for (int row = 1; row <= 8; row++) {
+        for (int col = 1; col <= 8; col++) {
+            auto p = board[col][row].getPiece();
+            if (p != nullptr) {
+                if (p.getColor == color){
+                    vector<Vec> moves = possibleMoves(p, row, col, board);
+                    if (moves.size() != 0){
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+//maybe just copy paste possibleMoves2 to the bottom of possibleMoves.
+vector<Vec> Board ::possibleMoves2(Piece piece, int row, int col, Board board,vector<Vec> moves) {  // takes the possible moves below, and shaves it to only legal moves 
+    int pieceX = col; // pieces location
+    int pieceY = row;
+    string turn;
+    bool inCheck;
+    for (size_t i = 0; i < moves.size(); i++) {  // checks every piece to see if they can capture enemy king.
+        if (board.isLegalMove(pieceX, pieceY, moves[i].x, moves[i].y, turn, board, inCheck) == false) {
+            moves[i].x = -1;
+            moves[i].y = -1;
+        }
+    }
+    return moves;
+}
+// I have yet to implement checking if the king can castle or not
+vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board) {
     vector<Vec> moves; // vector of pairs (x y)                                 
    /*string name = piece.getName();
     string color = piece.getColor();
@@ -442,5 +509,5 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
         }
     }*/
-    return moves;
+    return possibleMoves2(piece, row, col, board, moves);
 }
