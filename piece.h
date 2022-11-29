@@ -7,27 +7,27 @@
 
 class Piece{
 	std::string color;
+	char name;
 	int col, row;
-	std::string name;
 	public:
 		std::string getColor();
-		std::string getName();
+		char getName();
 };
 
 class Knight : public Piece{
 	public:
-		Knight(char color);
+		Knight(char color,char name);
 };
 
 class Bishop : public Piece{
 	public:
-		Bishop(char color);
+		Bishop(char color,char name);
 };
 
 class Rook : public Piece{
 	bool castled;
 	public:
-		Rook(char color);
+		Rook(char color,char name);
 		bool getCastle();
 		void setCastle();
 };
@@ -35,7 +35,7 @@ class Rook : public Piece{
 class King : public Piece{
 	bool isChecked, castled;
 	public:
-		King(char color);
+		King(char color,char name);
 		bool getStatusCheck();
 		bool getStatusCastle();
 		void setCheck();
@@ -44,14 +44,14 @@ class King : public Piece{
 
 class Queen : public Piece{
 	public:
-		Queen(char color);
+		Queen(char color,char name);
 };
 
 class Pawn : public Piece{
 	bool firstStep;
 	bool canPromote;
 	public:
-		Pawn(char color);
+		Pawn(char color,char name);
 		bool getFirstStep();
 		void setFirstStep();
 		void setCanPromote();

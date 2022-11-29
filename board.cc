@@ -21,20 +21,20 @@ int Board::getSquare(int col, int row){
 }
 //GetState get the char or string of the name of the piece
 //Observer pattern just ignore frfr
-string Board::getState(int row, int col) const{
+char Board::getState(int row, int col) const{
     auto p = board[row][col].getPiece();
     if(p == nullptr){
         if(row % 2 == 0){
             if(col % 2 == 0){
-                return "_";
+                return '_';
             }else{
-                return " ";
+                return ' ';
             }
         }else{
             if(col % 2 == 0){
-                return " ";
+                return ' ';
             }else {
-                return "_";
+                return '_';
             }
         }
     }else{

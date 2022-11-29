@@ -6,7 +6,7 @@ string Piece::getColor(){ // something like this idk looool
     return color;
 }
 
-string Piece::getName() {  // something like this idk looool
+char Piece::getName() {  // something like this idk looool
     return name;
 }
 

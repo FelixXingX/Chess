@@ -18,7 +18,7 @@ class Board : public Subject{
         	//std::vector<Vec> possibleMoves(Piece piece, int row, int col, Board board);
         	bool canMove(int fromX, int fromY, int toX, int toY, std::string turn, Board board);
         	bool addPiece(int row, int col, std::shared_ptr<Piece>);
-		std::string getState(int row, int col) const override;
+		char getState(int row, int col) const override;
 		int getSquare(int row, int col);
 		std::shared_ptr<Piece> getPiece(int row, int col);
 		std::vector<Vec> possibleMoves(Piece piece, int row, int col, Board board);
