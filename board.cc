@@ -8,33 +8,54 @@
 #include "textdisplay.h"
 
 using namespace std;
-bool Board::canMove(int row, int col){
-    Piece piece = getPiece(col, col);
-    string name = piece.getName();
 
-}
 struct Vec {
     int x, y;
     Vec(int x, int y) : x{x}, y{y} {}
 };
-// Important!! getSquare: 0 = false, 1 = true; 2 = out of bounds
-int Board::getSquare(int row, int col){
+// Important!! getSquare: 0 = no piece, 1 = theres a piece; 2 = out of bounds
+int Board::getSquare(int col, int row){
+    if (col > 7 || row > 7) {
+        return 2;
+    } 
     return 0;
 }
 
-Piece Board::getPiece(int row, int col){ // returns the piece on the square
+Piece Board::getPiece(int col, int row){ // returns the piece on the square (not sure how to do this yet lol)
     Piece piece;
     return piece;
 }
 // ALSO IMPORTANT (white pieces start at 0 and moves up the board) not sure if this is what we want
+// also 0 - 9 is left to right
+void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
+    if (board.canMove(fromX,fromY,toX,toY,turn,board) == true){
+
+        //move
+        //if its a pawn, check if first step or not and set it to false...
+        //if its king check if it can castle or not and set it to false etc...
+    } else{
+        //error
+    }
+}
+bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board board) {
+    vector<Vec> moves;
+    if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY).getColor() == turn) {  // if theyre moving a piece thats theirs
+        moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
+    }
+    for (int i = 0; i < moves.size(); i++) { // if their piece is in the list produced by possibleMoves
+        if (moves[i].x == toX && moves[i].y == toY) return true;
+    }
+    return false;
+}
+// I have yet to implement checking if the king can castle or not 
 vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){ 
     vector<Vec> moves; // vector of pairs (x y)                                 
     string name = piece.getName();
     string color = piece.getColor();
     if (name == "pawn") {
         if (color == "white"){
-            if (piece.firstStep == false){ // checks if its first step or not
-                if (board.getSquare(col,row + 1) == 0) { // implement getSquare, returns if there is a piece at col col
+            if (piece.getFirstStep() == false){ // checks if its first step or not
+                if (board.getSquare(col,row + 1) == 0) { // empty square
                     moves.emplace_back(col, row + 1); // adds move to vector
                 }
                 if (board.getSquare(col + 1, row + 1) == 1 && board.getPiece(col + 1, row + 1).getColor() == "black") {  // checks if there is a capture available;
@@ -43,7 +64,7 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
                 if (board.getSquare(col - 1, row + 1) == 1 && board.getPiece(col - 1, row + 1).getColor() == "black") {  // checks if there is a capture available;
                     moves.emplace_back(col - 1, row + 1);
                 }
-            } else if (piece.firstStep == 1){ // first move
+            } else if (piece.getFirstStep() == 1) {  // first move
                 if (board.getSquare(col, row + 1) == 0) {
                     moves.emplace_back(col, row + 1);
                 }
@@ -52,7 +73,7 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
                 }
             }
         } else if (color == "black") { // black pieces moves the other direction
-            if (piece.firstStep == false) {                    
+            if (piece.getFirstStep() == false) {
                 if (board.getSquare(col, row - 1) == 0) {  
                     moves.emplace_back(col, row - 1);
                 }
@@ -62,7 +83,7 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
                 if (board.getSquare(col - 1, row - 1) == 1 && board.getPiece(col - 1, row - 1).getColor() == "white") {  
                     moves.emplace_back(col - 1, row - 1);
                 }
-            } else if (piece.firstStep == true) {
+            } else if (piece.getFirstStep() == true) {
                 if (board.getSquare(col, row - 1) == 0) {
                     moves.emplace_back(col, row - 1);
                 }
@@ -389,4 +410,5 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
         }
     }
+    return moves;
 }
