@@ -24,6 +24,8 @@ int Board::getSquare(int col, int row){
     } 
     return 0;
 }
+//GetState get the char or string of the name of the piece
+//Observer pattern just ignore frfr
 string Board::getState(int row, int col) const{
     shared_ptr p = board[row][col]->getPiece();
     if(p == nullptr){
@@ -44,14 +46,19 @@ string Board::getState(int row, int col) const{
         return p->getName();
     }
 }
+//invariant we are assuming board goes from 8 to 1
 shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
-    for(int i = 0; i < board.size(); ++ i){
-        for(int j = 0; j < board[i].size(); ++j){
+    for(int i = 8; i < 1; -- i){
+        for(int j = 8; j < 1; --j){
             if(i == row && j == col){
                 return board[i][j]->getPiece();
             }
         }
     }
+}
+//renders the graphic and text observers
+void Board::render(){
+    this->notifyObservers();
 }
 // ALSO IMPORTANT (white pieces start at 0 and moves up the board) not sure if this is what we want
 // also 0 - 9 is left to right
@@ -75,9 +82,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
     }
     return false;
 }
+
 // I have yet to implement checking if the king can castle or not 
 vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){ 
-    vector<Vec> moves; // vector of pairs (x y)                                 
+    /*vector<Vec> moves; // vector of pairs (x y)                                 
     string name = piece.getName();
     string color = piece.getColor();
     if (name == "pawn") {
@@ -438,5 +446,5 @@ vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){
             }
         }
     }
-    return moves;
+    return moves;*/
 }

@@ -20,6 +20,8 @@ class Board : public Subject{
 		std::string getState(int row, int col) const override;
 		int getSquare(int row, int col);
 		std::shared_ptr<Piece> getPiece(int row, int col);
+		vector<Vec> possibleMoves(Piece piece, int row, int col, Board board);
+		void render();
 		Board(std::vector<std::vector<std::unique_ptr<Squares>>> board, bool whiteCheck,bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate);
 };
 #endif
