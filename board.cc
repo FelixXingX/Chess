@@ -57,7 +57,7 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
     return false;
 }
 // I have yet to implement checking if the king can castle or not 
-/*vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){ 
+vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board){ 
     vector<Vec> moves; // vector of pairs (x y)                                 
     string name = piece.getName();
     string color = piece.getColor();
@@ -67,10 +67,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
                 if (board.getSquare(col,row + 1) == 0) { // empty square
                     moves.emplace_back(col, row + 1); // adds move to vector
                 }
-                if (board.getSquare(col + 1, row + 1) == 1 && board.getPiece(col + 1, row + 1).getColor() == "black") {  // checks if there is a capture available;
+                if (board.getSquare(col + 1, row + 1) == 1 && board.getPiece(col + 1, row + 1)->getColor() == "black") {  // checks if there is a capture available;
                     moves.emplace_back(col + 1, row + 1);
                 }
-                if (board.getSquare(col - 1, row + 1) == 1 && board.getPiece(col - 1, row + 1).getColor() == "black") {  // checks if there is a capture available;
+                if (board.getSquare(col - 1, row + 1) == 1 && board.getPiece(col - 1, row + 1)->getColor() == "black") {  // checks if there is a capture available;
                     moves.emplace_back(col - 1, row + 1);
                 }
             } else if (piece.getFirstStep() == 1) {  // first move
@@ -86,10 +86,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
                 if (board.getSquare(col, row - 1) == 0) {  
                     moves.emplace_back(col, row - 1);
                 }
-                if (board.getSquare(col + 1, row - 1) == 1 && board.getPiece(col + 1, row - 1).getColor() == "white") {  
+                if (board.getSquare(col + 1, row - 1) == 1 && board.getPiece(col + 1, row - 1)->getColor() == "white") {  
                     moves.emplace_back(col + 1, row - 1);
                 }
-                if (board.getSquare(col - 1, row - 1) == 1 && board.getPiece(col - 1, row - 1).getColor() == "white") {  
+                if (board.getSquare(col - 1, row - 1) == 1 && board.getPiece(col - 1, row - 1)->getColor() == "white") {  
                     moves.emplace_back(col - 1, row - 1);
                 }
             } else if (piece.getFirstStep() == true) {
@@ -104,42 +104,42 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
     } else if (name == "knight") {
         if (board.getSquare(col + 1, row + 2) == 0) {  // i ordered the checks counter clockwise) hopefully i didnt fuck up lul
             moves.emplace_back(col + 1, row + 2);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 1, row + 2).getColor() != color) {  // checks if there is piece and not out of bounds + its capturable (enemy color)
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 1, row + 2)->getColor() != color) {  // checks if there is piece and not out of bounds + its capturable (enemy color)
             moves.emplace_back(col + 1, row + 2);
         }
         if (board.getSquare(col - 1, row + 2) == 0) {
             moves.emplace_back(col - 1, row + 2);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 1, row + 2).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 1, row + 2)->getColor() != color) {
             moves.emplace_back(col - 1, row + 2);
         }
         if (board.getSquare(col - 2, row + 1) == 0) {
             moves.emplace_back(col - 2, row + 1);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 2, row + 1).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 2, row + 1)->getColor() != color) {
             moves.emplace_back(col - 2, row + 1);
         }
         if (board.getSquare(col - 2, row - 1) == 0) {
             moves.emplace_back(col - 2, row - 1);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 2, row - 1).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 2, row - 1)->getColor() != color) {
             moves.emplace_back(col - 2, row - 1);
         }
         if (board.getSquare(col - 1, row - 2) == 0) {
             moves.emplace_back(col - 1, row - 2);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 1, row - 2).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col - 1, row - 2)->getColor() != color) {
             moves.emplace_back(col - 1, row - 2);
         }
         if (board.getSquare(col + 1, row - 2) == 0) {
             moves.emplace_back(col + 1, row - 2);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 1, row - 2).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 1, row - 2)->getColor() != color) {
             moves.emplace_back(col + 1, row - 2);
         }
         if (board.getSquare(col + 2, row - 1) == 0) {
             moves.emplace_back(col + 2, row - 1);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 2, row - 1).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 2, row - 1)->getColor() != color) {
             moves.emplace_back(col + 2, row - 1);
         }
         if (board.getSquare(col + 2, row + 1) == 0) {
             moves.emplace_back(col + 2, row + 1);
-        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 2, row + 1).getColor() != color) {
+        } else if (board.getSquare(col + 1, row + 2) == 1 && board.getPiece(col + 2, row + 1)->getColor() != color) {
             moves.emplace_back(col + 2, row + 1);
         }
     } else if (name == "rook") {
@@ -149,10 +149,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col, row + i) == 0){ // empty square
                 moves.emplace_back(col, row + i);
-            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i).getColor() != color){ // capturable piece 
+            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i)->getColor() != color){ // capturable piece 
                 moves.emplace_back(col, row + i);
                 break;
-            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i).getColor() == color) {  // uncapturable piece (ally)
+            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i)->getColor() == color) {  // uncapturable piece (ally)
                 break;
             }
         }
@@ -162,10 +162,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col, row - i) == 0) { 
                 moves.emplace_back(col, row - i);
-            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i).getColor() != color) {  
+            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i)->getColor() != color) {  
                 moves.emplace_back(col, row - i);
                 break;
-            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i).getColor() == color) {  
+            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i)->getColor() == color) {  
                 break;
             }
         }
@@ -175,10 +175,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col - i, row) == 0) {
                 moves.emplace_back(col - i, row);
-            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row).getColor() != color) {
+            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row)->getColor() != color) {
                 moves.emplace_back(col - i, row);
                 break;
-            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row).getColor() == color) {
+            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row)->getColor() == color) {
                 break;
             }
         }
@@ -188,10 +188,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col + i, row) == 0) {
                 moves.emplace_back(col + i, row);
-            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row).getColor() != color) {
+            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row)->getColor() != color) {
                 moves.emplace_back(col + i, row);
                 break;
-            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row).getColor() == color) {
+            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row)->getColor() == color) {
                 break;
             }
         }
@@ -202,10 +202,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col + i, row + i) == 0) {
                 moves.emplace_back(col + i, row + i); // empty square
-            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i).getColor() != color) { //capturable piece
+            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i)->getColor() != color) { //capturable piece
                 moves.emplace_back(col + i, row + i);
                 break;
-            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i).getColor() == color) {  // uncapturable piece (ally)
+            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i)->getColor() == color) {  // uncapturable piece (ally)
                 moves.emplace_back(col + i, row + i);
                 break;
             }
@@ -216,10 +216,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col - i, row + i) == 0) {
                 moves.emplace_back(col - i, row + i);                                                                  
-            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i).getColor() != color) { 
+            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i)->getColor() != color) { 
                 moves.emplace_back(col - i, row + i);
                 break;
-            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i).getColor() == color) { 
+            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i)->getColor() == color) { 
                 moves.emplace_back(col - i, row + i);
                 break;
             }
@@ -230,10 +230,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col - i, row - i) == 0) {
                 moves.emplace_back(col - i, row - i);
-            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i).getColor() != color) {
+            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i)->getColor() != color) {
                 moves.emplace_back(col - i, row - i);
                 break;
-            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i).getColor() == color) {
+            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i)->getColor() == color) {
                 moves.emplace_back(col - i, row - i);
                 break;
             }
@@ -244,10 +244,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col + i, row - i) == 0) {
                 moves.emplace_back(col + i, row - i);
-            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i).getColor() != color) {
+            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i)->getColor() != color) {
                 moves.emplace_back(col + i, row - i);
                 break;
-            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i).getColor() == color) {
+            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i)->getColor() == color) {
                 moves.emplace_back(col + i, row - i);
                 break;
             }
@@ -259,10 +259,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col + i, row + i) == 0) {
                 moves.emplace_back(col + i, row + i);                                                                   // empty square
-            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i).getColor() != color) {  // capturable piece
+            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i)->getColor() != color) {  // capturable piece
                 moves.emplace_back(col + i, row + i);
                 break;
-            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i).getColor() == color) {  // uncapturable piece (ally)
+            } else if (board.getSquare(col + i, row + i) == 1 && board.getPiece(col + i, row + i)->getColor() == color) {  // uncapturable piece (ally)
                 moves.emplace_back(col + i, row + i);
                 break;
             }
@@ -273,10 +273,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col - i, row + i) == 0) {
                 moves.emplace_back(col - i, row + i);
-            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i).getColor() != color) {
+            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i)->getColor() != color) {
                 moves.emplace_back(col - i, row + i);
                 break;
-            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i).getColor() == color) {
+            } else if (board.getSquare(col - i, row + i) == 1 && board.getPiece(col - i, row + i)->getColor() == color) {
                 moves.emplace_back(col - i, row + i);
                 break;
             }
@@ -287,10 +287,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col - i, row - i) == 0) {
                 moves.emplace_back(col - i, row - i);
-            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i).getColor() != color) {
+            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i)->getColor() != color) {
                 moves.emplace_back(col - i, row - i);
                 break;
-            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i).getColor() == color) {
+            } else if (board.getSquare(col - i, row - i) == 1 && board.getPiece(col - i, row - i)->getColor() == color) {
                 moves.emplace_back(col - i, row - i);
                 break;
             }
@@ -301,10 +301,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col + i, row - i) == 0) {
                 moves.emplace_back(col + i, row - i);
-            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i).getColor() != color) {
+            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i)->getColor() != color) {
                 moves.emplace_back(col + i, row - i);
                 break;
-            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i).getColor() == color) {
+            } else if (board.getSquare(col + i, row - i) == 1 && board.getPiece(col + i, row - i)->getColor() == color) {
                 moves.emplace_back(col + i, row - i);
                 break;
             }
@@ -315,10 +315,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col, row + i) == 0) {  // empty square
                 moves.emplace_back(col, row + i);
-            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i).getColor() != color) {  // capturable piece
+            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i)->getColor() != color) {  // capturable piece
                 moves.emplace_back(col, row + i);
                 break;
-            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i).getColor() == color) {  // uncapturable piece (ally)
+            } else if (board.getSquare(col, row + i) == 1 && board.getPiece(col, row + i)->getColor() == color) {  // uncapturable piece (ally)
                 break;
             }
         }
@@ -328,10 +328,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col, row - i) == 0) {
                 moves.emplace_back(col, row - i);
-            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i).getColor() != color) {
+            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i)->getColor() != color) {
                 moves.emplace_back(col, row - i);
                 break;
-            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i).getColor() == color) {
+            } else if (board.getSquare(col, row - i) == 1 && board.getPiece(col, row - i)->getColor() == color) {
                 break;
             }
         }
@@ -341,10 +341,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col - i, row) == 0) {
                 moves.emplace_back(col - i, row);
-            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row).getColor() != color) {
+            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row)->getColor() != color) {
                 moves.emplace_back(col - i, row);
                 break;
-            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row).getColor() == color) {
+            } else if (board.getSquare(col - i, row) == 1 && board.getPiece(col - i, row)->getColor() == color) {
                 break;
             }
         }
@@ -354,10 +354,10 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
             }
             if (board.getSquare(col + i, row) == 0) {
                 moves.emplace_back(col + i, row);
-            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row).getColor() != color) {
+            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row)->getColor() != color) {
                 moves.emplace_back(col + i, row);
                 break;
-            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row).getColor() == color) {
+            } else if (board.getSquare(col + i, row) == 1 && board.getPiece(col + i, row)->getColor() == color) {
                 break;
             }
         }
@@ -365,59 +365,59 @@ bool Board::canMove(int fromX, int fromY, int toX, int toY, string turn, Board b
         if (board.getSquare(col, row + 1) != 2 && ){ // in bounds and check if king will be checked or not
             if (board.getSquare(col, row + 1) == 0) {  // empty square
                 moves.emplace_back(col, row + 1);
-            } else if (board.getSquare(col, row + 1) == 1 && board.getPiece(col, row + 1).getColor() != color) {  // capturable piece
+            } else if (board.getSquare(col, row + 1) == 1 && board.getPiece(col, row + 1)->getColor() != color) {  // capturable piece
                 moves.emplace_back(col, row + 1);
             }
         }
         if (board.getSquare(col + 1, row + 1) != 2 &&) {   //implement if king will be in check
             if (board.getSquare(col + 1, row + 1) == 0) { 
                 moves.emplace_back(col + 1, row + 1);
-            } else if (board.getSquare(col + 1, row + 1) == 1 && board.getPiece(col + 1, row + 1).getColor() != color) { 
+            } else if (board.getSquare(col + 1, row + 1) == 1 && board.getPiece(col + 1, row + 1)->getColor() != color) { 
                 moves.emplace_back(col + 1, row + 1);
             }
         }
         if (board.getSquare(col + 1, row) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col + 1, row) == 0) {
                 moves.emplace_back(col + 1, row);
-            } else if (board.getSquare(col + 1, row ) == 1 && board.getPiece(col + 1, row).getColor() != color) {
+            } else if (board.getSquare(col + 1, row ) == 1 && board.getPiece(col + 1, row)->getColor() != color) {
                 moves.emplace_back(col + 1, row);
             }
         }
         if (board.getSquare(col + 1, row - 1) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col + 1, row - 1) == 0) {
                 moves.emplace_back(col + 1, row - 1);
-            } else if (board.getSquare(col + 1, row - 1) == 1 && board.getPiece(col + 1, row - 1).getColor() != color) {
+            } else if (board.getSquare(col + 1, row - 1) == 1 && board.getPiece(col + 1, row - 1)->getColor() != color) {
                 moves.emplace_back(col + 1, row - 1);
             }
         }
         if (board.getSquare(col, row - 1) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col, row - 1) == 0) {
                 moves.emplace_back(col, row - 1);
-            } else if (board.getSquare(col, row - 1) == 1 && board.getPiece(col, row - 1).getColor() != color) {
+            } else if (board.getSquare(col, row - 1) == 1 && board.getPiece(col, row - 1)->getColor() != color) {
                 moves.emplace_back(col, row - 1);
             }
         }
         if (board.getSquare(col - 1, row - 1) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col - 1, row - 1) == 0) {
                 moves.emplace_back(col - 1, row - 1);
-            } else if (board.getSquare(col - 1, row - 1) == 1 && board.getPiece(col - 1, row - 1).getColor() != color) {
+            } else if (board.getSquare(col - 1, row - 1) == 1 && board.getPiece(col - 1, row - 1)->getColor() != color) {
                 moves.emplace_back(col - 1, row - 1);
             }
         }
         if (board.getSquare(col - 1, row) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col - 1, row) == 0) {
                 moves.emplace_back(col - 1, row);
-            } else if (board.getSquare(col - 1, row) == 1 && board.getPiece(col - 1, row).getColor() != color) {
+            } else if (board.getSquare(col - 1, row) == 1 && board.getPiece(col - 1, row)->getColor() != color) {
                 moves.emplace_back(col - 1, row);
             }
         }
         if (board.getSquare(col - 1, row + 1) != 2 &&) {  // implement if king will be in check
             if (board.getSquare(col - 1, row + 1) == 0) {
                 moves.emplace_back(col - 1, row + 1);
-            } else if (board.getSquare(col - 1, row + 1) == 1 && board.getPiece(col - 1, row + 1).getColor() != color) {
+            } else if (board.getSquare(col - 1, row + 1) == 1 && board.getPiece(col - 1, row + 1)->getColor() != color) {
                 moves.emplace_back(col - 1, row + 1);
             }
         }
     }
     return moves;
-}*/
+}
