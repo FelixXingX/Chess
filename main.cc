@@ -4,7 +4,7 @@
 //handle different variations of move
 //add in throw/catch exceptions for input?
 //IMPLEMENT EVERYTHING
-#include <iostream>
+#include <string>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -23,13 +23,17 @@ int main(){
 	for(int i = 0; i < 9 ; ++i){
 		vector<Squares> row;
 		for(int j = 0; j < 9 ; ++j){
-			row.emplace_back(new Squares(i,j, shared_ptr<Piece> (nullptr)));
+			shared_ptr<Piece> p;
+			Squares s{i,j,p};
+			row.emplace_back(s);
 		}
 		board.emplace_back(row);
 	}
 	Board mainBoard{board,false,false,false,false,false};
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
-	mainBoard.render();
+	//mainBoard.render();
+	text->notify();
+	cout << "test" << endl;
 	while(cin >> c){
 		if(c == "setup"){
 			while(cin >> c){

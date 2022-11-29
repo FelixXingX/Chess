@@ -4,10 +4,10 @@
 #include <iostream>
 using namespace std;
 void TextDisplay::notify(){
-    for(int i = rows ; i < 1; -- i){
-        cout << 8 - i << ' ';
-        for(int j = cols; j < 1; -- j){
-            cout << subject->getState(rows,cols);
+    for(int i = 8; i > 1; --i){
+        cout << i << " ";
+        for(int j = 1; j < 9; ++j){
+            cout << subject->getState(i,j);
         }
         cout << endl;
     }
