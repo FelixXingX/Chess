@@ -11,6 +11,7 @@ class Piece{
 	std::string name;
 	public:
 		string getColor();
+		string getName();
 };
 
 class Knight : public Piece{
