@@ -111,12 +111,13 @@ void Board::render(){
     this->notifyObservers();
 }
 
-void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
-    if (board.isLegalMove(fromX, fromY, toX, toY, turn, board, false) == true) {
+void Board::move(int fromX, int fromY, int toX, int toY, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
+    if (this->isLegalMove(fromX, fromY, toX, toY, turn, false) == true) {
         //move
+
         //is enemy king in check -> is he checkmated
-        if (board.checked() == true){
-            if (board.checkmate() == true){
+        if (this->checked() == true){
+            if (this->checkmate() == true){
                 //game over
             }
             //set enemy inCheck to true
@@ -127,10 +128,10 @@ void move(int fromX, int fromY, int toX, int toY, string turn, Board board) {  /
         //error
     }
 }
-bool Board::isLegalMove(int fromX, int fromY, int toX, int toY, string turn, Board board, bool inCheck) {
+bool Board::isLegalMove(int fromX, int fromY, int toX, int toY, string turn, bool inCheck) {
     vector<Vec> moves;
-    if (board.getSquare(fromX, fromY) == 1 && board.getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs
-        moves = possibleMoves(board.getPiece(fromX, fromY), fromX, fromY, board);
+    if (this->getSquare(fromX, fromY) == 1 && this->getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs
+        moves = possibleMoves(this->getPiece(fromX, fromY), fromX, fromY);
         if (moves.size() == 0){
             return false;
         }
@@ -188,13 +189,13 @@ bool Board::checkmate(){ //checks all moves and sees if its a legal move.
     return true;
 }
 //maybe just copy paste possibleMoves2 to the bottom of possibleMoves.
-vector<Vec> Board ::possibleMoves2(shared_ptr<Piece> piece, int row, int col, Board board,vector<Vec> moves) {  // takes the possible moves below, and shaves it to only legal moves 
+vector<Vec> Board ::possibleMoves2(shared_ptr<Piece> piece, int row, int col,vector<Vec> moves) {  // takes the possible moves below, and shaves it to only legal moves 
     int pieceX = col; // pieces location
     int pieceY = row;
     string turn;
     bool inCheck;
     for (size_t i = 0; i < moves.size(); i++) {  // checks every piece to see if they can capture enemy king.
-        if (board.isLegalMove(pieceX, pieceY, moves[i].x, moves[i].y, turn, board, inCheck) == false) {
+        if (this->isLegalMove(pieceX, pieceY, moves[i].x, moves[i].y, turn, inCheck) == false) {
             moves[i].x = -1;
             moves[i].y = -1;
         }
@@ -202,7 +203,7 @@ vector<Vec> Board ::possibleMoves2(shared_ptr<Piece> piece, int row, int col, Bo
     return moves;
 }
 // I have yet to implement checking if the king can castle or not
-vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col, Board board) {
+vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
     vector<Vec> moves; // vector of pairs (x y)                                 
    /*char name = piece.getName();
     string color = piece.getColor();
@@ -564,5 +565,5 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col, Boar
             }
         }
     }*/
-    return possibleMoves2(piece, row, col, board, moves);
+    return possibleMoves2(piece, row, col, moves);
 }
