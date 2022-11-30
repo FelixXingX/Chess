@@ -56,41 +56,53 @@ shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the
 void Board::addPiece(int row, int col, char name){
     switch(name){
         case 'p':
-            board[row][col].addPiece(make_shared<Pawn>("black", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Pawn>("black", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'P':
-            board[row][col].addPiece(make_shared<Pawn>("white", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Pawn>("white", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'r':
-            board[row][col].addPiece(make_shared<Rook>("black", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Rook>("black", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'R':
-            board[row][col].addPiece(make_shared<Rook>("white", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Rook>("white", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'n':
-            board[row][col].addPiece(make_shared<Knight>("black", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Knight>("black", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'N':
-            board[row][col].addPiece(make_shared<Knight>("white", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Knight>("white", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'b':
-            board[row][col].addPiece(make_shared<Bishop>("black", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Bishop>("black", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'B':
-            board[row][col].addPiece(make_shared<Bishop>("white", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Bishop>("white", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'q':
-            board[row][col].addPiece(make_shared<Queen>("black", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Queen>("black", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'Q':
-            board[row][col].addPiece(make_shared<Queen>("white", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<Queen>("white", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'k':
-            board[row][col].addPiece(make_shared<King>("black", name, row,col));
-            break;
+            {shared_ptr<Piece>p = make_shared<King>("black", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
         case 'K':
-            board[row][col].addPiece(make_shared<King>("white", name, row,col));
-            break;
+            {shared_ptr<Piece> p = make_shared<King>("white", name, row,col);
+            board[row][col].addPiece(p);
+            break;}
     }
 }
 
@@ -137,8 +149,9 @@ bool Board::isLegalMove(int fromX, int fromY, int toX, int toY, string turn, Boa
     }
     return false;
 }
+
 bool Board::checked(){ //checks if you can capture enemy king.
-    int kingX = getKingx(); //gets enemy kings location
+    /*int kingX = getKingx(); //gets enemy kings location
     int kingY = getKingy();
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++){
@@ -152,7 +165,7 @@ bool Board::checked(){ //checks if you can capture enemy king.
                 }
             }
         }
-    }
+    }*/
     return false;
 }
 
@@ -163,11 +176,11 @@ bool Board::checkmate(){ //checks all moves and sees if its a legal move.
         for (int col = 1; col <= 8; col++) {
             auto p = board[col][row].getPiece();
             if (p != nullptr) {
-                if (p.getColor == color){
-                    vector<Vec> moves = possibleMoves(p, row, col, board);
-                    if (moves.size() != 0){
+                if (p->getColor() == color){
+                    //vector<Vec> moves = possibleMoves(p, row, col, board);
+                    //if (moves.size() != 0){
                         return false;
-                    }
+                    //}
                 }
             }
         }
@@ -175,7 +188,7 @@ bool Board::checkmate(){ //checks all moves and sees if its a legal move.
     return true;
 }
 //maybe just copy paste possibleMoves2 to the bottom of possibleMoves.
-vector<Vec> Board ::possibleMoves2(Piece piece, int row, int col, Board board,vector<Vec> moves) {  // takes the possible moves below, and shaves it to only legal moves 
+vector<Vec> Board ::possibleMoves2(shared_ptr<Piece> piece, int row, int col, Board board,vector<Vec> moves) {  // takes the possible moves below, and shaves it to only legal moves 
     int pieceX = col; // pieces location
     int pieceY = row;
     string turn;
@@ -189,7 +202,7 @@ vector<Vec> Board ::possibleMoves2(Piece piece, int row, int col, Board board,ve
     return moves;
 }
 // I have yet to implement checking if the king can castle or not
-vector<Vec> Board::possibleMoves(Piece piece, int row, int col, Board board) {
+vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col, Board board) {
     vector<Vec> moves; // vector of pairs (x y)                                 
    /*char name = piece.getName();
     string color = piece.getColor();

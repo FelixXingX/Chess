@@ -6,6 +6,7 @@
 #include <vector>
 //Note that for pieces, captial are white, lower case are black
 class Piece{
+	protected:
 	std::string color;
 	char name;
 	int col, row;

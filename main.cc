@@ -32,6 +32,11 @@ int main(){
 	Board mainBoard{board,false,false,false,false,false};
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
 	mainBoard.render();
+	for(int i = 0; i <9; ++i){
+		mainBoard.addPiece(7,i,'p');
+		mainBoard.addPiece(2,i,'P');
+	}
+	mainBoard.render();
 	while(cin >> c){
 		if(c == "setup"){
 			while(cin >> c){

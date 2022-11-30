@@ -20,3 +20,4 @@ King::King(string color,char name, int col, int row): Piece{color, name, col, ro
 Bishop::Bishop(string color,char name, int col, int row): Piece{color, name, col, row}{}
 Queen::Queen(string color,char name, int col, int row): Piece{color, name, col, row}{}
 Rook::Rook(string color,char name, int col, int row): Piece{color, name, col, row}{}
+Pawn::Pawn(string color,char name, int col, int row): Piece{color, name, col, row}{}
