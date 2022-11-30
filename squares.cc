@@ -11,6 +11,6 @@ void Squares::removePiece(){
 //add piece by removing its piece first, then copying piece to the ptr
 void Squares::addPiece(std::shared_ptr<Piece> p){
     removePiece();
-    piece = std::make_shared<Piece>(*p);
+    piece = p;
 }
 Squares::Squares(int col, int row, std::shared_ptr<Piece> piece) : col{col}, row{row}, piece{piece}{}
