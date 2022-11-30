@@ -114,7 +114,9 @@ void Board::render(){
 void Board::move(int fromX, int fromY, int toX, int toY, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
     if (this->isLegalMove(fromX, fromY, toX, toY, turn, false) == true) {
         //move
-
+        shared_ptr<Piece> p = board[fromX][fromY].getPiece();//copy the piece
+        board[toX][toY].addPiece(p);//removes to piece and adds from piece
+        board[fromX][fromY].removePiece();
         //is enemy king in check -> is he checkmated
         if (this->checked() == true){
             if (this->checkmate() == true){
