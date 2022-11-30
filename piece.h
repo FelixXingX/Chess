@@ -29,19 +29,19 @@ class Bishop : public Piece{
 class Rook : public Piece{
 	bool castled;
 	public:
-		Rook(std::string color,char name, int col, int row);
+		Rook(std::string color,char name, int col, int row, bool castled);
 		bool getCastle();
-		void setCastle();
+		void setCastle(bool set);
 };
 
 class King : public Piece{
 	bool isChecked, castled;
 	public:
-		King(std::string color,char name, int col, int row);
+		King(std::string color,char name, int col, int row, bool isChecked, bool castled );
 		bool getStatusCheck();
 		bool getStatusCastle();
-		void setCheck();
-		void setCastle();
+		void setCheck(bool set);
+		void setCastle(bool set);
 };
 
 class Queen : public Piece{
@@ -53,9 +53,10 @@ class Pawn : public Piece{
 	bool firstStep;
 	bool canPromote;
 	public:
-		Pawn(std::string color,char name, int col, int row);
+		Pawn(std::string color,char name, int col, int row, bool firstStep, bool canPromote);
 		bool getFirstStep();
-		void setFirstStep();
-		void setCanPromote();
+		bool getCanPromote();
+		void setFirstStep(bool set);
+		void setCanPromote(bool set);
 };
 #endif
