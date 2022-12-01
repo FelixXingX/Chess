@@ -6,7 +6,7 @@ std::shared_ptr<Piece> Squares::getPiece() const{
 }
 //remove the piece by changing it nullptr
 void Squares::removePiece(){
-    piece = nullptr;
+    if(piece) piece = nullptr;
 }
 //add piece by removing its piece first, then copying piece to the ptr
 void Squares::addPiece(std::shared_ptr<Piece> p){

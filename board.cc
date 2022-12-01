@@ -54,6 +54,9 @@ shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the
     }
     return nullptr;
 }
+void Board::removePiece(int row, int col){
+    board[row][col].removePiece();
+}
 
 void Board::addPiece(int row, int col, char name){
     switch(name){
