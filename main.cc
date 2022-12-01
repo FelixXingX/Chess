@@ -36,38 +36,39 @@ int main(){
 		mainBoard.addPiece(7,i,'p');
 		mainBoard.addPiece(2,i,'P');
 	}
-	mainBoard.render();
-	while(cin >> c){
-		if(c == "setup"){
-			while(cin >> c){
-				if(c == "done"){
-					break;
-				}else if(c == "="){
-					string colour;
-					cin >> colour;
-					//change turn to let colour go first
-				}else if(c == "-"){
-					string pos;
-					int chr, num;
-					cin >> pos;
-					//somehow change char + num into two ints
-					//remove piece at pos char + num
-					//display board
-				}else if(c == "+"){
-					string piece, pos;
-					cin >> piece >> pos;
-					//add piece to pos
-					//display board
-				}else{
-					cout << "invalid" << endl;
-				}
-			}
-		}else if(c == "game"){
-		       cin >> p1 >> p2;
-		       break;
-		}else{
-		       cout << "invalid" << endl;
-		}	       
+	mainBoard.addPiece(1, 1, 'B');
+    mainBoard.render();
+    while (cin >> c) {
+        if (c == "setup") {
+            while (cin >> c) {
+                if (c == "done") {
+                    break;
+                } else if (c == "=") {
+                    string colour;
+                    cin >> colour;
+                    // change turn to let colour go first
+                } else if (c == "-") {
+                    string pos;
+                    int chr, num;
+                    cin >> pos;
+                    // somehow change char + num into two ints
+                    // remove piece at pos char + num
+                    // display board
+                } else if (c == "+") {
+                    string piece, pos;
+                    cin >> piece >> pos;
+                    // add piece to pos
+                    // display board
+                } else {
+                    cout << "invalid" << endl;
+                }
+            }
+        } else if (c == "game") {
+            cin >> p1 >> p2;
+            break;
+        } else {
+            cout << "invalid" << endl;
+        }	       
 	}
 	while(cin >> c){
 		if(c == "resign"){
