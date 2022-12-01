@@ -66,19 +66,19 @@ shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the
 void Board::addPiece(int row, int col, char name){
     switch(name){
         case 'p':
-            {shared_ptr<Piece> p = make_shared<Pawn>("black", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Pawn>("black", name, row,col, true, false);
             board[row][col].addPiece(p);
             break;}
         case 'P':
-            {shared_ptr<Piece> p = make_shared<Pawn>("white", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Pawn>("white", name, row,col,true, false);
             board[row][col].addPiece(p);
             break;}
         case 'r':
-            {shared_ptr<Piece> p = make_shared<Rook>("black", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Rook>("black", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'R':
-            {shared_ptr<Piece> p = make_shared<Rook>("white", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Rook>("white", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'n':
@@ -106,11 +106,11 @@ void Board::addPiece(int row, int col, char name){
             board[row][col].addPiece(p);
             break;}
         case 'k':
-            {shared_ptr<Piece>p = make_shared<King>("black", name, row,col);
+            {shared_ptr<Piece>p = make_shared<King>("black", name, row,col,false,false);
             board[row][col].addPiece(p);
             break;}
         case 'K':
-            {shared_ptr<Piece> p = make_shared<King>("white", name, row,col);
+            {shared_ptr<Piece> p = make_shared<King>("white", name, row,col,false,false);
             board[row][col].addPiece(p);
             break;}
     }
