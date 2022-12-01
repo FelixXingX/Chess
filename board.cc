@@ -55,6 +55,9 @@ char Board::getState(int row, int col) const{
 shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
     return board[row][col].getPiece();
 }
+void Board::removePiece(int row, int col){
+    board[row][col].removePiece();
+}
 
 void Board::addPiece(int row, int col, char name){
     switch(name){

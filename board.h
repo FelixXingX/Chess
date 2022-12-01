@@ -12,12 +12,12 @@ class Board : public Subject{
 	bool whiteCheck, blackCheck, whiteCheckmate, blackCheckmate, stalemate;
 	//chicken nugget
 	public:
-		void removePiece(int row, int col);
 		void printMoves();
 		void move(int fromX, int fromY, int toX, int toY, std::string turn);
         //std::vector<Vec> possibleMoves(shared_ptr<Piece> piece, int row, int col, Board board);
         bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn, bool inCheck);
         void addPiece(int row, int col, char name);
+		void removePiece(int row, int col);
 		char getState(int row, int col) const override;
 		int getSquare(int row, int col);
 		std::shared_ptr<Piece> getPiece(int row, int col);
