@@ -53,14 +53,7 @@ char Board::getState(int row, int col) const{
 }
 //invariant we are assuming board goes from 8 to 1
 shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
-	for(int i = 8; i > 1; --i){
-        	for(int j = 1; j < 8; ++j){
-            		if(i == row && j == col){
-                		return board[i][j].getPiece();
-            		}
-        	}
-    }
-    return nullptr;
+    return board[row][col].getPiece();
 }
 
 void Board::addPiece(int row, int col, char name){
