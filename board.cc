@@ -7,25 +7,21 @@
 using namespace std;
 //note: col = x, row = y
 struct Vec {
-    int x, y;
-    Vec(int x, int y) : x{x}, y{y} {}
+    int row, col;
+    Vec(int row, int col) : row{row}, col{col} {}
 };
 //ctor
 Board::Board(vector<vector<Squares>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate):
 board{board},whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}{}
 
 // Important!! getSquare: 0 = no piece, 1 = theres a piece; 2 = out of bounds
-int Board::getSquare(int col, int row){
-    if (col > 7 || row > 7) {
+int Board::getSquare(int row, int col){
+    if (row > 8 || col > 8 || row < 1 || col < 1) {
         return 2;
     }
-    for (int row = 1; row <= 8; row++) {
-        for (int col = 1; col <= 8; col++) {
-            auto p = board[col][row].getPiece();
-            if (p != nullptr) {
-                return 1;
-            }
-        }
+    auto p = board[row][col].getPiece();
+    if (p != nullptr) {
+        return 1;
     }
     return 0;
 }
@@ -53,7 +49,10 @@ char Board::getState(int row, int col) const{
 }
 //invariant we are assuming board goes from 8 to 1
 shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
-    return board[row][col].getPiece();
+	if (row >= 1 && row <= 8 && col >=1 && col <= 8) {
+            return board[row][col].getPiece();
+    }
+    return nullptr;
 }
 
 void Board::addPiece(int row, int col, char name){
@@ -114,36 +113,37 @@ void Board::render(){
     this->notifyObservers();
 }
 
-void Board::move(int fromX, int fromY, int toX, int toY, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
-    if (this->isLegalMove(fromX, fromY, toX, toY, turn, false) == true) {
+void Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
+    if (this->isLegalMove(fromCol, fromRow, toCol, toRow, turn, false) == true) {
         //move
-        shared_ptr<Piece> p = board[fromX][fromY].getPiece();//copy the piece
-        board[toX][toY].addPiece(p);//removes to piece and adds from piece
-        board[fromX][fromY].removePiece();
+        shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();  // copy the piece
+        board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
+        board[toRow][toCol].addPiece(p);  
+        possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
         //is enemy king in check -> is he checkmated
-        if (this->checked(turn) == true){
-            cout << "checked" << endl;
+        //if (this->checked(turn) == true){
+            //cout << "checked" << endl;
             //if (this->checkmate(turn) == true){
                 //game over
             //}
             //set enemy inCheck to true
-        }
+        //}
         //if its a pawn, check if first step or not and set it to false...
         //if its king check if it can castle or not and set it to false etc...
     } else {
         //error
     }
 }
-bool Board::isLegalMove(int fromX, int fromY, int toX, int toY, string turn, bool inCheck) {
+bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string turn, bool inCheck) {
     vector<Vec> moves;
     return true;
-    if (this->getSquare(fromX, fromY) == 1 && this->getPiece(fromX, fromY)->getColor() == turn) {  // if theyre moving a piece thats theirs
-        moves = possibleMoves(this->getPiece(fromX, fromY), fromX, fromY);
+    if (this->getSquare(fromRow, fromCol) == 1 && this->getPiece(fromRow, fromCol)->getColor() == turn) {  // if theyre moving a piece thats theirs
+        moves = possibleMoves(this->getPiece(fromRow, fromCol), fromRow, fromCol);
         if (moves.size() == 0){
             return false;
         }
         for (size_t i = 0; i < moves.size(); i++) {  // if their piece is in the list produced by possibleMoves
-            if (moves[i].x == toX && moves[i].y == toY) {
+            if (moves[i].col == toCol && moves[i].row == toRow) {
                 //check if you are in check -> does moving prevent you from being in check
                 if(inCheck == true){
                     // I think for this you would need to create a temp board and check lol.
@@ -159,24 +159,24 @@ bool Board::isLegalMove(int fromX, int fromY, int toX, int toY, string turn, boo
 }
 
 bool Board::checked(string turn){ //checks if you can capture enemy king.
-    int kingX;
-    int kingY;
+    int kingRow;
+    int kingCol;
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
-            auto p = board[col][row].getPiece();
+            auto p = board[row][col].getPiece();
             if (p->getColor() != turn && p->getName() == 'k') {
-                kingX = col; // get enemy location
-                kingY = row;
+                kingRow = row; // get enemy location
+                kingCol = col;
             }
         }
     }
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++){
-            auto p = board[col][row].getPiece();
+            auto p = board[row][col].getPiece();
             if (p != nullptr){
                 vector<Vec> moves = possibleMoves(p, row, col);
                 for (size_t i = 0; i < moves.size(); i++) { // checks every piece to see if they can capture enemy king.
-                    if (moves[i].x == kingX && moves[i].y == kingY){
+                    if (moves[i].row == kingRow && moves[i].col == kingCol){
                         return true;
                     }
                 }
@@ -190,7 +190,7 @@ bool Board::checkmate(string turn){ //checks all moves and sees if its a legal m
     //if possible moves return empty for every single opponents piece. theyre checkmated
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
-            auto p = board[col][row].getPiece();
+            auto p = board[row][col].getPiece();
             if (p != nullptr) {
                 if (p->getColor() != turn){ //checks opponents pieces
                     vector<Vec> moves = possibleMoves(p, row, col);
@@ -205,380 +205,373 @@ bool Board::checkmate(string turn){ //checks all moves and sees if its a legal m
 }
 //maybe just copy paste possibleMoves2 to the bottom of possibleMoves.
 vector<Vec> Board ::possibleMoves2(shared_ptr<Piece> piece, int row, int col,vector<Vec> moves) {  // takes the possible moves below, and shaves it to only legal moves 
-    int pieceX = col; // pieces location
-    int pieceY = row;
     string turn;
     bool inCheck;
+    //cout << moves.size();
     for (size_t i = 0; i < moves.size(); i++) {  // checks every piece to see if they can capture enemy king.
-        if (this->isLegalMove(pieceX, pieceY, moves[i].x, moves[i].y, turn, inCheck) == false) {
-            moves[i].x = -1;
-            moves[i].y = -1;
+        //cout << "{" << moves[i].row << "," << moves[i].col << "},";
+        if (this->isLegalMove(row, col, moves[i].row, moves[i].col, turn, inCheck) == false) {
+            moves[i].row = -1;
+            moves[i].col = -1;
         }
     }
+    //cout << endl;
     return moves;
 }
 // I have yet to implement checking if the king can castle or not
 vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
-    vector<Vec> moves; // vector of pairs (x y)                                 
+    vector<Vec> moves; // vector of pairs (x y)
     char name = piece->getName();
     string color = piece->getColor();
-    if (name == 'p') {
+    if (name == 'p' || name == 'P') {
         /*
         if (color == "white"){
             if (piece.getFirstStep() == false){ // checks if its first step or not
-                if (this->getSquare(col,row + 1) == 0) { // empty square
-                    moves.emplace_back(col, row + 1); // adds move to vector
+                if (this->getSquare(row,col + 1) == 0) { // empty square
+                    moves.emplace_back(row, col + 1); // adds move to vector
                 }
-                if (this->getSquare(col + 1, row + 1) == 1 && this->getPiece(col + 1, row + 1)->getColor() == "black") {  // checks if there is a capture available;
-                    moves.emplace_back(col + 1, row + 1);
+                if (this->getSquare(row + 1, col + 1) == 1 && this->getPiece(row + 1, col + 1)->getColor() == "black") {  // checks if there is a capture available;
+                    moves.emplace_back(row + 1, col + 1);
                 }
-                if (this->getSquare(col - 1, row + 1) == 1 && this->getPiece(col - 1, row + 1)->getColor() == "black") {  // checks if there is a capture available;
-                    moves.emplace_back(col - 1, row + 1);
+                if (this->getSquare(row - 1, col + 1) == 1 && this->getPiece(row - 1, col + 1)->getColor() == "black") {  // checks if there is a capture available;
+                    moves.emplace_back(row - 1, col + 1);
                 }
             } else if (piece.getFirstStep() == 1) {  // first move
-                if (this->getSquare(col, row + 1) == 0) {
-                    moves.emplace_back(col, row + 1);
+                if (this->getSquare(row, col + 1) == 0) {
+                    moves.emplace_back(row, col + 1);
                 }
-                if (this->getSquare(col, row + 2) == 0) {  // moves 2 steps if
-                    moves.emplace_back(col, row + 2);
+                if (this->getSquare(row, col + 2) == 0) {  // moves 2 steps if
+                    moves.emplace_back(row, col + 2);
                 }
             }
         } else if (color == "black") { // black pieces moves the other direction
             if (piece.getFirstStep() == false) {
-                if (this->getSquare(col, row - 1) == 0) {
-                    moves.emplace_back(col, row - 1);
+                if (this->getSquare(row, col - 1) == 0) {
+                    moves.emplace_back(row, col - 1);
                 }
-                if (this->getSquare(col + 1, row - 1) == 1 && this->getPiece(col + 1, row - 1)->getColor() == "white") {
-                    moves.emplace_back(col + 1, row - 1);
+                if (this->getSquare(row + 1, col - 1) == 1 && this->getPiece(row + 1, col - 1)->getColor() == "white") {
+                    moves.emplace_back(row + 1, col - 1);
                 }
-                if (this->getSquare(col - 1, row - 1) == 1 && this->getPiece(col - 1, row - 1)->getColor() == "white") {
-                    moves.emplace_back(col - 1, row - 1);
+                if (this->getSquare(row - 1, col - 1) == 1 && this->getPiece(row - 1, col - 1)->getColor() == "white") {
+                    moves.emplace_back(row - 1, col - 1);
                 }
             } else if (piece.getFirstStep() == true) {
-                if (this->getSquare(col, row - 1) == 0) {
-                    moves.emplace_back(col, row - 1);
+                if (this->getSquare(row, col - 1) == 0) {
+                    moves.emplace_back(row, col - 1);
                 }
-                if (this->getSquare(col, row - 2) == 0) {
-                    moves.emplace_back(col, row - 2);
+                if (this->getSquare(row, col - 2) == 0) {
+                    moves.emplace_back(row, col - 2);
                 }
             }
         }
-    */} else if (name == 'n') {
-        if (this->getSquare(col + 1, row + 2) == 0) {  // i ordered the checks counter clockwise) hopefully i didnt fuck up lul
-            moves.emplace_back(col + 1, row + 2);
-        } else if (this->getSquare(col + 1, row + 2) == 1 && this->getPiece(col + 1, row + 2)->getColor() != color) {  // checks if there is piece and not out of bounds + its capturable (enemy color)
-            moves.emplace_back(col + 1, row + 2);
+    */} else if (name == 'n' || name == 'N') {
+        if (this->getSquare(row + 1, col + 2) == 0) {  // i ordered the checks counter clockwise) hopefully i didnt fuck up lul
+            moves.emplace_back(row + 1, col + 2);
+        } else if (this->getSquare(row + 1, col + 2) == 1 && this->getPiece(row + 1, col + 2)->getColor() != color) {  // checks if there is piece and not out of bounds + its capturable (enemy color)
+            moves.emplace_back(row + 1, col + 2);
         }
-        if (this->getSquare(col - 1, row + 2) == 0) {
-            moves.emplace_back(col - 1, row + 2);
-        } else if (this->getSquare(col + 1, row + 2) == 1 && this->getPiece(col - 1, row + 2)->getColor() != color) {
-            moves.emplace_back(col - 1, row + 2);
+        if (this->getSquare(row - 1, col + 2) == 0) {
+            moves.emplace_back(row - 1, col + 2);
+        } else if (this->getSquare(row - 1, col + 2) == 1 && this->getPiece(row - 1, col + 2)->getColor() != color) {
+            moves.emplace_back(row - 1, col + 2);
         }
-        if (this->getSquare(col - 2, row + 1) == 0) {
-            moves.emplace_back(col - 2, row + 1);
-        } else if (this->getSquare(col + 1, row + 2) == 1 && this->getPiece(col - 2, row + 1)->getColor() != color) {
-            moves.emplace_back(col - 2, row + 1);
+        if (this->getSquare(row - 2, col + 1) == 0) {
+            moves.emplace_back(row - 2, col + 1);
+        } else if (this->getSquare(row - 2, col + 1) == 1 && this->getPiece(row - 2, col + 1)->getColor() != color) {
+            moves.emplace_back(row - 2, col + 1);
         }
-        if (this->getSquare(col - 2, row - 1) == 0) {
-            moves.emplace_back(col - 2, row - 1);
-        } else if (this->getSquare(col + 1, row + 2) == 1 && this->getPiece(col - 2, row - 1)->getColor() != color) {
-            moves.emplace_back(col - 2, row - 1);
+        if (this->getSquare(row - 2, col - 1) == 0) {
+            moves.emplace_back(row - 2, col - 1);
+        } else if (this->getSquare(row - 2, col - 1) == 1 && this->getPiece(row - 2, col - 1)->getColor() != color) {
+            moves.emplace_back(row - 2, col - 1);
         }
-        if (this->getSquare(col - 1, row - 2) == 0) {
-            moves.emplace_back(col - 1, row - 2);
-        } else if (this->getSquare(col + 1, row + 2) == 1 && this->getPiece(col - 1, row - 2)->getColor() != color) {
-            moves.emplace_back(col - 1, row - 2);
+        if (this->getSquare(row - 1, col - 2) == 0) {
+            moves.emplace_back(row - 1, col - 2);
+        } else if (this->getSquare(row - 1, col - 2) == 1 && this->getPiece(row - 1, col - 2)->getColor() != color) {
+            moves.emplace_back(row - 1, col - 2);
         }
-        if (this->getSquare(col + 1, row - 2) == 0) {
-            moves.emplace_back(col + 1, row - 2);
-        } else if (this->getSquare(col + 1, row + 2) == 1 && this->getPiece(col + 1, row - 2)->getColor() != color) {
-            moves.emplace_back(col + 1, row - 2);
+        if (this->getSquare(row + 1, col - 2) == 0) {
+            moves.emplace_back(row + 1, col - 2);
+        } else if (this->getSquare(row + 1, col - 2) == 1 && this->getPiece(row + 1, col - 2)->getColor() != color) {
+            moves.emplace_back(row + 1, col - 2);
         }
-        if (this->getSquare(col + 2, row - 1) == 0) {
-            moves.emplace_back(col + 2, row - 1);
-        } else if (this->getSquare(col + 1, row + 2) == 1 && this->getPiece(col + 2, row - 1)->getColor() != color) {
-            moves.emplace_back(col + 2, row - 1);
+        if (this->getSquare(row + 2, col - 1) == 0) {
+            moves.emplace_back(row + 2, col - 1);
+        } else if (this->getSquare(row + 2, col - 1) == 1 && this->getPiece(row + 2, col - 1)->getColor() != color) {
+            moves.emplace_back(row + 2, col - 1);
         }
-        if (this->getSquare(col + 2, row + 1) == 0) {
-            moves.emplace_back(col + 2, row + 1);
-        } else if (this->getSquare(col + 1, row + 2) == 1 && this->getPiece(col + 2, row + 1)->getColor() != color) {
-            moves.emplace_back(col + 2, row + 1);
+        if (this->getSquare(row + 2, col + 1) == 0) {
+            moves.emplace_back(row + 2, col + 1);
+        } else if (this->getSquare(row + 2, col + 1) == 1 && this->getPiece(row + 2, col + 1)->getColor() != color) {
+            moves.emplace_back(row + 2, col + 1);
         }
-    } else if (name == 'r') {
-        for (int i = 1; i < 8 ; i++){ // moves up
-            if (this->getSquare(col, row + i) == 2) {  // checks out of bounds
-                break;
-            }
-            if (this->getSquare(col, row + i) == 0){ // empty square
-                moves.emplace_back(col, row + i);
-            } else if (this->getSquare(col, row + i) == 1 && this->getPiece(col, row + i)->getColor() != color){ // capturable piece 
-                moves.emplace_back(col, row + i);
-                break;
-            } else if (this->getSquare(col, row + i) == 1 && this->getPiece(col, row + i)->getColor() == color) {  // uncapturable piece (ally)
-                break;
-            }
-        }
-        for (int i = 1; i < 8 ; i++) {   //moves down
-            if (this->getSquare(col, row - i) == 2) { 
-                break;
-            }
-            if (this->getSquare(col, row - i) == 0) { 
-                moves.emplace_back(col, row - i);
-            } else if (this->getSquare(col, row - i) == 1 && this->getPiece(col, row - i)->getColor() != color) {  
-                moves.emplace_back(col, row - i);
-                break;
-            } else if (this->getSquare(col, row - i) == 1 && this->getPiece(col, row - i)->getColor() == color) {  
-                break;
-            }
-        }
-        for (int i = 1; i < 8; i++) {  // moves left
-            if (this->getSquare(col - i, row) == 2) {
-                break;
-            }
-            if (this->getSquare(col - i, row) == 0) {
-                moves.emplace_back(col - i, row);
-            } else if (this->getSquare(col - i, row) == 1 && this->getPiece(col - i, row)->getColor() != color) {
-                moves.emplace_back(col - i, row);
-                break;
-            } else if (this->getSquare(col - i, row) == 1 && this->getPiece(col - i, row)->getColor() == color) {
-                break;
-            }
-        }
-        for (int i = 1; i < 8; i++) {  // moves right
-            if (this->getSquare(col + i, row) == 2) {
-                break;
-            }
-            if (this->getSquare(col + i, row) == 0) {
-                moves.emplace_back(col + i, row);
-            } else if (this->getSquare(col + i, row) == 1 && this->getPiece(col + i, row)->getColor() != color) {
-                moves.emplace_back(col + i, row);
-                break;
-            } else if (this->getSquare(col + i, row) == 1 && this->getPiece(col + i, row)->getColor() == color) {
-                break;
-            }
-        }
-    } else if (name == 'b') {
-        for (int i = 1; i < 8; i++){ //moves top right
-            if (this->getSquare(col + i, row + i) == 2) { // check out of bounds
-                break;
-            }
-            if (this->getSquare(col + i, row + i) == 0) {
-                moves.emplace_back(col + i, row + i); // empty square
-            } else if (this->getSquare(col + i, row + i) == 1 && this->getPiece(col + i, row + i)->getColor() != color) { //capturable piece
-                moves.emplace_back(col + i, row + i);
-                break;
-            } else if (this->getSquare(col + i, row + i) == 1 && this->getPiece(col + i, row + i)->getColor() == color) {  // uncapturable piece (ally)
-                moves.emplace_back(col + i, row + i);
-                break;
-            }
-        }
-        for (int i = 1; i < 8; i++) {         // moves top left
-            if (this->getSquare(col - i, row + i) == 2) {
-                break;
-            }
-            if (this->getSquare(col - i, row + i) == 0) {
-                moves.emplace_back(col - i, row + i);                                                                  
-            } else if (this->getSquare(col - i, row + i) == 1 && this->getPiece(col - i, row + i)->getColor() != color) { 
-                moves.emplace_back(col - i, row + i);
-                break;
-            } else if (this->getSquare(col - i, row + i) == 1 && this->getPiece(col - i, row + i)->getColor() == color) { 
-                moves.emplace_back(col - i, row + i);
-                break;
-            }
-        }
-        for (int i = 1; i < 8; i++) {  // moves bottom left
-            if (this->getSquare(col - i, row - i) == 2) {
-                break;
-            }
-            if (this->getSquare(col - i, row - i) == 0) {
-                moves.emplace_back(col - i, row - i);
-            } else if (this->getSquare(col - i, row - i) == 1 && this->getPiece(col - i, row - i)->getColor() != color) {
-                moves.emplace_back(col - i, row - i);
-                break;
-            } else if (this->getSquare(col - i, row - i) == 1 && this->getPiece(col - i, row - i)->getColor() == color) {
-                moves.emplace_back(col - i, row - i);
-                break;
-            }
-        }
-        for (int i = 1; i < 8; i++) {  // moves bottom right
-            if (this->getSquare(col + i, row - i) == 2) {
-                break;
-            }
-            if (this->getSquare(col + i, row - i) == 0) {
-                moves.emplace_back(col + i, row - i);
-            } else if (this->getSquare(col + i, row - i) == 1 && this->getPiece(col + i, row - i)->getColor() != color) {
-                moves.emplace_back(col + i, row - i);
-                break;
-            } else if (this->getSquare(col + i, row - i) == 1 && this->getPiece(col + i, row - i)->getColor() == color) {
-                moves.emplace_back(col + i, row - i);
-                break;
-            }
-        }
-    } else if (name == 'q') { // ROOK + BISHOP
-        for (int i = 1; i < 8; i++) {                      // moves top right
-            if (this->getSquare(col + i, row + i) == 2) {  // check out of bounds
-                break;
-            }
-            if (this->getSquare(col + i, row + i) == 0) {
-                moves.emplace_back(col + i, row + i);                                                                   // empty square
-            } else if (this->getSquare(col + i, row + i) == 1 && this->getPiece(col + i, row + i)->getColor() != color) {  // capturable piece
-                moves.emplace_back(col + i, row + i);
-                break;
-            } else if (this->getSquare(col + i, row + i) == 1 && this->getPiece(col + i, row + i)->getColor() == color) {  // uncapturable piece (ally)
-                moves.emplace_back(col + i, row + i);
-                break;
-            }
-        }
-        for (int i = 1; i < 8; i++) {  // moves top left
-            if (this->getSquare(col - i, row + i) == 2) {
-                break;
-            }
-            if (this->getSquare(col - i, row + i) == 0) {
-                moves.emplace_back(col - i, row + i);
-            } else if (this->getSquare(col - i, row + i) == 1 && this->getPiece(col - i, row + i)->getColor() != color) {
-                moves.emplace_back(col - i, row + i);
-                break;
-            } else if (this->getSquare(col - i, row + i) == 1 && this->getPiece(col - i, row + i)->getColor() == color) {
-                moves.emplace_back(col - i, row + i);
-                break;
-            }
-        }
-        for (int i = 1; i < 8; i++) {  // moves bottom left
-            if (this->getSquare(col - i, row - i) == 2) {
-                break;
-            }
-            if (this->getSquare(col - i, row - i) == 0) {
-                moves.emplace_back(col - i, row - i);
-            } else if (this->getSquare(col - i, row - i) == 1 && this->getPiece(col - i, row - i)->getColor() != color) {
-                moves.emplace_back(col - i, row - i);
-                break;
-            } else if (this->getSquare(col - i, row - i) == 1 && this->getPiece(col - i, row - i)->getColor() == color) {
-                moves.emplace_back(col - i, row - i);
-                break;
-            }
-        }
-        for (int i = 1; i < 8; i++) {  // moves bottom right
-            if (this->getSquare(col + i, row - i) == 2) {
-                break;
-            }
-            if (this->getSquare(col + i, row - i) == 0) {
-                moves.emplace_back(col + i, row - i);
-            } else if (this->getSquare(col + i, row - i) == 1 && this->getPiece(col + i, row - i)->getColor() != color) {
-                moves.emplace_back(col + i, row - i);
-                break;
-            } else if (this->getSquare(col + i, row - i) == 1 && this->getPiece(col + i, row - i)->getColor() == color) {
-                moves.emplace_back(col + i, row - i);
-                break;
-            }
-        }
+    } else if (name == 'r' || name == 'R') {
         for (int i = 1; i < 8; i++) {                  // moves up
-            if (this->getSquare(col, row + i) == 2) {  // checks out of bounds
+            if (this->getSquare(row, col + i) == 2) {  // checks out of bounds
                 break;
             }
-            if (this->getSquare(col, row + i) == 0) {  // empty square
-                moves.emplace_back(col, row + i);
-            } else if (this->getSquare(col, row + i) == 1 && this->getPiece(col, row + i)->getColor() != color) {  // capturable piece
-                moves.emplace_back(col, row + i);
+            if (this->getSquare(row, col + i) == 0) {  // empty square
+                moves.emplace_back(row, col + i);
+            } else if (this->getSquare(row, col + i) == 1 && this->getPiece(row, col + i)->getColor() != color) {  // capturable piece
+                moves.emplace_back(row, col + i);
                 break;
-            } else if (this->getSquare(col, row + i) == 1 && this->getPiece(col, row + i)->getColor() == color) {  // uncapturable piece (ally)
+            } else if (this->getSquare(row, col + i) == 1 && this->getPiece(row, col + i)->getColor() == color) {  // uncapturable piece (ally)
                 break;
             }
         }
         for (int i = 1; i < 8; i++) {  // moves down
-            if (this->getSquare(col, row - i) == 2) {
+            if (this->getSquare(row, col - i) == 2) {
                 break;
             }
-            if (this->getSquare(col, row - i) == 0) {
-                moves.emplace_back(col, row - i);
-            } else if (this->getSquare(col, row - i) == 1 && this->getPiece(col, row - i)->getColor() != color) {
-                moves.emplace_back(col, row - i);
+            if (this->getSquare(row, col - i) == 0) {
+                moves.emplace_back(row, col - i);
+            } else if (this->getSquare(row, col - i) == 1 && this->getPiece(row, col - i)->getColor() != color) {
+                moves.emplace_back(row, col - i);
                 break;
-            } else if (this->getSquare(col, row - i) == 1 && this->getPiece(col, row - i)->getColor() == color) {
+            } else if (this->getSquare(row, col - i) == 1 && this->getPiece(row, col - i)->getColor() == color) {
                 break;
             }
         }
         for (int i = 1; i < 8; i++) {  // moves left
-            if (this->getSquare(col - i, row) == 2) {
+            if (this->getSquare(row - i, col) == 2) {
                 break;
             }
-            if (this->getSquare(col - i, row) == 0) {
-                moves.emplace_back(col - i, row);
-            } else if (this->getSquare(col - i, row) == 1 && this->getPiece(col - i, row)->getColor() != color) {
-                moves.emplace_back(col - i, row);
+            if (this->getSquare(row - i, col) == 0) {
+                moves.emplace_back(row - i, col);
+            } else if (this->getSquare(row - i, col) == 1 && this->getPiece(row - i, col)->getColor() != color) {
+                moves.emplace_back(row - i, col);
                 break;
-            } else if (this->getSquare(col - i, row) == 1 && this->getPiece(col - i, row)->getColor() == color) {
+            } else if (this->getSquare(row - i, col) == 1 && this->getPiece(row - i, col)->getColor() == color) {
                 break;
             }
         }
         for (int i = 1; i < 8; i++) {  // moves right
-            if (this->getSquare(col + i, row) == 2) {
+            if (this->getSquare(row + i, col) == 2) {
                 break;
             }
-            if (this->getSquare(col + i, row) == 0) {
-                moves.emplace_back(col + i, row);
-            } else if (this->getSquare(col + i, row) == 1 && this->getPiece(col + i, row)->getColor() != color) {
-                moves.emplace_back(col + i, row);
+            if (this->getSquare(row + i, col) == 0) {
+                moves.emplace_back(row + i, col);
+            } else if (this->getSquare(row + i, col) == 1 && this->getPiece(row + i, col)->getColor() != color) {
+                moves.emplace_back(row + i, col);
                 break;
-            } else if (this->getSquare(col + i, row) == 1 && this->getPiece(col + i, row)->getColor() == color) {
+            } else if (this->getSquare(row + i, col) == 1 && this->getPiece(row + i, col)->getColor() == color) {
                 break;
             }
         }
-    } 
-    /*else if (name == "king") { //checks in order of clockwise
-        if (this->getSquare(col, row + 1) != 2 && ){ // in bounds and check if king will be checked or not
-            if (this->getSquare(col, row + 1) == 0) {  // empty square
-                moves.emplace_back(col, row + 1);
-            } else if (this->getSquare(col, row + 1) == 1 && this->getPiece(col, row + 1)->getColor() != color) {  // capturable piece
-                moves.emplace_back(col, row + 1);
+    } else if (name == 'b' || name == 'B') {
+        for (int i = 1; i < 8; i++) {                      // moves top right
+            if (this->getSquare(row + i, col + i) == 2) {  // check out of bounds
+                break;
+            }
+            if (this->getSquare(row + i, col + i) == 0) {
+                moves.emplace_back(row + i, col + i);                                                                      // empty square
+            } else if (this->getSquare(row + i, col + i) == 1 && this->getPiece(row + i, col + i)->getColor() != color) {  // capturable piece
+                moves.emplace_back(row + i, col + i);
+                break;
+            } else if (this->getSquare(row + i, col + i) == 1 && this->getPiece(row + i, col + i)->getColor() == color) {  // uncapturable piece (ally)
+                break;
             }
         }
-        if (this->getSquare(col + 1, row + 1) != 2 &&) {   //implement if king will be in check
-            if (this->getSquare(col + 1, row + 1) == 0) { 
-                moves.emplace_back(col + 1, row + 1);
-            } else if (this->getSquare(col + 1, row + 1) == 1 && this->getPiece(col + 1, row + 1)->getColor() != color) { 
-                moves.emplace_back(col + 1, row + 1);
+        for (int i = 1; i < 8; i++) {  // moves top left
+            if (this->getSquare(row - i, col + i) == 2) {
+                break;
+            }
+            if (this->getSquare(row - i, col + i) == 0) {
+                moves.emplace_back(row - i, col + i);
+            } else if (this->getSquare(row - i, col + i) == 1 && this->getPiece(row - i, col + i)->getColor() != color) {
+                moves.emplace_back(row - i, col + i);
+                break;
+            } else if (this->getSquare(row - i, col + i) == 1 && this->getPiece(row - i, col + i)->getColor() == color) {
+                break;
             }
         }
-        if (this->getSquare(col + 1, row) != 2 &&) {  // implement if king will be in check
-            if (this->getSquare(col + 1, row) == 0) {
-                moves.emplace_back(col + 1, row);
-            } else if (this->getSquare(col + 1, row ) == 1 && this->getPiece(col + 1, row)->getColor() != color) {
-                moves.emplace_back(col + 1, row);
+        for (int i = 1; i < 8; i++) {  // moves bottom left
+            if (this->getSquare(row - i, col - i) == 2) {
+                break;
+            }
+            if (this->getSquare(row - i, col - i) == 0) {
+                moves.emplace_back(row - i, col - i);
+            } else if (this->getSquare(row - i, col - i) == 1 && this->getPiece(row - i, col - i)->getColor() != color) {
+                moves.emplace_back(row - i, col - i);
+                break;
+            } else if (this->getSquare(row - i, col - i) == 1 && this->getPiece(row - i, col - i)->getColor() == color) {
+                break;
             }
         }
-        if (this->getSquare(col + 1, row - 1) != 2 &&) {  // implement if king will be in check
-            if (this->getSquare(col + 1, row - 1) == 0) {
-                moves.emplace_back(col + 1, row - 1);
-            } else if (this->getSquare(col + 1, row - 1) == 1 && this->getPiece(col + 1, row - 1)->getColor() != color) {
-                moves.emplace_back(col + 1, row - 1);
+        for (int i = 1; i < 8; i++) {  // moves bottom right
+            if (this->getSquare(row + i, col - i) == 2) {
+                break;
+            }
+            if (this->getSquare(row + i, col - i) == 0) {
+                moves.emplace_back(row + i, col - i);
+            } else if (this->getSquare(row + i, col - i) == 1 && this->getPiece(row + i, col - i)->getColor() != color) {
+                moves.emplace_back(row + i, col - i);
+                break;
+            } else if (this->getSquare(row + i, col - i) == 1 && this->getPiece(row + i, col - i)->getColor() == color) {
+                break;
             }
         }
-        if (this->getSquare(col, row - 1) != 2 &&) {  // implement if king will be in check
-            if (this->getSquare(col, row - 1) == 0) {
-                moves.emplace_back(col, row - 1);
-            } else if (this->getSquare(col, row - 1) == 1 && this->getPiece(col, row - 1)->getColor() != color) {
-                moves.emplace_back(col, row - 1);
+    } else if (name == 'q' || name == 'Q') {               // ROOK + BISHOP
+        for (int i = 1; i < 8; i++) {                      // moves top right
+            if (this->getSquare(row + i, col + i) == 2) {  // check out of bounds
+                break;
+            }
+            if (this->getSquare(row + i, col + i) == 0) {
+                moves.emplace_back(row + i, col + i);                                                                      // empty square
+            } else if (this->getSquare(row + i, col + i) == 1 && this->getPiece(row + i, col + i)->getColor() != color) {  // capturable piece
+                moves.emplace_back(row + i, col + i);
+                break;
+            } else if (this->getSquare(row + i, col + i) == 1 && this->getPiece(row + i, col + i)->getColor() == color) {  // uncapturable piece (ally)
+                break;
             }
         }
-        if (this->getSquare(col - 1, row - 1) != 2 &&) {  // implement if king will be in check
-            if (this->getSquare(col - 1, row - 1) == 0) {
-                moves.emplace_back(col - 1, row - 1);
-            } else if (this->getSquare(col - 1, row - 1) == 1 && this->getPiece(col - 1, row - 1)->getColor() != color) {
-                moves.emplace_back(col - 1, row - 1);
+        for (int i = 1; i < 8; i++) {  // moves top left
+            if (this->getSquare(row - i, col + i) == 2) {
+                break;
+            }
+            if (this->getSquare(row - i, col + i) == 0) {
+                moves.emplace_back(row - i, col + i);
+            } else if (this->getSquare(row - i, col + i) == 1 && this->getPiece(row - i, col + i)->getColor() != color) {
+                moves.emplace_back(row - i, col + i);
+                break;
+            } else if (this->getSquare(row - i, col + i) == 1 && this->getPiece(row - i, col + i)->getColor() == color) {
+                break;
             }
         }
-        if (this->getSquare(col - 1, row) != 2 &&) {  // implement if king will be in check
-            if (this->getSquare(col - 1, row) == 0) {
-                moves.emplace_back(col - 1, row);
-            } else if (this->getSquare(col - 1, row) == 1 && this->getPiece(col - 1, row)->getColor() != color) {
-                moves.emplace_back(col - 1, row);
+        for (int i = 1; i < 8; i++) {  // moves bottom left
+            if (this->getSquare(row - i, col - i) == 2) {
+                break;
+            }
+            if (this->getSquare(row - i, col - i) == 0) {
+                moves.emplace_back(row - i, col - i);
+            } else if (this->getSquare(row - i, col - i) == 1 && this->getPiece(row - i, col - i)->getColor() != color) {
+                moves.emplace_back(row - i, col - i);
+                break;
+            } else if (this->getSquare(row - i, col - i) == 1 && this->getPiece(row - i, col - i)->getColor() == color) {
+                break;
             }
         }
-        if (this->getSquare(col - 1, row + 1) != 2 &&) {  // implement if king will be in check
-            if (this->getSquare(col - 1, row + 1) == 0) {
-                moves.emplace_back(col - 1, row + 1);
-            } else if (this->getSquare(col - 1, row + 1) == 1 && this->getPiece(col - 1, row + 1)->getColor() != color) {
-                moves.emplace_back(col - 1, row + 1);
+        for (int i = 1; i < 8; i++) {  // moves bottom right
+            if (this->getSquare(row + i, col - i) == 2) {
+                break;
+            }
+            if (this->getSquare(row + i, col - i) == 0) {
+                moves.emplace_back(row + i, col - i);
+            } else if (this->getSquare(row + i, col - i) == 1 && this->getPiece(row + i, col - i)->getColor() != color) {
+                moves.emplace_back(row + i, col - i);
+                break;
+            } else if (this->getSquare(row + i, col - i) == 1 && this->getPiece(row + i, col - i)->getColor() == color) {
+                break;
+            }
+        }
+        for (int i = 1; i < 8; i++) {                  // moves up
+            if (this->getSquare(row, col + i) == 2) {  // checks out of bounds
+                break;
+            }
+            if (this->getSquare(row, col + i) == 0) {  // empty square
+                moves.emplace_back(row, col + i);
+            } else if (this->getSquare(row, col + i) == 1 && this->getPiece(row, col + i)->getColor() != color) {  // capturable piece
+                moves.emplace_back(row, col + i);
+                break;
+            } else if (this->getSquare(row, col + i) == 1 && this->getPiece(row, col + i)->getColor() == color) {  // uncapturable piece (ally)
+                break;
+            }
+        }
+        for (int i = 1; i < 8; i++) {  // moves down
+            if (this->getSquare(row, col - i) == 2) {
+                break;
+            }
+            if (this->getSquare(row, col - i) == 0) {
+                moves.emplace_back(row, col - i);
+            } else if (this->getSquare(row, col - i) == 1 && this->getPiece(row, col - i)->getColor() != color) {
+                moves.emplace_back(row, col - i);
+                break;
+            } else if (this->getSquare(row, col - i) == 1 && this->getPiece(row, col - i)->getColor() == color) {
+                break;
+            }
+        }
+        for (int i = 1; i < 8; i++) {  // moves left
+            if (this->getSquare(row - i, col) == 2) {
+                break;
+            }
+            if (this->getSquare(row - i, col) == 0) {
+                moves.emplace_back(row - i, col);
+            } else if (this->getSquare(row - i, col) == 1 && this->getPiece(row - i, col)->getColor() != color) {
+                moves.emplace_back(row - i, col);
+                break;
+            } else if (this->getSquare(row - i, col) == 1 && this->getPiece(row - i, col)->getColor() == color) {
+                break;
+            }
+        }
+        for (int i = 1; i < 8; i++) {  // moves right
+            if (this->getSquare(row + i, col) == 2) {
+                break;
+            }
+            if (this->getSquare(row + i, col) == 0) {
+                moves.emplace_back(row + i, col);
+            } else if (this->getSquare(row + i, col) == 1 && this->getPiece(row + i, col)->getColor() != color) {
+                moves.emplace_back(row + i, col);
+                break;
+            } else if (this->getSquare(row + i, col) == 1 && this->getPiece(row + i, col)->getColor() == color) {
+                break;
+            }
+        }
+    }
+    /*else if (name == 'k' || name == 'K') { //checks in order of clockwise
+        if (this->getSquare(row, col + 1) != 2 && ){ // in bounds and check if king will be checked or not
+            if (this->getSquare(row, col + 1) == 0) {  // empty square
+                moves.emplace_back(row, col + 1);
+            } else if (this->getSquare(row, col + 1) == 1 && this->getPiece(row, col + 1)->getColor() != color) {  // capturable piece
+                moves.emplace_back(row, col + 1);
+            }
+        }
+        if (this->getSquare(row + 1, col + 1) != 2 &&) {   //implement if king will be in check
+            if (this->getSquare(row + 1, col + 1) == 0) {
+                moves.emplace_back(row + 1, col + 1);
+            } else if (this->getSquare(row + 1, col + 1) == 1 && this->getPiece(row + 1, col + 1)->getColor() != color) {
+                moves.emplace_back(row + 1, col + 1);
+            }
+        }
+        if (this->getSquare(row + 1, col) != 2 &&) {  // implement if king will be in check
+            if (this->getSquare(row + 1, col) == 0) {
+                moves.emplace_back(row + 1, col);
+            } else if (this->getSquare(row + 1, col ) == 1 && this->getPiece(row + 1, col)->getColor() != color) {
+                moves.emplace_back(row + 1, col);
+            }
+        }
+        if (this->getSquare(row + 1, col - 1) != 2 &&) {  // implement if king will be in check
+            if (this->getSquare(row + 1, col - 1) == 0) {
+                moves.emplace_back(row + 1, col - 1);
+            } else if (this->getSquare(row + 1, col - 1) == 1 && this->getPiece(row + 1, col - 1)->getColor() != color) {
+                moves.emplace_back(row + 1, col - 1);
+            }
+        }
+        if (this->getSquare(row, col - 1) != 2 &&) {  // implement if king will be in check
+            if (this->getSquare(row, col - 1) == 0) {
+                moves.emplace_back(row, col - 1);
+            } else if (this->getSquare(row, col - 1) == 1 && this->getPiece(row, col - 1)->getColor() != color) {
+                moves.emplace_back(row, col - 1);
+            }
+        }
+        if (this->getSquare(row - 1, col - 1) != 2 &&) {  // implement if king will be in check
+            if (this->getSquare(row - 1, col - 1) == 0) {
+                moves.emplace_back(row - 1, col - 1);
+            } else if (this->getSquare(row - 1, col - 1) == 1 && this->getPiece(row - 1, col - 1)->getColor() != color) {
+                moves.emplace_back(row - 1, col - 1);
+            }
+        }
+        if (this->getSquare(row - 1, col) != 2 &&) {  // implement if king will be in check
+            if (this->getSquare(row - 1, col) == 0) {
+                moves.emplace_back(row - 1, col);
+            } else if (this->getSquare(row - 1, col) == 1 && this->getPiece(row - 1, col)->getColor() != color) {
+                moves.emplace_back(row - 1, col);
+            }
+        }
+        if (this->getSquare(row - 1, col + 1) != 2 &&) {  // implement if king will be in check
+            if (this->getSquare(row - 1, col + 1) == 0) {
+                moves.emplace_back(row - 1, col + 1);
+            } else if (this->getSquare(row - 1, col + 1) == 1 && this->getPiece(row - 1, col + 1)->getColor() != color) {
+                moves.emplace_back(row - 1, col + 1);
             }
         }
     }*/
