@@ -24,8 +24,8 @@ class Board : public Subject{
 		std::vector <Vec> possibleMoves(std::shared_ptr<Piece> piece, int row, int col);
 		void render();
 		Board(std::vector<std::vector<Squares>> board, bool whiteCheck,bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate);
-		bool checked();
-		bool checkmate();
+		bool checked(string turn);
+		bool checkmate(string turn);
 		std::vector<Vec> possibleMoves2(std::shared_ptr<Piece> piece, int row, int col, std::vector<Vec> moves);
 };
 #endif
