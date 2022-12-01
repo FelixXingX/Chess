@@ -1,7 +1,9 @@
 #include "board.h"
+
+#include <string>
+
 #include "squares.h"
 #include "textdisplay.h"
-
 using namespace std;
 //note: col = x, row = y
 struct Vec {
