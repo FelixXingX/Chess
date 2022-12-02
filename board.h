@@ -16,7 +16,7 @@ class Board : public Subject{
 		void printMoves();
 		void move(int fromX, int fromY, int toX, int toY, std::string turn);
         //std::vector<Vec> possibleMoves(shared_ptr<Piece> piece, int row, int col, Board board);
-        bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn, bool inCheck);
+        bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn);
         void addPiece(int row, int col, char name);
 		char getState(int row, int col) const override;
 		int getSquare(int row, int col);
@@ -24,6 +24,7 @@ class Board : public Subject{
 		std::vector <Vec> possibleMoves(std::shared_ptr<Piece> piece, int row, int col);
 		void render();
 		Board(std::vector<std::vector<Squares>> board, bool whiteCheck,bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate);
+		bool amIChecked(std::string turn);
 		bool checked(std::string turn);
 		bool checkmate(std::string turn);
 		std::vector<Vec> possibleMoves2(std::shared_ptr<Piece> piece, int row, int col, std::vector<Vec> moves);

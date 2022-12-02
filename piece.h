@@ -35,9 +35,9 @@ class Rook : public Piece{
 };
 
 class King : public Piece{
-	bool isChecked, castled;
+	bool castled;
 	public:
-		King(std::string color,char name, int col, int row, bool isChecked, bool castled);
+		King(std::string color,char name, int col, int row, bool castled);
 		bool getStatusCheck();
 		bool getStatusCastle();
 		void setCheck(bool set);
