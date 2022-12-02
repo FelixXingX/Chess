@@ -13,6 +13,7 @@
 #include "squares.h"
 #include "board.h"
 #include "piece.h"
+#include "player.h"
 using namespace std;
 
 int match(char cha){
@@ -36,6 +37,7 @@ int match(char cha){
 	}
 	return 0;
 }
+
 bool outOfBounds(int row, char col){
 	int coll = match(col);
 	if(row > 8 || row < 1 || coll == 0){
@@ -43,6 +45,28 @@ bool outOfBounds(int row, char col){
 		return true;
 	}
 	return false;
+}
+unique_ptr<Player> createPlayer(string p,string colour){
+	if(p == "human"){
+		unique_ptr<Player> player = make_unique<Human>(colour);
+		return player;
+	} else if(p == "computer[1]"){
+		unique_ptr<Player> player = make_unique<Computer1>(colour);
+		return player;
+	} else if(p == "computer[2]"){
+		unique_ptr<Player> player = make_unique<Computer2>(colour);
+		return player;
+	} else if(p == "computer[3]"){
+		unique_ptr<Player> player = make_unique<Computer3>(colour);
+		return player;
+	}else if(p == "computer[4]"){
+		unique_ptr<Player> player = make_unique<Computer3>(colour);
+		return player;
+	}else{
+		cout << "invalid player" << p << endl;
+	}
+	unique_ptr<Player> player;
+	return player;
 }
 void setUp(Board& board){
 	for(int i = 0; i <9; ++i){
@@ -66,6 +90,7 @@ void setUp(Board& board){
 	board.addPiece(1,7,'N');
 	board.addPiece(1,8,'R');
 }
+
 int main(){
 	string c, white, black, turn;
 	int whoStart = 0, curTurn = 0;//0 for white start, 1 for black start
@@ -73,6 +98,7 @@ int main(){
 	int numBk = 1, numWk = 1;
 	bool start = false;
 	bool bChecked = false, wChecked = false;
+	//Set up the board, text and graphic display
 	vector<vector<Squares>> board;
 	for(int i = 0; i < 9 ; ++i){
 		vector<Squares> row;
@@ -133,6 +159,7 @@ int main(){
 					char col;
 					int row;
 					iss >> col >> row;
+					//if the pos given is invalid, just skip the things below
 					if(outOfBounds(row,col))continue;
 					int coll = match(col);
 					if(mainBoard.getPiece(row,coll)){
@@ -151,6 +178,7 @@ int main(){
 					char col;
 					int row; 
 					iss >> col >> row;
+					//if the pos given is invalid, just skip the things below
 					if(outOfBounds(row,col))continue;
 					int coll = match(col);
 					if(piece == 'k') ++numBk;
@@ -167,6 +195,10 @@ int main(){
 			text->changeMsg("in game");
 			curTurn = whoStart;//Start turn at 0 for white to go or Start turn at 1 for black to go
 		       cin >> white >> black;
+				unique_ptr<Player> p1 = move(createPlayer(white,"white"));
+				unique_ptr<Player> p2 = move(createPlayer(black,"black"));
+				if(!p1 || !p2) continue;
+			   //create player object depending on the input
 					while(cin >> c){
 						if(c == "resign"){
 							//resign
@@ -176,26 +208,15 @@ int main(){
 								++ scoreB;
 							}
 							//reset the status
-
 							break;
 						}else if(c == "move"){
 							//move stuff
 							//if pass turn for bot
-							// generic move
-							string pos1,pos2;
-							cin >> pos1 >> pos2;
-							istringstream iss1{pos1};
-							int fromRow;
-							char fromCol;
-							iss1 >>fromCol >> fromRow;
-							int fCol = match(fromCol);
-							istringstream iss2{pos2};
-							int toRow;
-							char toCol;
-							iss2 >>toCol>> toRow;
-							int tCol = match(toCol);
-							mainBoard.move(fromRow,fCol,toRow,tCol,"test");
-							mainBoard.render();
+							if(curTurn % 2 == 0){
+								p1->move(cin,cout,mainBoard);
+							}else if(curTurn % 2 == 1){
+								p2->move(cin,cout,mainBoard);
+							}
 							//castling
 							//move but with pawn promotion
 							//check if checked / checkmate etc

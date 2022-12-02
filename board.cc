@@ -47,7 +47,7 @@ char Board::getState(int row, int col) const{
         return p->getName();
     }
 }
-//invariant we are assuming board goes from 8 to 1
+//invariant we are assuming board goes from 8 to 1 top to down, and 1 to 8 from left to right
 shared_ptr<Piece> Board::getPiece(int row, int col){ // returns the piece on the square 
 	if (row >= 1 && row <= 8 && col >=1 && col <= 8) {
             return board[row][col].getPiece();
