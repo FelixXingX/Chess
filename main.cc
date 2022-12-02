@@ -18,21 +18,21 @@ using namespace std;
 int match(char cha){
 	switch(cha){
 		case 'a':
-			return 8;
-		case 'b':
-			return 7;
-		case 'c':
-			return 6;
-		case 'd':
-			return 5;
-		case 'e':
-			return 4;
-		case 'f':
-			return 3;
-		case 'g':
-			return 2;
-		case 'h':
 			return 1;
+		case 'b':
+			return 2;
+		case 'c':
+			return 3;
+		case 'd':
+			return 4;
+		case 'e':
+			return 5;
+		case 'f':
+			return 6;
+		case 'g':
+			return 7;
+		case 'h':
+			return 8;
 	}
 	return 0;
 }

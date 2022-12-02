@@ -101,11 +101,11 @@ void Board::addPiece(int row, int col, char name){
             board[row][col].addPiece(p);
             break;}
         case 'k':
-            {shared_ptr<Piece>p = make_shared<King>("black", name, row,col,false,false);
+            {shared_ptr<Piece>p = make_shared<King>("black", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'K':
-            {shared_ptr<Piece> p = make_shared<King>("white", name, row,col,false,false);
+            {shared_ptr<Piece> p = make_shared<King>("white", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
     }
