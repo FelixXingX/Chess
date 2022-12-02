@@ -117,19 +117,19 @@ void Board::render(){
 }
 
 void Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
-    if (this->isLegalMove(fromCol, fromRow, toCol, toRow, turn, false) == true) {
+    if (this->isLegalMove(fromCol, fromRow, toCol, toRow, turn) == true) {
         //move
         shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();  // copy the piece
         board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
         board[toRow][toCol].addPiece(p);  
         possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
+        //change turn
         //is enemy king in check -> is he checkmated
         //if (this->checked(turn) == true){
             //cout << "checked" << endl;
             //if (this->checkmate(turn) == true){
                 //game over
             //}
-            //set enemy inCheck to true
         //}
         //if its a pawn, check if first step or not and set it to false...
         //if its king check if it can castle or not and set it to false etc...
@@ -137,7 +137,7 @@ void Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
         //error
     }
 }
-bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string turn, bool inCheck) {
+bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string turn) {
     vector<Vec> moves;
     return true;
     if (this->getSquare(fromRow, fromCol) == 1 && this->getPiece(fromRow, fromCol)->getColor() == turn) {  // if theyre moving a piece thats theirs
@@ -148,26 +148,55 @@ bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string t
         for (size_t i = 0; i < moves.size(); i++) {  // if their piece is in the list produced by possibleMoves
             if (moves[i].col == toCol && moves[i].row == toRow) {
                 //check if you are in check -> does moving prevent you from being in check
-                if(inCheck == true){
-                    // I think for this you would need to create a temp board and check lol.
+                shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();
+                board[fromRow][fromCol].removePiece();
+                board[toRow][toCol].addPiece(p);  // temp removes the piece
+                if (amIChecked(turn) == true) {   // still in check after move
+                    board[toRow][toCol].removePiece();
+                    board[fromRow][fromCol].addPiece(p);  // adds piece back
+                    return false;
                 }
-                //check if moving will put your king in check
-                else{
-                    // again create a temp board and check
+                board[toRow][toCol].removePiece();
+                board[fromRow][fromCol].addPiece(p);  // puts board to how it was
+            }
+        }
+    }
+    return false;
+}
+bool Board::amIChecked(string turn){ // there is a way to combine this with checked() i might do that later
+    int kingRow;
+    int kingCol;
+    for (int row = 1; row <= 8; row++) {
+        for (int col = 1; col <= 8; col++) {
+            auto p = board[row][col].getPiece();
+            if (p->getColor() == turn && p->getName() == 'k') {
+                kingRow = row;  // get your king location
+                kingCol = col;
+            }
+        }
+    }
+    for (int row = 1; row <= 8; row++) {
+        for (int col = 1; col <= 8; col++) {
+            auto p = board[row][col].getPiece();
+            if (p != nullptr) {
+                vector<Vec> moves = possibleMoves(p, row, col);
+                for (size_t i = 0; i < moves.size(); i++) {  // checks every piece to see if they can capture your king.
+                    if (moves[i].row == kingRow && moves[i].col == kingCol) {
+                        return true;
+                    }
                 }
             }
         }
     }
     return false;
 }
-
 bool Board::checked(string turn){ //checks if you can capture enemy king.
     int kingRow;
     int kingCol;
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
             auto p = board[row][col].getPiece();
-            if (p->getColor() != turn && p->getName() == 'k') {
+            if ((p->getColor() != turn && p->getName() == 'k') || (p->getColor() != turn && p->getName() == 'K')) {
                 kingRow = row; // get enemy location
                 kingCol = col;
             }
@@ -208,12 +237,11 @@ bool Board::checkmate(string turn){ //checks all moves and sees if its a legal m
 }
 //maybe just copy paste possibleMoves2 to the bottom of possibleMoves.
 vector<Vec> Board ::possibleMoves2(shared_ptr<Piece> piece, int row, int col,vector<Vec> moves) {  // takes the possible moves below, and shaves it to only legal moves 
-    string turn;
-    bool inCheck;
+    string turn = piece->getColor();
     //cout << moves.size();
     for (size_t i = 0; i < moves.size(); i++) {  // checks every piece to see if they can capture enemy king.
         //cout << "{" << moves[i].row << "," << moves[i].col << "},";
-        if (this->isLegalMove(row, col, moves[i].row, moves[i].col, turn, inCheck) == false) {
+        if (this->isLegalMove(row, col, moves[i].row, moves[i].col, turn) == false) {
             moves[i].row = -1;
             moves[i].col = -1;
         }
