@@ -192,12 +192,12 @@ int main(){
 			}
 			//Game mode
 		}else if(c == "game"){
-			text->changeMsg("in game");
-			curTurn = whoStart;//Start turn at 0 for white to go or Start turn at 1 for black to go
-		       cin >> white >> black;
+				text->changeMsg("in game");
+				curTurn = whoStart;//Start turn at 0 for white to go or Start turn at 1 for black to go
+		    	cin >> white >> black;
 				unique_ptr<Player> p1 = move(createPlayer(white,"white"));
 				unique_ptr<Player> p2 = move(createPlayer(black,"black"));
-				if(!p1 || !p2) continue;
+				if(!p1 || !p2) continue;//if invalid params just break and go back to loop
 			   //create player object depending on the input
 					while(cin >> c){
 						if(c == "resign"){
@@ -208,19 +208,16 @@ int main(){
 								++ scoreB;
 							}
 							//reset the status
+							
 							break;
 						}else if(c == "move"){
 							//move stuff
-							//if pass turn for bot
+							//Each player object have their own unique overloaded method
 							if(curTurn % 2 == 0){
 								p1->move(cin,cout,mainBoard);
 							}else if(curTurn % 2 == 1){
 								p2->move(cin,cout,mainBoard);
 							}
-							//castling
-							//move but with pawn promotion
-							//check if checked / checkmate etc
-							//bot statements probably go here
 						}else{
 							cout << "invalid" << endl;
 						}
