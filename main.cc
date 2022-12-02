@@ -118,7 +118,7 @@ int main(){
 					}
 					if(pawn) continue;
 					//check for checks
-					
+
 					break;
 				}else if(c == "="){
 					string goStart;
@@ -170,6 +170,14 @@ int main(){
 					while(cin >> c){
 						if(c == "resign"){
 							//resign
+							if(curTurn % 2 == 0){
+								++ scoreW;
+							}else{
+								++ scoreB;
+							}
+							//reset the status
+
+							break;
 						}else if(c == "move"){
 							//move stuff
 							//if pass turn for bot
@@ -195,6 +203,7 @@ int main(){
 						}else{
 							cout << "invalid" << endl;
 						}
+						//check if game won
 			}
 		}else{
 		       cout << "invalid" << endl;
