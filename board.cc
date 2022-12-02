@@ -101,11 +101,11 @@ void Board::addPiece(int row, int col, char name){
             board[row][col].addPiece(p);
             break;}
         case 'k':
-            {shared_ptr<Piece>p = make_shared<King>("black", name, row,col,false,false);
+            {shared_ptr<Piece>p = make_shared<King>("black", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'K':
-            {shared_ptr<Piece> p = make_shared<King>("white", name, row,col,false,false);
+            {shared_ptr<Piece> p = make_shared<King>("white", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
     }
@@ -125,16 +125,16 @@ void Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
         possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
         //change turn
         //is enemy king in check -> is he checkmated
-        //if (this->checked(turn) == true){
-            //cout << "checked" << endl;
-            //if (this->checkmate(turn) == true){
-                //game over
-            //}
-        //}
+        if (this->checked(turn) == true){
+            cout << "checked" << endl;
+            if (this->checkmate(turn) == true){
+                cout << "checkmate" << endl;
+            }
+        }
         //if its a pawn, check if first step or not and set it to false...
         //if its king check if it can castle or not and set it to false etc...
     } else {
-        //error
+        cout << "Illegal move" << endl;
     }
 }
 bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string turn) {
@@ -235,20 +235,7 @@ bool Board::checkmate(string turn){ //checks all moves and sees if its a legal m
     }
     return true;
 }
-//maybe just copy paste possibleMoves2 to the bottom of possibleMoves.
-vector<Vec> Board ::possibleMoves2(shared_ptr<Piece> piece, int row, int col,vector<Vec> moves) {  // takes the possible moves below, and shaves it to only legal moves 
-    string turn = piece->getColor();
-    //cout << moves.size();
-    for (size_t i = 0; i < moves.size(); i++) {  // checks every piece to see if they can capture enemy king.
-        //cout << "{" << moves[i].row << "," << moves[i].col << "},";
-        if (this->isLegalMove(row, col, moves[i].row, moves[i].col, turn) == false) {
-            moves[i].row = -1;
-            moves[i].col = -1;
-        }
-    }
-    //cout << endl;
-    return moves;
-}
+
 // I have yet to implement checking if the king can castle or not
 vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
     vector<Vec> moves; // vector of pairs (x y)
@@ -606,5 +593,5 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
             }
         }
     }*/
-    return possibleMoves2(piece, row, col, moves);
+    return moves;
 }
