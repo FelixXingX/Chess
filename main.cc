@@ -95,7 +95,7 @@ int main(){
 	string c, white, black, turn;
 	int whoStart = 0, curTurn = 0;//0 for white start, 1 for black start
 	int scoreW = 0, scoreB = 0;
-	int numBk = 1, numWk = 1;
+	int numBk = 0, numWk = 0;
 	bool start = false;
 	bool bChecked = false, wChecked = false;
 	//Set up the board, text and graphic display
@@ -111,7 +111,7 @@ int main(){
 	}
 	Board mainBoard{board,false,false,false,false,false};
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
-	setUp(mainBoard);
+	//setUp(mainBoard);
 	mainBoard.render();
 
 	//This is the test harness
