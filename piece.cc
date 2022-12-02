@@ -15,17 +15,10 @@ bool King::getStatusCastle(){
     return castled;
 }
 
-bool King::getStatusCheck(){
-    return isChecked;
-}
-
 void King::setCastle(bool set){
     castled = set;
 }
 
-void King::setCheck(bool set){
-    isChecked = set;
-}
 //Pawn methods
 bool Pawn::getFirstStep(){
     return firstStep;
@@ -54,7 +47,7 @@ void Rook::setCastle(bool set){
 //All the ctors
 Piece::Piece(string color, char name, int col, int row) : color{color}, name{name}, col{col}, row{row} {}
 Knight::Knight(string color, char name, int col, int row) : Piece{color, name, col, row} {}
-King::King(string color, char name, int col, int row, bool isChecked, bool castled) : Piece{color, name, col, row}, isChecked{isChecked}, castled{castled} {}
+King::King(string color, char name, int col, int row, bool castled) : Piece{color, name, col, row}, castled{castled} {}
 Bishop::Bishop(string color, char name, int col, int row) : Piece{color, name, col, row} {}
 Queen::Queen(string color, char name, int col, int row) : Piece{color, name, col, row} {}
 Rook::Rook(string color, char name, int col, int row, bool castled) : Piece{color, name, col, row}, castled{castled} {}
