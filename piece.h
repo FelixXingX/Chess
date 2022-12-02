@@ -14,6 +14,7 @@ class Piece{
 		std::string getColor();
 		char getName();
 		Piece(std::string color,char name, int col, int row);
+		virtual ~Piece() = default;
 };
 
 class Knight : public Piece{
