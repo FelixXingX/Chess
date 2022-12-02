@@ -117,19 +117,19 @@ void Board::render(){
 }
 
 void Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
-    if (this->isLegalMove(fromCol, fromRow, toCol, toRow, turn) == true) {
+    if (this->isLegalMove(fromRow, fromCol, toRow, toCol, turn) == true) {
         //move
         shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();  // copy the piece
         board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
-        board[toRow][toCol].addPiece(p);  
+        board[toRow][toCol].addPiece(p);
         possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
         //change turn
         //is enemy king in check -> is he checkmated
         if (this->checked(turn) == true){
             cout << "checked" << endl;
-            if (this->checkmate(turn) == true){
-                cout << "checkmate" << endl;
-            }
+            //if (this->checkmate(turn) == true){
+            //    cout << "checkmate" << endl;
+            //}
         }
         //if its a pawn, check if first step or not and set it to false...
         //if its king check if it can castle or not and set it to false etc...
@@ -139,7 +139,7 @@ void Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
 }
 bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string turn) {
     vector<Vec> moves;
-    return true;
+    cout << turn << endl;
     if (this->getSquare(fromRow, fromCol) == 1 && this->getPiece(fromRow, fromCol)->getColor() == turn) {  // if theyre moving a piece thats theirs
         moves = possibleMoves(this->getPiece(fromRow, fromCol), fromRow, fromCol);
         if (moves.size() == 0){
@@ -158,8 +158,10 @@ bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string t
                 }
                 board[toRow][toCol].removePiece();
                 board[fromRow][fromCol].addPiece(p);  // puts board to how it was
+                return true;
             }
         }
+        cout << endl;
     }
     return false;
 }
@@ -169,12 +171,15 @@ bool Board::amIChecked(string turn){ // there is a way to combine this with chec
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
             auto p = board[row][col].getPiece();
-            if (p->getColor() == turn && p->getName() == 'k') {
-                kingRow = row;  // get your king location
-                kingCol = col;
+            if (p != nullptr){
+                if ((turn == "white" && p->getName() == 'K') || (turn == "black" && p->getName() == 'k')) {
+                    kingRow = row;  // get your king location
+                    kingCol = col;
+                }
             }
         }
     }
+    //cout << '{' << kingRow << ',' << kingCol << '}' << endl;
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
             auto p = board[row][col].getPiece();
@@ -194,14 +199,17 @@ bool Board::checked(string turn){ //checks if you can capture enemy king.
     int kingRow;
     int kingCol;
     for (int row = 1; row <= 8; row++) {
-        for (int col = 1; col <= 8; col++) {
+        for (int col = 1; col <= 8; col++) {  
             auto p = board[row][col].getPiece();
-            if ((p->getColor() != turn && p->getName() == 'k') || (p->getColor() != turn && p->getName() == 'K')) {
-                kingRow = row; // get enemy location
-                kingCol = col;
+            if (p != nullptr){
+                if ((turn == "white" && p->getName() == 'k') || (turn == "black" && p->getName() == 'K')) {
+                    kingRow = row;  // get enemy location
+                    kingCol = col;
+                }
             }
         }
     }
+    //cout << '{' << kingRow << ',' << kingCol << '}' << endl;
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++){
             auto p = board[row][col].getPiece();
