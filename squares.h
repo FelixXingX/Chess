@@ -13,5 +13,8 @@ class Squares{
 		void removePiece();
 		void addPiece(std::shared_ptr<Piece> p);
 		Squares(int col, int row, std::shared_ptr<Piece> piece);
+		//copy ctor and copy assignment
+		Squares(const Squares& other);
+		Squares &operator =(const Squares &other);
 };
 #endif

@@ -55,7 +55,7 @@ void Human::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
     ++curTurn;
 	mainBoard.render(fromRow,fCol);
-	mainBoard.render(toRow,tCol);
+	//mainBoard.render(toRow,tCol);
 }
 //Bots stuff
 Computer1::Computer1(string colour): Player(colour){};

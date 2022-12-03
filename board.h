@@ -19,6 +19,7 @@ class Board : public Subject{
 		void removePiece(int row, int col);
 		char getState(int row, int col) const override;
 		int getSquare(int row, int col);
+		std::vector<std::vector<Squares>> getBoard();
 		std::shared_ptr<Piece> getPiece(int row, int col);
 		std::vector <Vec> possibleMoves(std::shared_ptr<Piece> piece, int row, int col);
 		void render();
@@ -27,5 +28,8 @@ class Board : public Subject{
 		bool amIChecked(std::string turn);
 		bool checked(std::string turn);
 		bool checkmate(std::string turn);
+		//copy ctor
+		Board(const Board &other);
+		Board &operator = (const Board& other);
 };
 #endif

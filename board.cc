@@ -13,7 +13,9 @@ struct Vec {
 //ctor
 Board::Board(vector<vector<Squares>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate):
 board{board},whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}{}
-
+vector<vector<Squares>> Board::getBoard(){
+    return board;
+}
 // Important!! getSquare: 0 = no piece, 1 = theres a piece; 2 = out of bounds
 int Board::getSquare(int row, int col){
     if (row > 8 || col > 8 || row < 1 || col < 1) {
