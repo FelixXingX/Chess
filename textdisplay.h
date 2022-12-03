@@ -9,6 +9,7 @@ class TextDisplay : public Observer{
 	public:
 		void notify() override;
 		void notify(int row, int col) override;
+		void remove();
 		TextDisplay(Board* subject, std::string msg);
 		void changeMsg(std::string m);
 };

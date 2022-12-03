@@ -19,6 +19,9 @@ void TextDisplay::notify(int row, int col){
 void TextDisplay::changeMsg(string n){
     msg = n;
 }
+void TextDisplay::remove(){
+			subject->detach(this);
+}
 TextDisplay::TextDisplay(Board* subject, string msg): subject{subject}, msg{msg}{
 			subject->attach(this);
 }

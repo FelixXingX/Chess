@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <memory>
 //Low coupling. Piece
 //Note that for pieces, captial are white, lower case are black
 class Piece{
@@ -15,17 +16,20 @@ class Piece{
 		std::string getColor();
 		char getName();
 		Piece(std::string color,char name, int col, int row);
+		virtual std::shared_ptr<Piece> clone() = 0; //We need to copy pieces with polymorhism so need a clone method
 		virtual ~Piece() = default;
 };
 
 class Knight : public Piece{
 	public:
 		Knight(std::string color,char name, int col, int row);
+		std::shared_ptr<Piece> clone() override;
 };
 
 class Bishop : public Piece{
 	public:
 		Bishop(std::string color,char name, int col, int row);
+		std::shared_ptr<Piece> clone() override;
 };
 
 class Rook : public Piece{
@@ -34,6 +38,7 @@ class Rook : public Piece{
 		Rook(std::string color,char name, int col, int row, bool castled);
 		bool getCastle();
 		void setCastle(bool set);
+		std::shared_ptr<Piece> clone() override;
 };
 
 class King : public Piece{
@@ -44,11 +49,13 @@ class King : public Piece{
 		bool getStatusCastle();
 		void setCheck(bool set);
 		void setCastle(bool set);
+		std::shared_ptr<Piece> clone() override;
 };
 
 class Queen : public Piece{
 	public:
 		Queen(std::string color,char name, int col, int row);
+		std::shared_ptr<Piece> clone() override;
 };
 
 class Pawn : public Piece{
@@ -60,5 +67,6 @@ class Pawn : public Piece{
 		bool getCanPromote();
 		void setFirstStep(bool set);
 		void setCanPromote(bool set);
+		std::shared_ptr<Piece> clone() override;
 };
 #endif

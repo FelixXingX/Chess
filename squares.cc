@@ -14,3 +14,14 @@ void Squares::addPiece(std::shared_ptr<Piece> p){
     piece = p;
 }
 Squares::Squares(int col, int row, std::shared_ptr<Piece> piece) : col{col}, row{row}, piece{piece}{}
+
+Squares::Squares(const Squares& other) : col{other.col}, row{other.row}, piece{other.piece != nullptr? other.piece->clone() : nullptr}{}
+
+Squares &Squares::operator=(const Squares &other){
+    if(this == &other) return *this;
+    std::shared_ptr<Piece> tmp = piece;
+    piece = (other.piece)? other.piece->clone(): nullptr;
+    col = other.col;
+    row = other.row;
+    return *this;
+}

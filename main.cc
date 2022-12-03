@@ -17,7 +17,16 @@
 //#include "graphicdisplay.h"
 //#include "window.h"
 using namespace std;
-
+void createCopy(vector<vector<Squares>> & copy, const vector<vector<Squares>> &main){
+	for(size_t i = 0; i < main.size() ; ++i){
+		vector<Squares> row;
+		for(size_t j = 0; j < main[i].size() ; ++j){
+			Squares s {main[i][j]};
+			row.emplace_back(s);
+		}
+		copy.emplace_back(row);
+	}
+}
 int match(char cha){
 	switch(cha){
 		case 'a':
@@ -100,7 +109,6 @@ int main(){
 
 	int numBk = 1, numWk = 1;
 	//bool start = false;
-
 	bool bChecked = false, wChecked = false;
 	//Set up the board, text and graphic display
 	int scale = 15;
@@ -118,7 +126,6 @@ int main(){
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
 	//auto graphic = make_unique<GraphicsDisplay>(&mainBoard," ");
 	setUp(mainBoard);
-
 	mainBoard.render();
 
 	//This is the test harness
@@ -206,10 +213,15 @@ int main(){
 				unique_ptr<Player> p1 = move(createPlayer(white,"white"));
 				unique_ptr<Player> p2 = move(createPlayer(black,"black"));
 				if(!p1 || !p2) continue;//if invalid params just break and go back to loop
-				Board gameBoard{mainBoard};
+
+				//makes a copy of the main board as the game board. This way changes to board stays
+				vector<vector<Squares>> gmBoard;
+				createCopy(gmBoard,mainBoard.getBoard());
+				Board gameBoard{gmBoard,false,false,false,false,false};
 				auto text2 = make_unique<TextDisplay>(&gameBoard," ");
+
 				//auto graphic2 = make_unique<GraphicsDisplay>(&gameBoard," ");
-			   //create player object depending on the input
+			    //create player object depending on the input
 					while(cin >> c){
 						if(c == "resign"){
 							//resign
