@@ -3,11 +3,12 @@
 #include "observer.h"
 class Board;
 class TextDisplay : public Observer{
-	Board* subject;
+	Board* subject; //raw pointer to subject
 	int cols, rows;
 	std::string msg;
 	public:
 		void notify() override;
+		void notify(int row, int col) override;
 		TextDisplay(Board* subject, std::string msg);
 		void changeMsg(std::string m);
 };

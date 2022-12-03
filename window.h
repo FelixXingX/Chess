@@ -27,12 +27,12 @@ class Xwindow {
   void drawString(int x, int y, std::string msg);
 	
   // Draws pieces
-  void drawPawn(int x, int y, int colour);
-  void drawKing(int x, int y, int colour);
-  void drawBishop(int x, int y, int colour);
-  void drawRook(int x, int y, int colour);
-  void drawQueen(int x, int y, int colour);
-  void drawKnight(int x, int y, int colour);
+  void drawPawn(int x, int y, int colour, int scale);
+  void drawKing(int x, int y, int colour, int scale);
+  void drawBishop(int x, int y, int colour, int scale);
+  void drawRook(int x, int y, int colour, int scale);
+  void drawQueen(int x, int y, int colour, int scale);
+  void drawKnight(int x, int y, int colour, int scale);
 
 };
 

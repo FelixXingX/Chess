@@ -14,6 +14,8 @@
 #include "board.h"
 #include "piece.h"
 #include "player.h"
+//#include "graphicdisplay.h"
+//#include "window.h"
 using namespace std;
 
 int match(char cha){
@@ -99,6 +101,7 @@ int main(){
 	//bool start = false;
 	bool bChecked = false, wChecked = false;
 	//Set up the board, text and graphic display
+	int scale = 15;
 	vector<vector<Squares>> board;
 	for(int i = 0; i < 9 ; ++i){
 		vector<Squares> row;
@@ -111,6 +114,7 @@ int main(){
 	}
 	Board mainBoard{board,false,false,false,false,false};
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
+	//auto graphic = make_unique<GraphicsDisplay>(&mainBoard," ");
 	setUp(mainBoard);
 	mainBoard.render();
 
@@ -168,7 +172,7 @@ int main(){
 						if(mainBoard.getPiece(row,coll)->getName() == 'K')--numWk;
 					}
 					mainBoard.removePiece(row,coll);
-					mainBoard.render();
+					mainBoard.render(row,coll);
 					//remove piece at pos char + num
 					//display board
 				}else if(c == "+"){
@@ -185,7 +189,7 @@ int main(){
 					if(piece == 'k') ++numBk;
 					if(piece == 'K') ++numWk;
 					mainBoard.addPiece(row,coll,piece);
-					mainBoard.render();
+					mainBoard.render(row,coll);
 					//display board
 				}else{
 					cout << "invalid" << endl;
@@ -201,6 +205,7 @@ int main(){
 				if(!p1 || !p2) continue;//if invalid params just break and go back to loop
 				Board gameBoard{mainBoard};
 				auto text2 = make_unique<TextDisplay>(&gameBoard," ");
+				//auto graphic2 = make_unique<GraphicsDisplay>(&gameBoard," ");
 			   //create player object depending on the input
 					while(cin >> c){
 						if(c == "resign"){

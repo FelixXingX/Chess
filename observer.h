@@ -5,6 +5,7 @@ class Subject;
 class Observer {
  public:
   virtual void notify() = 0;
+  virtual void notify(int row, int col) = 0;
   virtual ~Observer() = default;
 };
 #endif
