@@ -110,7 +110,7 @@ int main(){
 	//bool start = false;
 	//bool bChecked = false, wChecked = false;
 	//Set up the board, text and graphic display
-	int scale = 15;
+	int scale = 80;
 	int rows = 8, cols = 8;
 	vector<vector<Squares>> board;
 	for(int i = 0; i < 9 ; ++i){
@@ -224,7 +224,7 @@ int main(){
 				Board gameBoard{gmBoard,false,false,false,false,false};
 				auto text2 = make_unique<TextDisplay>(&gameBoard," ");
 				//auto window2 = shared_ptr<Xwindow>(10* scale, 10*scale);
-				//auto graphic2 = make_unique<GraphicsDisplay>(&mainBoard,window2, rows,cols,scale);
+				//auto graphic2 = make_unique<GraphicsDisplay>(&gameBoard,window2, rows,cols,scale);
 				gameBoard.render('t',1,1);
 			    //create player object depending on the input
 					while(cin >> c){
