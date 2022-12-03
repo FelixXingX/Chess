@@ -53,9 +53,11 @@ void Human::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	int tCol = matchs(toCol);
     //move function
 	mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
-    ++curTurn;
-	mainBoard.render(fromRow,fCol);
-	//mainBoard.render(toRow,tCol);
+	if (mainBoard.getSquare(fromRow,fCol) != 1){
+        ++curTurn;
+    }
+    cout << curTurn << endl;
+    mainBoard.render();
 }
 //Bots stuff
 Computer1::Computer1(string colour): Player(colour){};
