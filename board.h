@@ -14,7 +14,6 @@ class Board : public Subject{
 	public:
 		void printMoves();
 		void move(int fromX, int fromY, int toX, int toY, std::string turn);
-        //std::vector<Vec> possibleMoves(shared_ptr<Piece> piece, int row, int col, Board board);
         bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn);
         void addPiece(int row, int col, char name);
 		void removePiece(int row, int col);
@@ -28,6 +27,5 @@ class Board : public Subject{
 		bool amIChecked(std::string turn);
 		bool checked(std::string turn);
 		bool checkmate(std::string turn);
-		std::vector<Vec> possibleMoves2(std::shared_ptr<Piece> piece, int row, int col, std::vector<Vec> moves);
 };
 #endif
