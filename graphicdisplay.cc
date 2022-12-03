@@ -7,12 +7,12 @@ GraphicsDisplay::GraphicsDisplay(Board *sj, shared_ptr<Xwindow> window, int rows
     subject->attach(this);
 }
 
-void GraphicsDisplay::match(char a, int x, int y, int scale){
+void GraphicsDisplay::match(char a, int y, int x, int scale){
     switch(a){
                 case 'p':
                 {
-                    //window->drawPawn(x, y, 1,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->drawPawn(x, y, 1,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,1);
                     break;
                 }
                 case 'P':
@@ -99,13 +99,13 @@ void GraphicsDisplay::notify(){
     for(int i = rows; i > 0; --i){
         for(int j = 1; j < cols; ++j){
             char a = subject->getState(i,j);
-            match(a,i,j,scale);
+            match(a,j,rows-i,scale);
         }
     }
 }
 
 void GraphicsDisplay::notify(int row, int col){
     char a = subject->getState(row,col);
-    match(a,row,col,scale);
+    match(a,col,rows-row,scale);
 }
 

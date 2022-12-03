@@ -76,7 +76,13 @@ void Xwindow::drawString(int x, int y, string msg) {
   XDrawString(d, w, DefaultGC(d, s), x, y, msg.c_str(), msg.length());
 }
 
-void Xwindow::drawPawn(int x, int y, int colour, int scale){fillRectangle(x*scale,y*scale,scale/4,scale/4,colour);}
+void Xwindow::drawPawn(int x, int y, int colour, int scale){
+  int op;
+  if(colour == 1){op = 0;}
+  else{op = 1;}
+  fillRectangle(x*scale + scale/8 , y*scale,scale/6,scale - scale/8,colour);
+  fillRectangle(x*scale,y*scale,scale/40,scale/40,op);
+}
 void Xwindow::drawKing(int x, int y, int colour, int scale){}
 void Xwindow::drawBishop(int x, int y, int colour, int scale){}
 void Xwindow::drawRook(int x, int y, int colour, int scale){}
