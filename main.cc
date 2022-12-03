@@ -96,7 +96,7 @@ int main(){
 	int whoStart = 0, curTurn = 0;//0 for white start, 1 for black start
 	int scoreW = 0, scoreB = 0;
 	int numBk = 1, numWk = 1;
-	bool start = false;
+	//bool start = false;
 	bool bChecked = false, wChecked = false;
 	//Set up the board, text and graphic display
 	vector<vector<Squares>> board;
@@ -145,6 +145,7 @@ int main(){
 					if(pawn) continue;
 					//check for checks
 
+					cout << "Exiting setup mode" << endl;
 					break;
 				}else if(c == "="){
 					string goStart;
@@ -198,25 +199,28 @@ int main(){
 				unique_ptr<Player> p1 = move(createPlayer(white,"white"));
 				unique_ptr<Player> p2 = move(createPlayer(black,"black"));
 				if(!p1 || !p2) continue;//if invalid params just break and go back to loop
+				Board gameBoard{mainBoard};
+				auto text2 = make_unique<TextDisplay>(&gameBoard," ");
 			   //create player object depending on the input
 					while(cin >> c){
 						if(c == "resign"){
 							//resign
 							if(curTurn % 2 == 0){
-								++ scoreW;
-							}else{
 								++ scoreB;
+							}else{
+								++ scoreW;
 							}
 							//reset the status
-							
 							break;
 						}else if(c == "move"){
 							//move stuff
 							//Each player object have their own unique overloaded method
 							if(curTurn % 2 == 0){
-								p1->move(cin,cout,mainBoard);
+								p1->move(cin,cout,gameBoard,curTurn);
+								
 							}else if(curTurn % 2 == 1){
-								p2->move(cin,cout,mainBoard);
+								p2->move(cin,cout,gameBoard,curTurn);
+								
 							}
 						}else{
 							cout << "invalid" << endl;
@@ -227,7 +231,6 @@ int main(){
 		       cout << "invalid" << endl;
 		}	       
 	}
-	
 	cout << "Final Score:" << endl;
 	cout << "White: " << scoreW << endl;
 	cout << "Black: " << scoreB << endl;
