@@ -106,12 +106,12 @@ int main(){
 	string c, white, black, turn;
 	int whoStart = 0, curTurn = 0;//0 for white start, 1 for black start
 	int scoreW = 0, scoreB = 0;
-
 	int numBk = 1, numWk = 1;
 	//bool start = false;
-	bool bChecked = false, wChecked = false;
+	//bool bChecked = false, wChecked = false;
 	//Set up the board, text and graphic display
 	int scale = 15;
+	int rows = 8, cols = 8;
 	vector<vector<Squares>> board;
 	for(int i = 0; i < 9 ; ++i){
 		vector<Squares> row;
@@ -124,7 +124,8 @@ int main(){
 	}
 	Board mainBoard{board,false,false,false,false,false};
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
-	//auto graphic = make_unique<GraphicsDisplay>(&mainBoard," ");
+	//auto window = shared_ptr<Xwindow>(10* scale, 10*scale);
+	//auto graphic = make_unique<GraphicsDisplay>(&mainBoard,window, rows,cols,scale);
 	setUp(mainBoard);
 	mainBoard.render();
 
@@ -134,6 +135,7 @@ int main(){
 		if(c == "setup"){
 			cout << "entering setup mode" << endl;
 			text->changeMsg("setup mode");
+			mainBoard.render('t',1,1); //Just to update board
 			while(cin >> c){
 				if(c == "done"){
 					//check if numkings are 1
@@ -182,7 +184,8 @@ int main(){
 						if(mainBoard.getPiece(row,coll)->getName() == 'K')--numWk;
 					}
 					mainBoard.removePiece(row,coll);
-					mainBoard.render(row,coll);
+					mainBoard.render('t',row,coll);
+					mainBoard.render('g',row,coll);
 					//remove piece at pos char + num
 					//display board
 				}else if(c == "+"){
@@ -199,7 +202,8 @@ int main(){
 					if(piece == 'k') ++numBk;
 					if(piece == 'K') ++numWk;
 					mainBoard.addPiece(row,coll,piece);
-					mainBoard.render(row,coll);
+					mainBoard.render('t',row,coll);
+					mainBoard.render('g',row,coll);
 					//display board
 				}else{
 					cout << "invalid" << endl;
@@ -219,8 +223,9 @@ int main(){
 				createCopy(gmBoard,mainBoard.getBoard());
 				Board gameBoard{gmBoard,false,false,false,false,false};
 				auto text2 = make_unique<TextDisplay>(&gameBoard," ");
-
-				//auto graphic2 = make_unique<GraphicsDisplay>(&gameBoard," ");
+				//auto window2 = shared_ptr<Xwindow>(10* scale, 10*scale);
+				//auto graphic2 = make_unique<GraphicsDisplay>(&mainBoard,window2, rows,cols,scale);
+				gameBoard.render('t',1,1);
 			    //create player object depending on the input
 					while(cin >> c){
 						if(c == "resign"){

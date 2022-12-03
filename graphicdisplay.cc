@@ -2,12 +2,12 @@
 #include "board.h"
 #include "window.h"
 #include "graphicdisplay.h"
-
-GraphicsDisplay::GraphicsDisplay(Board *sj, Xwindow *window, int rows, int cols, int scale): subject{sj}, window{window}, rows{rows}, cols{cols}, scale{scale}{
+using namespace std;
+GraphicsDisplay::GraphicsDisplay(Board *sj, shared_ptr<Xwindow> window, int rows, int cols, int scale): subject{sj}, window{move(window)}, rows{rows}, cols{cols}, scale{scale}{
     subject->attach(this);
 }
 
-void match(char a, Xwindow *window, int x, int y, int scale){
+void GraphicsDisplay::match(char a, int x, int y, int scale){
     switch(a){
                 case 'p':
                 {
@@ -99,13 +99,13 @@ void GraphicsDisplay::notify(){
     for(int i = rows; i > 0; --i){
         for(int j = 1; j < cols; ++j){
             char a = subject->getState(i,j);
-            match(a, window,i,j,scale);
+            match(a,i,j,scale);
         }
     }
 }
 
 void GraphicsDisplay::notify(int row, int col){
     char a = subject->getState(row,col);
-    match(a,window,row,col,scale);
+    match(a,row,col,scale);
 }
 
