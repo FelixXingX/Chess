@@ -118,8 +118,8 @@ void Board::render(){
     this->notifyObservers();
 }
 
-void Board::render(int x, int y){
-    this->notifyObservers(x, y);
+void Board::render(char type,int x,int y){
+    this->notifyObservers(type,x, y);
 }
 
 
