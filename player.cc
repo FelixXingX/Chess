@@ -36,7 +36,7 @@ Player::Player(string colour): colour{colour}{}
 string Player::getColour(){return colour;}
 //Human player stuff
 Human::Human(string colour): Player(colour){};
-void Human::move(istream &in, ostream &out, Board &mainBoard){
+void Human::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
     string pos1,pos2;
 	in >> pos1 >> pos2;
 	istringstream iss1{pos1};
@@ -53,11 +53,13 @@ void Human::move(istream &in, ostream &out, Board &mainBoard){
 	int tCol = matchs(toCol);
     //move function
 	mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
-	mainBoard.render();
+    ++curTurn;
+	mainBoard.render(fromRow,fCol);
+	mainBoard.render(toRow,tCol);
 }
 //Bots stuff
 Computer1::Computer1(string colour): Player(colour){};
-void Computer1::move(istream &in, ostream &out, Board &mainBoard){
+void Computer1::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
     out << "not yet implemented" << endl;
 
     string pos1,pos2;
@@ -76,10 +78,11 @@ void Computer1::move(istream &in, ostream &out, Board &mainBoard){
 	int tCol = matchs(toCol);
     //move function
 	mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
+    ++curTurn;
 	mainBoard.render();
 }
 Computer2::Computer2(string colour): Player(colour){};
-void Computer2::move(istream &in, ostream &out, Board &mainBoard){
+void Computer2::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
     out << "not yet implemented" << endl;
 
     string pos1,pos2;
@@ -98,10 +101,11 @@ void Computer2::move(istream &in, ostream &out, Board &mainBoard){
 	int tCol = matchs(toCol);
     //move function
 	mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
+    ++curTurn;
 	mainBoard.render();
 }
 Computer3::Computer3(string colour): Player(colour){};
-void Computer3::move(istream &in, ostream &out, Board &mainBoard){
+void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
     out << "not yet implemented" << endl;
 
     string pos1,pos2;
@@ -120,5 +124,6 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard){
 	int tCol = matchs(toCol);
     //move function
 	mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
+    ++curTurn;
 	mainBoard.render();
 }

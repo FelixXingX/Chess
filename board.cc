@@ -116,6 +116,11 @@ void Board::render(){
     this->notifyObservers();
 }
 
+void Board::render(int x, int y){
+    this->notifyObservers(x, y);
+}
+
+
 void Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
     if (this->isLegalMove(fromRow, fromCol, toRow, toCol, turn) == true) {
         //move

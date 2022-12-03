@@ -18,3 +18,8 @@ void Subject::notifyObservers(){
 		ob->notify();
 	}
 }
+void Subject::notifyObservers(int x, int y){
+	for(auto ob: observers){
+		ob->notify(x,y);
+	}
+}

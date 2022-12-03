@@ -7,8 +7,13 @@ class Xwindow;
 class GraphicsDisplay : public Observer{
 	Board *subject;
 	Xwindow *window;
+
+	int rows, cols, scale;
 	public:
-		void notify();
+		GraphicsDisplay(Board *sj, Xwindow *window, int rows, int cols, int scale);//ctor
+		void notify() override; //renders the whole state
+		void notify(int row, int col) override; // rendres only specific portions of the state
+		//~GraphicsDisplay();
 };
 
 #endif

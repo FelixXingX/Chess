@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+//Low coupling. Piece
 //Note that for pieces, captial are white, lower case are black
 class Piece{
 	protected:

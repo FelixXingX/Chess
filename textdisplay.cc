@@ -13,6 +13,9 @@ void TextDisplay::notify(){
     }
     cout << msg << endl;
 }
+void TextDisplay::notify(int row, int col){
+    notify();
+}
 void TextDisplay::changeMsg(string n){
     msg = n;
 }

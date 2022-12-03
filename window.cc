@@ -76,3 +76,9 @@ void Xwindow::drawString(int x, int y, string msg) {
   XDrawString(d, w, DefaultGC(d, s), x, y, msg.c_str(), msg.length());
 }
 
+void Xwindow::drawPawn(int x, int y, int colour, int scale){fillRectangle(x*scale,y*scale,scale/4,scale/4,colour);}
+void Xwindow::drawKing(int x, int y, int colour, int scale){}
+void Xwindow::drawBishop(int x, int y, int colour, int scale){}
+void Xwindow::drawRook(int x, int y, int colour, int scale){}
+void Xwindow::drawQueen(int x, int y, int colour, int scale){}
+void Xwindow::drawKnight(int x, int y, int colour, int scale){}
