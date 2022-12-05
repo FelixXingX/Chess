@@ -52,15 +52,15 @@ void Human::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
     if(outOfBound(toRow,toCol,out))return;
 	int tCol = matchs(toCol);
     //move function
-	mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
-	if (mainBoard.getSquare(fromRow,fCol) != 1){
+	bool pass = mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
+	if (pass == true){
         ++curTurn;
 		mainBoard.render('t',1,1);
-		mainBoard.render('g',fromRow,fCol);
+		//mainBoard.render('g',fromRow,fCol);
 		mainBoard.render('g',toRow,tCol);
     }
     cout << curTurn << endl;
-    mainBoard.render('t',1,1);
+    //mainBoard.render('t',1,1);
 }
 //Bots stuff
 Computer1::Computer1(string colour): Player(colour){};

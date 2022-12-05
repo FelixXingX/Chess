@@ -13,7 +13,7 @@ class Board : public Subject{
 	//chicken nugget
 	public:
 		void printMoves();
-		void move(int fromX, int fromY, int toX, int toY, std::string turn);
+		bool move(int fromX, int fromY, int toX, int toY, std::string turn);
         bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn);
         void addPiece(int row, int col, char name);
 		void removePiece(int row, int col);
