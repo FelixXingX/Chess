@@ -9,7 +9,8 @@
 class Vec;
 class Board : public Subject{
 	std::vector<std::vector<Squares>> board;
-	bool whiteCheck, blackCheck, whiteCheckmate, blackCheckmate, stalemate;
+	bool whiteCheck, blackCheck;
+	std::string Won;
 	//chicken nugget
 	public:
 		void printMoves();
@@ -24,12 +25,13 @@ class Board : public Subject{
 		std::vector <Vec> possibleMoves(std::shared_ptr<Piece> piece, int row, int col);
 		void render();
 		void render(char type, int x, int y);
-		Board(std::vector<std::vector<Squares>> board, bool whiteCheck,bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate);
+		Board(std::vector<std::vector<Squares>> board, bool whiteCheck,bool blackCheck,std::string Won);
 		bool amIChecked(std::string turn);
 		bool checked(std::string turn);
 		bool checkmate(std::string turn);
 		//copy ctor
 		Board(const Board &other);
 		Board &operator = (const Board& other);
+		std::string getWon();
 };
 #endif

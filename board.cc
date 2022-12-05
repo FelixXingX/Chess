@@ -1,18 +1,17 @@
 #include "board.h"
-
 #include <string>
-
 #include "squares.h"
 #include "textdisplay.h"
 using namespace std;
+
 //note: col = x, row = y
 struct Vec {
     int row, col;
     Vec(int row, int col) : row{row}, col{col} {}
 };
 //ctor
-Board::Board(vector<vector<Squares>> board, bool whiteCheck, bool blackCheck,bool whiteCheckmate,bool blackCheckmate, bool stalemate):
-board{board},whiteCheck{whiteCheck},blackCheck{blackCheck},whiteCheckmate{whiteCheckmate},blackCheckmate{blackCheckmate},stalemate{stalemate}{}
+Board::Board(vector<vector<Squares>> board, bool whiteCheck, bool blackCheck,string Won):
+board{board},whiteCheck{whiteCheck},blackCheck{blackCheck},Won{Won}{}
 vector<vector<Squares>> Board::getBoard(){
     return board;
 }
@@ -26,6 +25,9 @@ int Board::getSquare(int row, int col){
         return 1;
     }
     return 0;
+}
+string Board::getWon(){
+    return Won;
 }
 //GetState get the char or string of the name of the piece
 //Observer pattern just ignore frfr
@@ -135,6 +137,7 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
             cout << "checked" << endl;
             if (this->checkmate(turn) == true){
                 cout << "checkmate" << endl;
+                Won = turn;
             }
         }
         return true;
