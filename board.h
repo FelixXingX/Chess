@@ -6,7 +6,10 @@
 #include "squares.h"
 #include "textdisplay.h"
 #include "subject.h"
-class Vec;
+struct Vec {
+    int row, col;
+    Vec(int row, int col) : row{row}, col{col} {}
+};
 class Board : public Subject{
 	std::vector<std::vector<Squares>> board;
 	bool whiteCheck, blackCheck;

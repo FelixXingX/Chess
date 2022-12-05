@@ -5,10 +5,7 @@
 using namespace std;
 
 //note: col = x, row = y
-struct Vec {
-    int row, col;
-    Vec(int row, int col) : row{row}, col{col} {}
-};
+
 //ctor
 Board::Board(vector<vector<Squares>> board, bool whiteCheck, bool blackCheck,string Won):
 board{board},whiteCheck{whiteCheck},blackCheck{blackCheck},Won{Won}{}
