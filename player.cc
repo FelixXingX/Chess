@@ -1,6 +1,7 @@
 #include "player.h"
 #include "board.h"
 #include <iostream>
+#include <map>
 using namespace std;
 int matchs(char cha){
 	switch(cha){
@@ -64,27 +65,21 @@ void Human::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 }
 //Bots stuff
 Computer1::Computer1(string colour): Player(colour){};
+
 void Computer1::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
     out << "not yet implemented" << endl;
-
-    string pos1,pos2;
-	in >> pos1 >> pos2;
-	istringstream iss1{pos1};
-	int fromRow;
-	char fromCol;
-	iss1 >> fromCol >> fromRow;
-    if(outOfBound(fromRow,fromCol,out))return;
-	int fCol = matchs(fromCol);
-	istringstream iss2{pos2};
-	int toRow;
-	char toCol;
-	iss2 >> toCol >> toRow;
-    if(outOfBound(toRow,toCol,out))return;
-	int tCol = matchs(toCol);
-    //move function
-	mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
-    ++curTurn;
-	mainBoard.render();
+	vector<Vec> list;
+	for (int row = 1; row <= 8; row++) {
+        for (int col = 1; col <= 8; col++) {
+            auto p = mainBoard.getBoard()[row][col].getPiece();
+            if (p != nullptr){
+                if (p->getColor() == getColour()) {
+					list.emplace_back(row,col);
+					
+                }
+            }
+        }
+    }
 }
 Computer2::Computer2(string colour): Player(colour){};
 void Computer2::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){

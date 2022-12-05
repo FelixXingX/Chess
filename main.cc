@@ -238,7 +238,7 @@ int main(){
 								cout << "White wins!" <<endl;
 							}
 							//reset the status
-							gameBoard.render();
+							mainBoard.render();
 							break;
 						}else if(c == "move"){
 							//move stuff
