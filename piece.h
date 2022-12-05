@@ -33,22 +33,22 @@ class Bishop : public Piece{
 };
 
 class Rook : public Piece{
-	bool castled;
+	bool moved;
 	public:
-		Rook(std::string color,char name, int col, int row, bool castled);
-		bool getCastle();
-		void setCastle(bool set);
+		Rook(std::string color,char name, int col, int row, bool moved);
+		bool getMoved();
+		void setMoved(bool set);
 		std::shared_ptr<Piece> clone() override;
 };
 
 class King : public Piece{
-	bool castled;
+	bool moved;
 	public:
-		King(std::string color,char name, int col, int row, bool castled);
+		King(std::string color,char name, int col, int row, bool moved);
 		bool getStatusCheck();
-		bool getStatusCastle();
+		bool getStatusMoved();
 		void setCheck(bool set);
-		void setCastle(bool set);
+		void setMoved(bool set);
 		std::shared_ptr<Piece> clone() override;
 };
 
