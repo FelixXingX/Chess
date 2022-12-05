@@ -9,6 +9,13 @@
 struct Vec {
     int row, col;
     Vec(int row, int col) : row{row}, col{col} {}
+	bool operator <(const Vec &rhs) const{
+		if(row == rhs.row){
+			return col < rhs.col;
+		}else{
+			return row < rhs.row;
+		}
+	}
 };
 class Board : public Subject{
 	std::vector<std::vector<Squares>> board;
