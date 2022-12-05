@@ -22,9 +22,7 @@ void Subject::notifyObservers(){
 }
 void Subject::notifyObservers(char t,int x, int y){
 	for(auto ob: observers){
-		if(dynamic_cast<GraphicsDisplay *>(ob) != nullptr && t == 'g'){
-			ob->notify(x,y);
-		}else if(dynamic_cast<TextDisplay *>(ob) != nullptr && t == 't'){
+		if(dynamic_cast<TextDisplay *>(ob) != nullptr && t == 't'){
 			ob->notify(x,y);
 		}
 	}

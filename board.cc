@@ -123,48 +123,70 @@ void Board::render(char type,int x,int y){
 }
 
 
-void Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
+bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
     if (this->isLegalMove(fromRow, fromCol, toRow, toCol, turn) == true) {
         //move
         shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();  // copy the piece
         board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
         board[toRow][toCol].addPiece(p);
-        possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
-        //change turn
+        //possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
         //is enemy king in check -> is he checkmated
         if (this->checked(turn) == true){
             cout << "checked" << endl;
-            //if (this->checkmate(turn) == true){
-            //    cout << "checkmate" << endl;
-            //}
+            if (this->checkmate(turn) == true){
+                cout << "checkmate" << endl;
+            }
         }
+        return true;
         //if its a pawn, check if first step or not and set it to false...
         //if its king check if it can castle or not and set it to false etc...
     } else {
         cout << "Illegal move" << endl;
+        return false;
     }
 }
 bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string turn) {
     vector<Vec> moves;
-    cout << turn << endl;
+    //cout << turn << endl;
     if (this->getSquare(fromRow, fromCol) == 1 && this->getPiece(fromRow, fromCol)->getColor() == turn) {  // if theyre moving a piece thats theirs
+        //cout << toRow << toCol << endl;
         moves = possibleMoves(this->getPiece(fromRow, fromCol), fromRow, fromCol);
+        //for (int i = 0; i < moves.size(); i ++){
+        //    cout << '{' << moves[i].col << ',' << moves[i].row << '}';
+       // }
+        //cout << endl;
         if (moves.size() == 0){
             return false;
         }
         for (size_t i = 0; i < moves.size(); i++) {  // if their piece is in the list produced by possibleMoves
             if (moves[i].col == toCol && moves[i].row == toRow) {
-                //check if you are in check -> does moving prevent you from being in check
+                // check if you are in check -> does moving prevent you from being in check
                 shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();
+                shared_ptr<Piece> p2 = nullptr;
+                if (this->getSquare(toRow, toCol) == 1 && this->getPiece(toRow, toCol)->getColor() == turn){
+                    return false;
+                }
+                else if (this->getSquare(toRow, toCol) == 1 && this->getPiece(toRow, toCol)->getColor() != turn) {
+                    p2 = board[toRow][toCol].getPiece();
+                }
                 board[fromRow][fromCol].removePiece();
                 board[toRow][toCol].addPiece(p);  // temp removes the piece
+                //cout << this->getPiece(toRow, toCol)->getName() << endl;
                 if (amIChecked(turn) == true) {   // still in check after move
                     board[toRow][toCol].removePiece();
                     board[fromRow][fromCol].addPiece(p);  // adds piece back
+                    //cout << (p2 != nullptr) << endl;
+                    if (p2 != nullptr) {
+                        board[toRow][toCol].addPiece(p2);
+                    }
                     return false;
                 }
                 board[toRow][toCol].removePiece();
                 board[fromRow][fromCol].addPiece(p);  // puts board to how it was
+                //cout << (p2 != nullptr) << endl;
+                if (p2 != nullptr) {
+                    board[toRow][toCol].addPiece(p2);
+                }
                 return true;
             }
         }
@@ -235,18 +257,35 @@ bool Board::checked(string turn){ //checks if you can capture enemy king.
 
 bool Board::checkmate(string turn){ //checks all moves and sees if its a legal move.
     //if possible moves return empty for every single opponents piece. theyre checkmated
+    int count = 0;
+
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
             auto p = board[row][col].getPiece();
             if (p != nullptr) {
                 if (p->getColor() != turn){ //checks opponents pieces
                     vector<Vec> moves = possibleMoves(p, row, col);
-                    if (moves.size() != 0){
-                        return false;
+                    int len = moves.size();
+                    for (int i = 0; i < len; i++){
+
+                        //cout << moves[i].row << " " << moves [i].col << endl;
+                        
+                        if (turn == "white"){
+                            if (isLegalMove(row, col, moves[i].row, moves[i].col, "black") == true) {
+                                count++;
+                            }
+                        } else {
+                            if (isLegalMove(row, col, moves[i].row, moves[i].col, "white") == true) {
+                                count++;
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+    if (count != 0) {
+        return false;
     }
     return true;
 }
@@ -550,63 +589,63 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
             }
         }
     }
-    /*else if (name == 'k' || name == 'K') { //checks in order of clockwise
-        if (this->getSquare(row, col + 1) != 2 && ){ // in bounds and check if king will be checked or not
+    else if (name == 'k' || name == 'K') { //checks in order of clockwise
+        if (this->getSquare(row, col + 1) != 2){ // in bounds 
             if (this->getSquare(row, col + 1) == 0) {  // empty square
                 moves.emplace_back(row, col + 1);
             } else if (this->getSquare(row, col + 1) == 1 && this->getPiece(row, col + 1)->getColor() != color) {  // capturable piece
                 moves.emplace_back(row, col + 1);
             }
         }
-        if (this->getSquare(row + 1, col + 1) != 2 &&) {   //implement if king will be in check
+        if (this->getSquare(row + 1, col + 1) != 2) {   //implement if king will be in check
             if (this->getSquare(row + 1, col + 1) == 0) {
                 moves.emplace_back(row + 1, col + 1);
             } else if (this->getSquare(row + 1, col + 1) == 1 && this->getPiece(row + 1, col + 1)->getColor() != color) {
                 moves.emplace_back(row + 1, col + 1);
             }
         }
-        if (this->getSquare(row + 1, col) != 2 &&) {  // implement if king will be in check
+        if (this->getSquare(row + 1, col) != 2) {  // implement if king will be in check
             if (this->getSquare(row + 1, col) == 0) {
                 moves.emplace_back(row + 1, col);
             } else if (this->getSquare(row + 1, col ) == 1 && this->getPiece(row + 1, col)->getColor() != color) {
                 moves.emplace_back(row + 1, col);
             }
         }
-        if (this->getSquare(row + 1, col - 1) != 2 &&) {  // implement if king will be in check
+        if (this->getSquare(row + 1, col - 1) != 2) {  // implement if king will be in check
             if (this->getSquare(row + 1, col - 1) == 0) {
                 moves.emplace_back(row + 1, col - 1);
             } else if (this->getSquare(row + 1, col - 1) == 1 && this->getPiece(row + 1, col - 1)->getColor() != color) {
                 moves.emplace_back(row + 1, col - 1);
             }
         }
-        if (this->getSquare(row, col - 1) != 2 &&) {  // implement if king will be in check
+        if (this->getSquare(row, col - 1) != 2) {  // implement if king will be in check
             if (this->getSquare(row, col - 1) == 0) {
                 moves.emplace_back(row, col - 1);
             } else if (this->getSquare(row, col - 1) == 1 && this->getPiece(row, col - 1)->getColor() != color) {
                 moves.emplace_back(row, col - 1);
             }
         }
-        if (this->getSquare(row - 1, col - 1) != 2 &&) {  // implement if king will be in check
+        if (this->getSquare(row - 1, col - 1) != 2 ) {  // implement if king will be in check
             if (this->getSquare(row - 1, col - 1) == 0) {
                 moves.emplace_back(row - 1, col - 1);
             } else if (this->getSquare(row - 1, col - 1) == 1 && this->getPiece(row - 1, col - 1)->getColor() != color) {
                 moves.emplace_back(row - 1, col - 1);
             }
         }
-        if (this->getSquare(row - 1, col) != 2 &&) {  // implement if king will be in check
+        if (this->getSquare(row - 1, col) != 2) {  // implement if king will be in check
             if (this->getSquare(row - 1, col) == 0) {
                 moves.emplace_back(row - 1, col);
             } else if (this->getSquare(row - 1, col) == 1 && this->getPiece(row - 1, col)->getColor() != color) {
                 moves.emplace_back(row - 1, col);
             }
         }
-        if (this->getSquare(row - 1, col + 1) != 2 &&) {  // implement if king will be in check
+        if (this->getSquare(row - 1, col + 1) != 2) {  // implement if king will be in check
             if (this->getSquare(row - 1, col + 1) == 0) {
                 moves.emplace_back(row - 1, col + 1);
             } else if (this->getSquare(row - 1, col + 1) == 1 && this->getPiece(row - 1, col + 1)->getColor() != color) {
                 moves.emplace_back(row - 1, col + 1);
             }
         }
-    }*/
+    }
     return moves;
 }
