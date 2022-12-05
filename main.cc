@@ -254,8 +254,18 @@ int main(){
 							cout << "invalid" << endl;
 						}
 						string stat = gameBoard.getWon();
-						if(stat == "black"){++ scoreB;cout << "Checkmate! Black wins!" <<endl;}
-						if(stat == "white"){++ scoreW;cout << "Checkmate! White wins!" <<endl;}
+						if(stat == "black"){
+								++ scoreB;
+								cout << "Checkmate! Black wins!" <<endl;
+								mainBoard.render();
+								break;
+						}
+						if(stat == "white"){
+							++ scoreW;
+							cout << "Checkmate! White wins!" <<endl;
+							mainBoard.render();
+							break;
+						}
 						if(stat == "stalemate"){}
 			}
 		}else{
