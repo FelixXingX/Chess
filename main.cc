@@ -105,7 +105,7 @@ void setUp(Board& board){
 int main(){
 	string c, white, black, turn;
 	int whoStart = 0, curTurn = 0;//0 for white start, 1 for black start
-	int scoreW = 0, scoreB = 0;
+	double scoreW = 0, scoreB = 0;
 	int numBk = 1, numWk = 1;
 	//bool start = false;
 	//bool bChecked = false, wChecked = false;
@@ -122,7 +122,7 @@ int main(){
 		}
 		board.emplace_back(row);
 	}
-	Board mainBoard{board,false,false,false,false,false};
+	Board mainBoard{board,false,false," "};
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
 	//auto window = shared_ptr<Xwindow>(10* scale, 10*scale);
 	//auto graphic = make_unique<GraphicsDisplay>(&mainBoard,window, rows,cols,scale);
@@ -221,7 +221,7 @@ int main(){
 				//makes a copy of the main board as the game board. This way changes to board stays
 				vector<vector<Squares>> gmBoard;
 				createCopy(gmBoard,mainBoard.getBoard());
-				Board gameBoard{gmBoard,false,false,false,false,false};
+				Board gameBoard{gmBoard,false,false," "};
 				auto text2 = make_unique<TextDisplay>(&gameBoard," ");
 				//auto window2 = shared_ptr<Xwindow>(10* scale, 10*scale);
 				//auto graphic2 = make_unique<GraphicsDisplay>(&gameBoard,window2, rows,cols,scale);
@@ -232,10 +232,13 @@ int main(){
 							//resign
 							if(curTurn % 2 == 0){
 								++ scoreB;
+								cout << "Black wins!" <<endl;
 							}else{
 								++ scoreW;
+								cout << "White wins!" <<endl;
 							}
 							//reset the status
+							gameBoard.render();
 							break;
 						}else if(c == "move"){
 							//move stuff
@@ -250,7 +253,10 @@ int main(){
 						}else{
 							cout << "invalid" << endl;
 						}
-						//check if game won
+						string stat = gameBoard.getWon();
+						if(stat == "black"){++ scoreB;cout << "Checkmate! Black wins!" <<endl;}
+						if(stat == "white"){++ scoreW;cout << "Checkmate! White wins!" <<endl;}
+						if(stat == "stalemate"){}
 			}
 		}else{
 		       cout << "invalid" << endl;
