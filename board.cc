@@ -125,7 +125,8 @@ void Board::render(char type,int x,int y){
 bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
     if (this->isLegalMove(fromRow, fromCol, toRow, toCol, turn) == true) {
         //move
-        shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();  // copy the piece
+        shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();  
+        //auto pawn = dynamic_cast<Pawn *>(*p);// copy the piece
         board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
         board[toRow][toCol].addPiece(p);
         //possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);

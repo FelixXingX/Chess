@@ -13,6 +13,11 @@
         "*.tcc": "cpp",
         "cstdint": "cpp",
         "type_traits": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "map": "cpp",
+        "exception": "cpp",
+        "initializer_list": "cpp",
+        "tuple": "cpp",
+        "ostream": "cpp"
     }
 }
