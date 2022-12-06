@@ -270,9 +270,12 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 						for(size_t k = 0; k < possiMoves.size(); ++k){
 							if(mainBoard.isLegalMove(row,col,possiMoves[k].first,possiMoves[k].second,p->getColor())){//if piece can make a legal move at that place
 								for(pair<int,int> pp : list){
-									if(possiMoves[k].first == pp.first && possiMoves[k].second == pp.second){
+									if(possiMoves[k].first == pp.first && possiMoves[k].second == pp.second){//if the piece
 										listDanger.emplace_back(pair<int,int>(possiMoves[k].first,possiMoves[k].second));
-										vector<pair<int,int>> avoidMoves = trans(mainBoard.possibleMoves(mainBoard.getPiece(pp.first,pp.second),pp.first,pp.second));
+										//vector<pair<int,int>> avoidMoves = trans(mainBoard.possibleMoves(mainBoard.getPiece(pp.first,pp.second),pp.first,pp.second));
+										//if(avoidMoves.size() != 0){
+										//	vector<pair<int,int>> verifiedanger;
+										//}
 									}
 									
 								}
