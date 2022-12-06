@@ -287,6 +287,7 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
             }
         }
         if (this->checkmate(turn) == true){
+            Won = "stalemate";
             cout << "Stalemate!" << endl;
         }
         return true;
