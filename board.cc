@@ -236,24 +236,28 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
                 }
             }
         }
-        char promoChar; // REMOVE THIS LATER
-        board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
+        char promoChar; // REMOVE THIS LATER       // removes to piece and adds from piece
         board[toRow][toCol].addPiece(p);
         if (p->getName() == 'P' && toRow == 8) { //swaps pawn out for promotion piece
-            cin >> promoChar;
-            if(isupper(promoChar) && promoChar != 'P' ){
-                board[toRow][toCol].removePiece();
-                addPiece(toRow, toCol, promoChar);
-            }else{
-                cout << "invalid piece for pormotion" << endl;
+            while(cin >> promoChar){
+                if(isupper(promoChar) && promoChar != 'P' ){
+                    board[toRow][toCol].removePiece();
+                    addPiece(toRow, toCol, promoChar);
+                    break;
+                }else{
+                    cout << "invalid piece for pormotion" << endl;
+                }
             }
         }
         if (p->getName() == 'p' && toRow == 1) {
-           if(!isupper(promoChar) && promoChar != 'p' ){
-                board[toRow][toCol].removePiece();
-                addPiece(toRow, toCol, promoChar);
-            }else{
-                cout << "invalid piece for pormotion" << endl;
+           while(cin >> promoChar){
+                if(!isupper(promoChar) && promoChar != 'p' ){
+                    board[toRow][toCol].removePiece();
+                    addPiece(toRow, toCol, promoChar);
+                    break;
+                }else{
+                    cout << "invalid piece for pormotion" << endl;
+                }
             }
         }
         p->setMoved(true);
