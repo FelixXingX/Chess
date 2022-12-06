@@ -272,14 +272,22 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
         //is enemy king in check -> is he checkmated
         if (this->checked(turn) == true){
             if(turn == "black"){
-                cout << "white is in check..." << endl;
+                cout << "White is in check." << endl;
             }else{
-                cout << "black is in check..." << endl;
+                cout << "Black is in check." << endl;
             }
             if (this->checkmate(turn) == true){
-                cout << "checkmate" << endl;
                 Won = turn;
+                if (turn == "black"){
+                    turn = "Black";
+                } else {
+                    turn = "White";
+                }
+                cout << "Checkmate! " << turn << " wins!" << endl;
             }
+        }
+        if (this->checkmate(turn) == true){
+            cout << "Stalemate!" << endl;
         }
         return true;
     } else {
@@ -366,6 +374,7 @@ bool Board::amIChecked(string turn){ // there is a way to combine this with chec
     }
     return false;
 }
+
 bool Board::checked(string turn){ //checks if you can capture enemy king.
     int kingRow;
     int kingCol;

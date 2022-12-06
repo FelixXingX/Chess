@@ -126,11 +126,7 @@ int main(){
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
 	//auto window = make_shared<Xwindow>((rows + 2) * scale, (cols + 1) *scale);
 	//auto graphic = make_unique<GraphicsDisplay>(&mainBoard,window, rows,cols,scale);
-	//setUp(mainBoard);
-    mainBoard.addPiece(1, 5, 'K');
-    mainBoard.addPiece(8, 5, 'k');
-    mainBoard.addPiece(7, 2, 'P');
-    mainBoard.addPiece(2, 7, 'p');
+	setUp(mainBoard);
     mainBoard.render();
     //This is the test harness
 	while(cin >> c){
