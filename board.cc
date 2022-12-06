@@ -126,7 +126,7 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
     if (this->isLegalMove(fromRow, fromCol, toRow, toCol, turn) == true) {
         //move
         shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();  
-        //auto pawn = dynamic_cast<Pawn *>(*p);// copy the piece
+        // copy the piece
         board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
         board[toRow][toCol].addPiece(p);
         //possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
@@ -255,7 +255,32 @@ bool Board::checked(string turn){ //checks if you can capture enemy king.
     }
     return false;
 }
-
+bool Board::botChecked(int x, int y, string turn){ //checks if you can capture enemy king.
+    int kingRow;
+    int kingCol;
+    for (int row = 1; row <= 8; row++) {
+        for (int col = 1; col <= 8; col++) {  
+            auto p = board[row][col].getPiece();
+            if (p != nullptr){
+                if ((turn == "white" && p->getName() == 'k') || (turn == "black" && p->getName() == 'K')) {
+                    kingRow = row;  // get enemy location
+                    kingCol = col;
+                }
+            }
+        }
+    }
+    //cout << '{' << kingRow << ',' << kingCol << '}' << endl;
+            auto p = board[x][y].getPiece();
+            if (p != nullptr){
+                vector<Vec> moves = possibleMoves(p, x, y);
+                for (size_t i = 0; i < moves.size(); i++) { // checks every piece to see if they can capture enemy king.
+                    if (moves[i].row == kingRow && moves[i].col == kingCol){
+                        return true;
+                    }
+                }
+            }
+    return false;
+}
 bool Board::checkmate(string turn){ //checks all moves and sees if its a legal move.
     //if possible moves return empty for every single opponents piece. theyre checkmated
     int count = 0;

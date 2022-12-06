@@ -38,6 +38,7 @@ class Board : public Subject{
 		Board(std::vector<std::vector<Squares>> board, bool whiteCheck,bool blackCheck,std::string Won);
 		bool amIChecked(std::string turn);
 		bool checked(std::string turn);
+		bool botChecked(int x, int y, std::string turn);
 		bool checkmate(std::string turn);
 		//copy ctor
 		Board(const Board &other);
