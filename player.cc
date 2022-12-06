@@ -112,7 +112,9 @@ void Computer1::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	//get a random move from all the moves
 	cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
 	mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour());
-	mainBoard.render();
+	mainBoard.render('t',1,1);
+	//mainBoard.render('g',vs.first,vs.second);
+	//mainBoard.render('g',vsmove.first,vsmove.second);
 	++curTurn;
 }
 Computer2::Computer2(string colour): Player(colour){};
@@ -195,10 +197,12 @@ void Computer2::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	if((vs.first != 0 && vs.second != 0 )|| (vsmove.first != 0 && vsmove.second != 0)){
 		cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
 		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour());
-		mainBoard.render();
+		mainBoard.render('t',1,1);
+		//mainBoard.render('g',vs.first,vs.second);
+		//mainBoard.render('g',vsmove.first,vsmove.second);
 		++curTurn;
 	}else{
-		cout << "Fatal error occured: check computer 3 move" << endl;
+		cout << "Fatal error occured: check computer 2 move" << endl;
 	}
 	
 }
@@ -207,6 +211,7 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
     vector<pair<int,int>> list;
 	vector<pair<int,int>> listt;
 	vector<pair<int,int>> listc;
+	vector<pair<int,int>> listDanger;
 	map<pair<int,int>,vector<pair<int,int>>> checked;
 	map<pair<int,int>,vector<pair<int,int>>> takes;
 	map<pair<int,int>,vector<pair<int,int>>> moves;
@@ -253,7 +258,7 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
         }
     }
 	//check to avoid capture
-	vector<pair<int,int>> listDanger;
+	
 	for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
             auto p = mainBoard.getPiece(row,col);
@@ -264,10 +269,12 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 					if(possiMoves.size() != 0){//if it can move
 						for(size_t k = 0; k < possiMoves.size(); ++k){
 							if(mainBoard.isLegalMove(row,col,possiMoves[k].first,possiMoves[k].second,p->getColor())){//if piece can make a legal move at that place
-								for(pair<int,int> p : list){
-									if(possiMoves[k].first == p.first && possiMoves[k].second == p.second){
+								for(pair<int,int> pp : list){
+									if(possiMoves[k].first == pp.first && possiMoves[k].second == pp.second){
 										listDanger.emplace_back(pair<int,int>(possiMoves[k].first,possiMoves[k].second));
+										vector<pair<int,int>> avoidMoves = trans(mainBoard.possibleMoves(mainBoard.getPiece(pp.first,pp.second),pp.first,pp.second));
 									}
+									
 								}
 									
 							}
@@ -315,7 +322,9 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	if((vs.first != 0 && vs.second != 0 )|| (vsmove.first != 0 && vsmove.second != 0)){
 		cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
 		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour());
-		mainBoard.render();
+		mainBoard.render('t',1,1);
+		//mainBoard.render('g',vs.first,vs.second);
+		//mainBoard.render('g',vsmove.first,vsmove.second);
 		++curTurn;
 	}else{
 		cout << "Fatal error occured: check computer 3 move" << endl;
