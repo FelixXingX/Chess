@@ -24,7 +24,7 @@ class Board : public Subject{
 	//chicken nugget
 	public:
 		bool move(int fromX, int fromY, int toX, int toY, std::string turn);
-        bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, std::string turn);
+        bool Castle(int fromRow, int fromCol, int toRow, int toCol, std::string turn);
 		bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn);
         void addPiece(int row, int col, char name);
 		void removePiece(int row, int col);

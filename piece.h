@@ -25,38 +25,38 @@ class Piece{
 
 class Knight : public Piece{
 	public:
-		Knight(std::string color,char name, int col, int row);
-		std::shared_ptr<Piece> clone() override;
+         Knight(std::string color, char name, int col, int row, bool moved);
+         std::shared_ptr<Piece> clone() override;
 };
 
 class Bishop : public Piece{
 	public:
-		Bishop(std::string color,char name, int col, int row);
-		std::shared_ptr<Piece> clone() override;
+         Bishop(std::string color, char name, int col, int row, bool moved);
+         std::shared_ptr<Piece> clone() override;
 };
 
 class Rook : public Piece{
 	public:
-		Rook(std::string color,char name, int col, int row);
-		std::shared_ptr<Piece> clone() override;
+         Rook(std::string color, char name, int col, int row, bool moved);
+         std::shared_ptr<Piece> clone() override;
 };
 
 class King : public Piece{
 	public:
-		King(std::string color,char name, int col, int row);
-		std::shared_ptr<Piece> clone() override;
-		friend class Piece;
+         King(std::string color, char name, int col, int row, bool moved);
+         std::shared_ptr<Piece> clone() override;
+         friend class Piece;
 };
 
 class Queen : public Piece{
 	public:
-		Queen(std::string color,char name, int col, int row);
-		std::shared_ptr<Piece> clone() override;
+         Queen(std::string color, char name, int col, int row, bool moved);
+         std::shared_ptr<Piece> clone() override;
 };
 
 class Pawn : public Piece{
 	public:
-		Pawn(std::string color,char name, int col, int row);
+		Pawn(std::string color,char name, int col, int row, bool moved);
 		std::shared_ptr<Piece> clone() override;
 };
 #endif
