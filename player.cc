@@ -59,7 +59,7 @@ void Human::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
         ++curTurn;
 		mainBoard.render('t',1,1);
 		//mainBoard.render('g',fromRow,fCol);
-		mainBoard.render('g',toRow,tCol);
+		//mainBoard.render('g',toRow,tCol);
     }
     cout << curTurn << endl;
     //mainBoard.render('t',1,1);
