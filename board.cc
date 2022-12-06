@@ -1,7 +1,7 @@
 #include "board.h"
 
 #include <string>
-
+#include <cctype>
 #include "piece.h"
 #include "squares.h"
 #include "textdisplay.h"
@@ -113,6 +113,7 @@ void Board::addPiece(int row, int col, char name){
             board[row][col].addPiece(p);
             break;}
     }
+    
 }
 
 //renders the graphic and text observers
@@ -225,17 +226,30 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
         board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
         board[toRow][toCol].addPiece(p);
         if (p->getName() == 'P' && toRow == 8) { //swaps pawn out for promotion piece
-            board[toRow][toCol].removePiece();
-            addPiece(toRow, toCol, promoChar);
+            cin >> promoChar;
+            if(isupper(promoChar) && p->getName() != 'P' ){
+                board[toRow][toCol].removePiece();
+                addPiece(toRow, toCol, promoChar);
+            }else{
+                cout << "invalid piece for pormotion" << endl;
+            }
         }
         if (p->getName() == 'p' && toRow == 1) {
-            board[toRow][toCol].removePiece();
-            addPiece(toRow,toCol,promoChar);
+           if(!isupper(promoChar) && p->getName() != 'p' ){
+                board[toRow][toCol].removePiece();
+                addPiece(toRow, toCol, promoChar);
+            }else{
+                cout << "invalid piece for pormotion" << endl;
+            }
         }
         //possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
         //is enemy king in check -> is he checkmated
         if (this->checked(turn) == true){
-            cout << "checked" << endl;
+            if(turn == "black"){
+                cout << "white is in check..." << endl;
+            }else{
+                cout << "black is in check..." << endl;
+            }
             if (this->checkmate(turn) == true){
                 cout << "checkmate" << endl;
                 Won = turn;
