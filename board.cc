@@ -246,7 +246,10 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
                     addPiece(toRow, toCol, promoChar);
                     break;
                 }else{
-                    cout << "invalid piece for pormotion" << endl;
+                    cout << "invalid piece for promotion" << endl;
+                    board[fromRow][fromCol].addPiece(p);
+                    board[toRow][toCol].removePiece();
+                    return false;
                 }
             }
         }
@@ -257,7 +260,10 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
                     addPiece(toRow, toCol, promoChar);
                     break;
                 }else{
-                    cout << "invalid piece for pormotion" << endl;
+                    cout << "invalid piece for promotion" << endl;
+                    board[fromRow][fromCol].addPiece(p);
+                    board[toRow][toCol].removePiece();
+                    return false;
                 }
             }
         }
