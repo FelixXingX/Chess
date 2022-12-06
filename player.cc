@@ -82,14 +82,12 @@ void Computer1::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
             auto p = mainBoard.getPiece(row,col);
             if (p != nullptr){
                 if (p->getColor() == getColour()) {
-					Vec v = Vec(row,col);
-					pair<int,int> vv (v.row,v.col);
-					vector<Vec> m = mainBoard.possibleMoves(mainBoard.getPiece(v.row,v.col),v.row,v.col);
-					vector<pair<int,int>> possiMoves = trans(m);
+					pair<int,int> vv (row,col);
+					vector<pair<int,int>> possiMoves = trans(mainBoard.possibleMoves(mainBoard.getPiece(row,col),row,col));
 					if(possiMoves.size() != 0){
 						vector<pair<int,int>> verified;
 						for(size_t k = 0; k < possiMoves.size(); ++k){
-							if(mainBoard.isLegalMove(v.row,v.col,m[k].row,m[k].col,getColour())){
+							if(mainBoard.isLegalMove(row,col,possiMoves[k].first,possiMoves[k].second,getColour())){
 								verified.emplace_back(pair<int,int>(possiMoves[k].first,possiMoves[k].second));
 							}
 						}
@@ -119,26 +117,90 @@ void Computer1::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 }
 Computer2::Computer2(string colour): Player(colour){};
 void Computer2::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
-    out << "not yet implemented" << endl;
-
-    string pos1,pos2;
-	in >> pos1 >> pos2;
-	istringstream iss1{pos1};
-	int fromRow;
-	char fromCol;
-	iss1 >> fromCol >> fromRow;
-    if(outOfBound(fromRow,fromCol,out))return;
-	int fCol = matchs(fromCol);
-	istringstream iss2{pos2};
-	int toRow;
-	char toCol;
-	iss2 >> toCol >> toRow;
-    if(outOfBound(toRow,toCol,out))return;
-	int tCol = matchs(toCol);
-    //move function
-	mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
-    ++curTurn;
-	mainBoard.render();
+    vector<pair<int,int>> list;
+	vector<pair<int,int>> listt;
+	vector<pair<int,int>> listc;
+	map<pair<int,int>,vector<pair<int,int>>> checked;
+	map<pair<int,int>,vector<pair<int,int>>> takes;
+	map<pair<int,int>,vector<pair<int,int>>> moves;
+	//set up list of all pieces that we can move and a map of with key pieces and vector<Vec> of their possible move
+	for (int row = 1; row <= 8; row++) {
+        for (int col = 1; col <= 8; col++) {
+            auto p = mainBoard.getPiece(row,col);
+            if (p != nullptr){
+                if (p->getColor() == getColour()) {
+					pair<int,int> vv (row,col);
+					vector<pair<int,int>> possiMoves = trans(mainBoard.possibleMoves(mainBoard.getPiece(row,col),row,col));
+					if(possiMoves.size() != 0){
+						vector<pair<int,int>> verifiedchecked;
+						vector<pair<int,int>> verifiedtakes;
+						vector<pair<int,int>> verified;
+						for(size_t k = 0; k < possiMoves.size(); ++k){
+							if(mainBoard.isLegalMove(row,col,possiMoves[k].first,possiMoves[k].second,getColour())){
+								verified.emplace_back(pair<int,int>(possiMoves[k].first,possiMoves[k].second));
+								if(mainBoard.getPiece(possiMoves[k].first,possiMoves[k].second) != nullptr){
+									verifiedtakes.emplace_back(pair<int,int>(possiMoves[k].first,possiMoves[k].second));
+								}
+								if(mainBoard.botChecked(possiMoves[k].first,possiMoves[k].second,getColour())){
+									verifiedchecked.emplace_back(pair<int,int>(possiMoves[k].first,possiMoves[k].second));
+								}
+							}
+						}
+						if(verified.size() != 0){
+							list.emplace_back(vv);
+							moves[vv] = verified;
+						}
+						if(verifiedtakes.size() != 0){
+							listt.emplace_back(vv);
+							takes[vv] = verifiedtakes;
+						}
+						if(verifiedchecked.size() != 0){
+							listc.emplace_back(vv);
+							checked[vv] = verifiedchecked;
+						}
+					}else{
+						continue;
+					}
+                }
+            }
+        }
+    }
+	pair<int,int> vs;
+	pair<int,int> vsmove;
+	//NOt done
+	//randomly choose a piece and then randomly choose their move 
+	if(listc.size() != 0){
+		int random = rand() % listc.size();
+		vs = listc[random];//get a random piece from the list
+		vector<pair<int,int>> tmpmoves = checked[vs];
+		//get all moves of the pieces in the map
+		int random2 = rand() % tmpmoves. size();
+		vsmove = tmpmoves[random2]; 
+	}else if(listt.size() != 0){
+		int random = rand() % listt.size();
+		vs = listt[random];//get a random piece from the list
+		vector<pair<int,int>> tmpmoves = takes[vs];
+		//get all moves of the pieces in the map
+		int random2 = rand() % tmpmoves. size();
+		vsmove = tmpmoves[random2]; 
+	}else{
+		int random = rand() % list.size();
+		vs = list[random];//get a random piece from the list
+		vector<pair<int,int>> tmpmoves = moves[vs];
+		//get all moves of the pieces in the map
+		int random2 = rand() % tmpmoves. size();
+		vsmove = tmpmoves[random2]; 
+		//get a random move from all the moves
+	}
+	if((vs.first != 0 && vs.second != 0 )|| (vsmove.first != 0 && vsmove.second != 0)){
+		cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
+		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour());
+		mainBoard.render();
+		++curTurn;
+	}else{
+		cout << "Fatal error occured: check computer 3 move" << endl;
+	}
+	
 }
 Computer3::Computer3(string colour): Player(colour){};
 void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
