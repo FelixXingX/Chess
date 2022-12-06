@@ -23,26 +23,26 @@ void GraphicsDisplay::match(char a, int y, int x, int scale){
                 }
                 case 'r':
                 {
-                    //window->drawRook(x, y, 1,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->drawRook(x, y, 1,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,1);
                     break;
                 }
                 case 'R':
                 {
-                    //window->drawRook(x, y, 0,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,0);
+                    window->drawRook(x, y,0,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,0);
                     break;
                 }
                 case 'n':
                 {
-                    //window->drawKnight(x, y, 1,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->drawKnight(x, y,1,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,1);
                     break;
                 }
                 case 'N':
                 {
-                    //window->drawKnight(x, y, 0,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,0);
+                    window->drawKnight(x, y, 0,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,0);
                     break;
                 }
                 case 'b':
@@ -59,36 +59,36 @@ void GraphicsDisplay::match(char a, int y, int x, int scale){
                 }
                 case 'q':
                 {
-                    //window->drawQueen(x, y, 1,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->drawQueen(x, y, 1,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,1);
                     break;
                 }
                 case 'Q':
                 {
-                    //window->drawQueen(x, y, 0,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,0);
+                    window->drawQueen(x, y, 0,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,0);
                     break;
                 }
                 case 'k':
                 {
-                    //window->drawKing(x, y, 1,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->drawKing(x, y, 1,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,1);
                     break;
                 }
                 case 'K':
                 {
-                    //window->drawKing(x, y, 0,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,0);      
+                    window->drawKing(x, y, 0,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,0);      
                     break;
                 }
                 case ' ':
                 {
-                    window->fillRectangle(x * scale, y * scale,scale,scale,0);
+                    window->fillRectangle(x * scale, y * scale,scale,scale,10);
                     break;
                 }
                 case '_':
                 {
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->fillRectangle(x * scale, y * scale,scale,scale,9);
                     break;
                 }
                 
@@ -97,7 +97,7 @@ void GraphicsDisplay::match(char a, int y, int x, int scale){
 
 void GraphicsDisplay::notify(){
     for(int i = rows; i > 0; --i){
-        for(int j = 1; j < cols; ++j){
+        for(int j = 1; j < cols + 1; ++j){
             if(i % 2 == 0){
             if(j % 2 == 0){
                 match('_',rows-i,j,scale);
@@ -114,10 +114,10 @@ void GraphicsDisplay::notify(){
         }
     }
     for(int i = rows; i > 0; --i){
-        for(int j = 1; j < cols; ++j){
-            char a = subject->getState(i,j);
-            match(a,rows-i,j,scale);
-        }
+        for(int j = 1; j < cols + 1; ++j){
+           char a = subject->getState(i,j);
+           match(a,rows-i ,j,scale);
+       }
     }
 }
 

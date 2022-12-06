@@ -31,10 +31,10 @@ Xwindow::Xwindow(int width, int height) {
   // Set up colours.
   XColor xcolour;
   Colormap cmap;
-  char color_vals[10][10]={"white", "black", "red", "green", "blue", "cyan", "yellow", "magenta", "orange", "brown"};
+  char color_vals[11][11]={"white", "black", "red", "green", "blue", "cyan", "yellow", "magenta", "orange", "Chocolate","bisque"};
 
   cmap=DefaultColormap(d,DefaultScreen(d));
-  for(int i=0; i < 5; ++i) {
+  for(int i=0; i < 11; ++i) {
       XParseColor(d,cmap,color_vals[i],&xcolour);
       XAllocColor(d,cmap,&xcolour);
       colours[i]=xcolour.pixel;
@@ -73,7 +73,7 @@ void Xwindow::fillRectangle(int x, int y, int width, int height, int colour) {
 }
 void Xwindow::drawArc(int x, int y, int width, int height, int colour,int a1 ,int a2) {
   XSetForeground(d, gc, colours[colour]);
-  XDrawArc(d, w, gc, x, y, width, height, a1, a2)
+  XDrawArc(d, w, gc, x, y, width, height, a1, a2);
   XSetForeground(d, gc, colours[Black]);
 }
 
@@ -82,32 +82,68 @@ void Xwindow::drawString(int x, int y, string msg) {
 }
 
 void Xwindow::drawPawn(int x, int y, int colour, int scale){
-  int op;
-  if(colour == 1){op = 0;}
-  else{op = 1;}
   int align = scale/6;
+
   //middle stick
-  fillRectangle(x*scale + scale/2 - align , y*scale + align , scale/16 , scale/4 ,colour);
-  fillRectangle(x*scale + scale/2 - align , y*scale + align , scale/16 , scale/4 ,op);
+  fillRectangle(x*scale + scale/2 - scale/12, y*scale + 2 * align, scale/6, scale/2, colour);
   //base colour
-  fillRectangle(x*scale + align + 3 ,y*scale + scale - scale / 7 + 3 , scale/4 - 3, scale/16 - 3, colour);
-  fillRectangle(x*scale + align , y*scale + scale - scale / 7, scale/4, scale/16, op);
+  fillRectangle(x*scale + 1.5 * align, y*scale + scale - scale /3, scale/2, scale/6, colour);
 }
-void Xwindow::drawKing(int x, int y, int colour, int scale){}
-void Xwindow::drawBishop(int x, int y, int colour, int scale){
-  int op;
-  if(colour == 1){op = 0;}
-  else{op = 1;}
-  int align = scale/30;
+void Xwindow::drawKing(int x, int y, int colour, int scale){
+  int align = scale/6;
+  //cross part
+  fillRectangle(x*scale + 1.5 * align, y*scale + scale/4, scale/2, scale/10, colour);
   //middle stick
-  fillRectangle(x*scale + scale/2 - align , y*scale + align , scale/16 , scale/4 ,colour);
-  fillRectangle(x*scale + scale/2 - align , y*scale + align , scale/16 , scale/4 ,op);
+  fillRectangle(x*scale + scale/2 - scale/12, y*scale +  align, scale/6, scale/1.8, colour);
   //base colour
-  fillRectangle(x*scale + align + 3 ,y*scale + scale - scale / 7 + 3 , scale/4 - 3, scale/16 - 3, colour);
-  fillRectangle(x*scale + align , y*scale + scale - scale / 7, scale/4, scale/16, op);
+  fillRectangle(x*scale + 1.5 * align, y*scale + scale - scale /3, 3 * align, scale/6, colour);
+}
+void Xwindow::drawBishop(int x, int y, int colour, int scale){
+  int align = scale/6;
+  //like the crown or smth
+  fillRectangle(x*scale + 1.5 * align, y*scale +  align, scale/5, scale/6, colour);
+  fillRectangle(x*scale + scale - 3 * align,   y*scale + align, scale/5, scale/6, colour);
+  //head
+  fillRectangle(x*scale + 1.5 * align, y*scale + 2 * align, scale/5, scale/6, colour);
+  fillRectangle(x*scale + scale - 3 * align, y*scale +  2 * align, scale/5, scale/6, colour);
+  //middle stick
+  fillRectangle(x*scale + scale/2 - scale/12, y*scale + 2 * align, scale/6, scale/2, colour);
+  //base colour
+  fillRectangle(x*scale + 1.5 * align, y*scale + scale - scale /3, scale/2, scale/6, colour);
 }
 void Xwindow::drawRook(int x, int y, int colour, int scale){
-
+  int align = scale/6;
+  //middle stick
+  fillRectangle(x*scale + align, y*scale + align, scale/6, scale/2, colour);
+  fillRectangle(x*scale + scale/2 - scale/12, y*scale + align, scale/6, scale/2, colour);
+  fillRectangle(x*scale + scale - 2* align, y*scale + align, scale/6, scale/2, colour);
+  //base colour
+  fillRectangle(x*scale + align , y*scale + 2 * align, scale/1.47, scale/2, colour);
 }
-void Xwindow::drawQueen(int x, int y, int colour, int scale){}
-void Xwindow::drawKnight(int x, int y, int colour, int scale){}
+void Xwindow::drawQueen(int x, int y, int colour, int scale){
+  int align = scale/6;
+  //spikes
+  fillRectangle(x*scale + align, y*scale + 2 * align, scale/17, 3 * align, colour);
+  fillRectangle(x*scale + 1.5 * align, y*scale + 1.8 * align, scale/17, 3.2 * align, colour);
+  fillRectangle(x*scale + 2 * align, y*scale + 1.6 * align, scale/17, 3.4 * align, colour);
+  fillRectangle(x*scale + 2.5 * align, y*scale + 1.4 * align, scale/17, 3.6 * align, colour);
+  fillRectangle(x*scale + 3 *align, y*scale + 1 * align, scale/17, 4 * align, colour);
+  fillRectangle(x*scale + 3.5 * align,y*scale + 1.4 * align, scale/17, 3.6 * align, colour);
+  fillRectangle(x*scale + 4 * align, y*scale + 1.6 * align, scale/17, 3.4 * align, colour);
+  fillRectangle(x*scale + 4.5 * align, y*scale + 1.8 * align, scale/17, 3.2 * align, colour);
+  fillRectangle(x*scale + 5 * align, y*scale + 2 * align, scale/17, 3 * align, colour);
+  //base
+  fillRectangle(x*scale + align , y*scale + scale - 3* align, scale - 2 * align, 2 * align, colour);
+}
+void Xwindow::drawKnight(int x, int y, int colour, int scale){
+  int align = scale/6;
+  //base colour
+  fillRectangle(x*scale + 1.5 * align, y*scale + scale - scale /3, scale/2, scale/6, colour);
+  //torso part
+  fillRectangle(x*scale + 2 *align, y*scale + scale /3, scale/3, scale/3, colour);
+  //head?
+  fillRectangle(x*scale + 2 *align, y*scale + scale /5, scale/4, scale/6, colour);
+  
+  //nose
+  fillRectangle(x*scale + align, y*scale + scale /4, scale/2, scale/6, colour);
+}
