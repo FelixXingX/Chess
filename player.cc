@@ -4,6 +4,24 @@
 #include <map>
 #include <utility>
 using namespace std;
+
+bool isIn(const pair<int,int> &com, const vector<pair<int,int>> &vec){
+	for(auto i: vec){
+		if(com == i){
+			return true;
+		}
+	}
+	return false;
+}
+vector<pair<int,int>> compare(const vector<pair<int,int>> &whatto , const vector<pair<int,int>> &compareto){
+	vector<pair<int,int>> result;
+	for(auto i: whatto){
+		if(!isIn(i,compareto)){
+			result.emplace_back(i);
+		}
+	}
+	return result;
+}
 int matchs(char cha){
 	switch(cha){
 		case 'a':
@@ -215,6 +233,7 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	map<pair<int,int>,vector<pair<int,int>>> checked;
 	map<pair<int,int>,vector<pair<int,int>>> takes;
 	map<pair<int,int>,vector<pair<int,int>>> moves;
+	map<pair<int,int>,vector<pair<int,int>>> safeMoves;
 	//set up list of all pieces that we can move and a map of with key pieces and vector<Vec> of their possible move
 	for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
@@ -271,11 +290,16 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 							if(mainBoard.isLegalMove(row,col,possiMoves[k].first,possiMoves[k].second,p->getColor())){//if piece can make a legal move at that place
 								for(pair<int,int> pp : list){
 									if(possiMoves[k].first == pp.first && possiMoves[k].second == pp.second){//if the piece
-										listDanger.emplace_back(pair<int,int>(possiMoves[k].first,possiMoves[k].second));
-										//vector<pair<int,int>> avoidMoves = trans(mainBoard.possibleMoves(mainBoard.getPiece(pp.first,pp.second),pp.first,pp.second));
-										//if(avoidMoves.size() != 0){
-										//	vector<pair<int,int>> verifiedanger;
-										//}
+										pair<int,int> tmp(possiMoves[k].first,possiMoves[k].second);
+										vector<pair<int,int>> avoidMoves = trans(mainBoard.possibleMoves(mainBoard.getPiece(pp.first,pp.second),pp.first,pp.second));
+										if(avoidMoves.size() != 0){
+											vector<pair<int,int>> verifiedsafe = compare(avoidMoves, possiMoves);
+											if(verifiedsafe.size() != 0){
+												listDanger.emplace_back(tmp);
+												safeMoves[tmp] = verifiedsafe;
+											}
+										}
+										
 									}
 									
 								}
@@ -310,7 +334,7 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	}else if(listDanger.size()!= 0){
 		int random = rand() % listDanger.size();
 		vs = listDanger[random];
-		vector<pair<int,int>> tmpmoves = moves[vs];
+		vector<pair<int,int>> tmpmoves = safeMoves[vs];
 		int random2 = rand() % tmpmoves. size();
 		vsmove = tmpmoves[random2]; 
 	}else{
