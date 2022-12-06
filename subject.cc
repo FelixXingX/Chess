@@ -1,6 +1,6 @@
 #include"subject.h"
 #include"observer.h"
-#include "graphicdisplay.h"
+//#include "graphicdisplay.h"
 #include "textdisplay.h"
 void Subject::attach(Observer* ob){
 	observers.emplace_back(ob);
