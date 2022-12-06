@@ -127,13 +127,23 @@ void Board::render(char type,int x,int y){
 
 bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
     shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();
+    if (turn  == "white"){
+        turn = "black";
+    } else{
+        turn = "white";
+    }
+    if (checked(turn) == true){
+        return false;
+    }
     if (toCol - fromCol == 2) { // move right
         if (p == nullptr || p->getMoved() == true){
             return false;
         }
         if (this->getSquare(fromRow, 6) == 0 && this->getSquare(fromRow, 7) == 0 && this->getSquare(fromRow, 8) == 1) { // checks empty squares between them
-            if (this->getPiece(fromRow, 8)->getName() != 'r' && this->getPiece(fromRow, 8)->getName() != 'R'){
-                cout << this->getPiece(fromRow, 8)->getName() << endl;
+            if (this->getPiece(fromRow, 8)->getName() != 'r' && this->getPiece(fromRow, 8)->getName() != 'R' ){
+                return false;
+            }
+            if (this->getPiece(fromRow, 8)->getMoved() == true) {
                 return false;
             }
             board[fromRow][5].removePiece();  // removes to piece and adds from piece
@@ -166,8 +176,10 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
             return false;
         }
         if (this->getSquare(fromRow, 4) == 0 && this->getSquare(fromRow, 3) == 0 && this->getSquare(fromRow, 2) == 0 && this->getSquare(fromRow, 1) == 1) {  // checks empty squares between them
-            if (this->getPiece(fromRow, 8)->getName() != 'r' && this->getPiece(fromRow, 8)->getName() != 'R') {
-                cout << "test2" << endl;
+            if (this->getPiece(fromRow, 1)->getName() != 'r' && this->getPiece(fromRow, 1)->getName() != 'R') {
+                return false;
+            }
+            if (this->getPiece(fromRow, 1)->getMoved() == true) {
                 return false;
             }
             board[fromRow][5].removePiece();  // removes to piece and adds from piece
@@ -209,22 +221,20 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
                 cout << "Illegal move" << endl;
                 return false;
             }
-            p->setMoved(true);
         }
         // if its king check if it can castle or not and set it to false...
         if (p->getName() == 'k' || p->getName() == 'K') {
-            if (p->getMoved() == true) {
-                cout << "test6" << endl;
-                cout << "Illegal move" << endl;
-                return false;
-            }
-            if (abs(toCol - fromCol) == 2){ // casteling 
+            if (abs(toCol - fromCol) == 2){ // casteling
+                if (p->getMoved() == true) {
+                    cout << "test6" << endl;
+                    cout << "Illegal move" << endl;
+                    return false;
+                }
                 if (this->Castle(fromRow, fromCol, toRow, toCol, turn) == false){
                     cout << "Illegal move" << endl;
                     return false;
                 }
             }
-            p->setMoved(true);
         }
         char promoChar; // REMOVE THIS LATER
         board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
@@ -246,6 +256,7 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
                 cout << "invalid piece for pormotion" << endl;
             }
         }
+        p->setMoved(true);
         //possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
         //is enemy king in check -> is he checkmated
         if (this->checked(turn) == true){

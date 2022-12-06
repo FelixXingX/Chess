@@ -133,7 +133,6 @@ int main(){
     mainBoard.addPiece(1, 1, 'R');
     mainBoard.addPiece(8, 8, 'r');
     mainBoard.addPiece(8, 1, 'r');
-    mainBoard.addPiece(2, 3, 'P');
     mainBoard.render();
     //This is the test harness
 	while(cin >> c){
