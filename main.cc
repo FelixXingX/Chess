@@ -165,10 +165,14 @@ int main(){
 					}
 					if(pawn) continue;
 					//check for checks
-					if(mainBoard.checked("white")){cout << "cannot start in check" << endl;break;}
-					if(mainBoard.checked("black")){cout << "cannot start in check" << endl;break;}
-					cout << "Exiting setup mode" << endl;
-					break;
+					if(!mainBoard.checked("white")&& !mainBoard.checked("black"))
+					{
+						cout << "Exiting setup mode" << endl;
+						break;
+					}else{
+						cout << "cannot start in check" << endl;
+					}
+					
 				}else if(c == "="){
 					string goStart;
 					cin >> goStart;
