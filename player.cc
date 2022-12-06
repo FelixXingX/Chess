@@ -192,7 +192,7 @@ void Computer2::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 		vsmove = tmpmoves[random2]; 
 		//get a random move from all the moves
 	}
-	if(vs.first != 0 && vs.second != 0 || vsmove.first != 0 && vsmove.second != 0){
+	if((vs.first != 0 && vs.second != 0 )|| (vsmove.first != 0 && vsmove.second != 0)){
 		cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
 		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour());
 		mainBoard.render();
