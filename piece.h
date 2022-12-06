@@ -12,10 +12,13 @@ class Piece{
 	std::string color;
 	char name;
 	int col, row;
+	bool moved;
 	public:
 		std::string getColor();
 		char getName();
-		Piece(std::string color,char name, int col, int row);
+		bool getMoved();
+		void setMoved(bool);
+		Piece(std::string color,char name, int col, int row, bool moved);
 		virtual std::shared_ptr<Piece> clone() = 0; //We need to copy pieces with polymorhism so need a clone method
 		virtual ~Piece() = default;
 };
@@ -33,23 +36,16 @@ class Bishop : public Piece{
 };
 
 class Rook : public Piece{
-	bool castled;
 	public:
-		Rook(std::string color,char name, int col, int row, bool castled);
-		bool getCastle();
-		void setCastle(bool set);
+		Rook(std::string color,char name, int col, int row);
 		std::shared_ptr<Piece> clone() override;
 };
 
 class King : public Piece{
-	bool castled;
 	public:
-		King(std::string color,char name, int col, int row, bool castled);
-		bool getStatusCheck();
-		bool getStatusCastle();
-		void setCheck(bool set);
-		void setCastle(bool set);
+		King(std::string color,char name, int col, int row);
 		std::shared_ptr<Piece> clone() override;
+		friend class Piece;
 };
 
 class Queen : public Piece{
@@ -59,14 +55,8 @@ class Queen : public Piece{
 };
 
 class Pawn : public Piece{
-	bool firstStep;
-	bool canPromote;
 	public:
-		Pawn(std::string color,char name, int col, int row, bool firstStep, bool canPromote);
-		bool getFirstStep();
-		bool getCanPromote();
-		void setFirstStep(bool set);
-		void setCanPromote(bool set);
+		Pawn(std::string color,char name, int col, int row);
 		std::shared_ptr<Piece> clone() override;
 };
 #endif

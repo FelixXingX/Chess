@@ -23,9 +23,9 @@ class Board : public Subject{
 	std::string Won;
 	//chicken nugget
 	public:
-		void printMoves();
 		bool move(int fromX, int fromY, int toX, int toY, std::string turn);
-        bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn);
+        bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, std::string turn);
+		bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn);
         void addPiece(int row, int col, char name);
 		void removePiece(int row, int col);
 		char getState(int row, int col) const override;
