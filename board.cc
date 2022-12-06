@@ -127,14 +127,23 @@ void Board::render(char type,int x,int y){
 
 bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
     shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();
+    if (turn  == "white"){
+        turn = "black";
+    } else{
+        turn = "white";
+    }
+    if (checked(turn) == true){
+        return false;
+    }
     if (toCol - fromCol == 2) { // move right
         if (p == nullptr || p->getMoved() == true){
-            cout << "test\n" << endl;
             return false;
         }
         if (this->getSquare(fromRow, 6) == 0 && this->getSquare(fromRow, 7) == 0 && this->getSquare(fromRow, 8) == 1) { // checks empty squares between them
-            if (this->getPiece(fromRow, 8)->getName() != 'r' && this->getPiece(fromRow, 8)->getName() != 'R'){
-                cout << this->getPiece(fromRow, 8)->getName() << endl;
+            if (this->getPiece(fromRow, 8)->getName() != 'r' && this->getPiece(fromRow, 8)->getName() != 'R' ){
+                return false;
+            }
+            if (this->getPiece(fromRow, 8)->getMoved() == true) {
                 return false;
             }
             board[fromRow][5].removePiece();  // removes to piece and adds from piece
@@ -163,10 +172,14 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
     }
     if (toCol - fromCol == -2) {  // move left
         if (p == nullptr || p->getMoved() == true) {
+            cout << "test1" << endl;
             return false;
         }
         if (this->getSquare(fromRow, 4) == 0 && this->getSquare(fromRow, 3) == 0 && this->getSquare(fromRow, 2) == 0 && this->getSquare(fromRow, 1) == 1) {  // checks empty squares between them
-            if (this->getPiece(fromRow, 8)->getName() != 'r' || this->getPiece(fromRow, 8)->getName() != 'R') {
+            if (this->getPiece(fromRow, 1)->getName() != 'r' && this->getPiece(fromRow, 1)->getName() != 'R') {
+                return false;
+            }
+            if (this->getPiece(fromRow, 1)->getMoved() == true) {
                 return false;
             }
             board[fromRow][5].removePiece();  // removes to piece and adds from piece
@@ -184,16 +197,18 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
                 } else {
                     board[fromRow][5].addPiece(p);
                     board[fromRow][3].removePiece();
+                    cout << "test3" << endl;
                     return false;
                 }
             } else {
                 board[fromRow][5].addPiece(p);
                 board[fromRow][4].removePiece();
+                cout << "test4" << endl;
                 return false;
             }
         }
     }
-    cout << "test3\n" << endl;
+    cout << "test5\n" << endl;
     return false;
 }
 bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
@@ -206,21 +221,20 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
                 cout << "Illegal move" << endl;
                 return false;
             }
-            p->setMoved(true);
         }
         // if its king check if it can castle or not and set it to false...
         if (p->getName() == 'k' || p->getName() == 'K') {
-            if (p->getMoved() == true) {
-                cout << "Illegal move" << endl;
-                return false;
-            }
-            if (abs(toCol - fromCol) == 2){ // casteling 
+            if (abs(toCol - fromCol) == 2){ // casteling
+                if (p->getMoved() == true) {
+                    cout << "test6" << endl;
+                    cout << "Illegal move" << endl;
+                    return false;
+                }
                 if (this->Castle(fromRow, fromCol, toRow, toCol, turn) == false){
                     cout << "Illegal move" << endl;
                     return false;
                 }
             }
-            p->setMoved(true);
         }
         char promoChar; // REMOVE THIS LATER       // removes to piece and adds from piece
         board[toRow][toCol].addPiece(p);
@@ -246,6 +260,7 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
                 }
             }
         }
+        p->setMoved(true);
         //possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
         //is enemy king in check -> is he checkmated
         if (this->checked(turn) == true){
@@ -442,41 +457,53 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
     string color = piece->getColor();
     if (name == 'p' || name == 'P') {
         if (color == "white"){
-            if (piece->getMoved() == false) {            // checks if its first step or not
-                if (this->getSquare(row,col + 1) == 0) { // empty square
-                    moves.emplace_back(row, col + 1); // adds move to vector
+            if (piece->getMoved() == true) {            // checks if its first step or not
+                if (this->getSquare(row + 1,col) == 0) { // empty square
+                    moves.emplace_back(row + 1, col); // adds move to vector
                 }
                 if (this->getSquare(row + 1, col + 1) == 1 && this->getPiece(row + 1, col + 1)->getColor() == "black") {  // checks if there is a capture available;
                     moves.emplace_back(row + 1, col + 1);
                 }
-                if (this->getSquare(row - 1, col + 1) == 1 && this->getPiece(row - 1, col + 1)->getColor() == "black") {  // checks if there is a capture available;
-                    moves.emplace_back(row - 1, col + 1);
+                if (this->getSquare(row + 1, col - 1) == 1 && this->getPiece(row + 1, col - 1)->getColor() == "black") {  // checks if there is a capture available;
+                    moves.emplace_back(row + 1, col - 1);
                 }
-            } else if (piece->getMoved() == true) {  // first move
-                if (this->getSquare(row, col + 1) == 0) {
-                    moves.emplace_back(row, col + 1);
+            } else if (piece->getMoved() == false) {  // first move
+                if (this->getSquare(row + 1, col) == 0) {
+                    moves.emplace_back(row + 1, col);
                 }
-                if (this->getSquare(row, col + 2) == 0) {  // moves 2 steps if
-                    moves.emplace_back(row, col + 2);
+                if (this->getSquare(row + 2, col) == 0) {  // moves 2 steps if
+                    moves.emplace_back(row + 2, col);
+                }
+                if (this->getSquare(row + 1, col + 1) == 1 && this->getPiece(row + 1, col + 1)->getColor() == "black") {  // checks if there is a capture available;
+                    moves.emplace_back(row + 1, col + 1);
+                }
+                if (this->getSquare(row + 1, col - 1) == 1 && this->getPiece(row + 1, col - 1)->getColor() == "black") {  // checks if there is a capture available;
+                    moves.emplace_back(row + 1, col - 1);
                 }
             }
         } else if (color == "black") { // black pieces moves the other direction
-            if (piece->getMoved() == false) {
-                if (this->getSquare(row, col - 1) == 0) {
-                    moves.emplace_back(row, col - 1);
+            if (piece->getMoved() == true) {
+                if (this->getSquare(row - 1, col) == 0) {
+                    moves.emplace_back(row - 1, col);
                 }
-                if (this->getSquare(row + 1, col - 1) == 1 && this->getPiece(row + 1, col - 1)->getColor() == "white") {
-                    moves.emplace_back(row + 1, col - 1);
+                if (this->getSquare(row - 1, col + 1) == 1 && this->getPiece(row - 1, col + 1)->getColor() == "white") {
+                    moves.emplace_back(row - 1, col + 1);
                 }
                 if (this->getSquare(row - 1, col - 1) == 1 && this->getPiece(row - 1, col - 1)->getColor() == "white") {
                     moves.emplace_back(row - 1, col - 1);
                 }
-            } else if (piece->getMoved() == true) {
-                if (this->getSquare(row, col - 1) == 0) {
-                    moves.emplace_back(row, col - 1);
+            } else if (piece->getMoved() == false) {
+                if (this->getSquare(row - 1, col) == 0) {
+                    moves.emplace_back(row - 1, col);
                 }
-                if (this->getSquare(row, col - 2) == 0) {
-                    moves.emplace_back(row, col - 2);
+                if (this->getSquare(row - 2, col) == 0) {
+                    moves.emplace_back(row - 2, col);
+                }
+                if (this->getSquare(row - 1, col + 1) == 1 && this->getPiece(row - 1, col + 1)->getColor() == "white") {
+                    moves.emplace_back(row - 1, col + 1);
+                }
+                if (this->getSquare(row - 1, col - 1) == 1 && this->getPiece(row - 1, col - 1)->getColor() == "white") {
+                    moves.emplace_back(row - 1, col - 1);
                 }
             }
         }
@@ -770,9 +797,9 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
         if (this->getSquare(row, col - 1) != 2) {  // implement if king will be in check
             if (this->getSquare(row, col - 1) == 0) {
                 moves.emplace_back(row, col - 1);
-                if (this->getSquare(row, col + 2) != 2) {  // moves two squares left
-                    if (this->getSquare(row, col + 2) == 0) {
-                        moves.emplace_back(row, col + 2);
+                if (this->getSquare(row, col - 2) != 2) {  // moves two squares left
+                    if (this->getSquare(row, col - 2) == 0) {
+                        moves.emplace_back(row, col - 2);
                     }
                 }
             } else if (this->getSquare(row, col - 1) == 1 && this->getPiece(row, col - 1)->getColor() != color) {
