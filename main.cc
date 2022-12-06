@@ -129,11 +129,8 @@ int main(){
 	//setUp(mainBoard);
     mainBoard.addPiece(1, 5, 'K');
     mainBoard.addPiece(8, 5, 'k');
-    mainBoard.addPiece(1, 8, 'R');
-    mainBoard.addPiece(1, 1, 'R');
-    mainBoard.addPiece(8, 8, 'r');
-    mainBoard.addPiece(8, 1, 'r');
-    mainBoard.addPiece(5, 1, 'B');
+    mainBoard.addPiece(7, 2, 'P');
+    mainBoard.addPiece(2, 7, 'p');
     mainBoard.render();
     //This is the test harness
 	while(cin >> c){
