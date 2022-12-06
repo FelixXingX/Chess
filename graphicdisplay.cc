@@ -23,26 +23,26 @@ void GraphicsDisplay::match(char a, int y, int x, int scale){
                 }
                 case 'r':
                 {
-                    //window->drawRook(x, y, 1,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->drawRook(x, y, 1,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,1);
                     break;
                 }
                 case 'R':
                 {
-                    //window->drawRook(x, y, 0,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,0);
+                    window->drawRook(x, y, 0,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,0);
                     break;
                 }
                 case 'n':
                 {
-                    //window->drawKnight(x, y, 1,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->drawKnight(x, y, 1,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,1);
                     break;
                 }
                 case 'N':
                 {
-                    //window->drawKnight(x, y, 0,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,0);
+                    window->drawKnight(x, y, 0,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,0);
                     break;
                 }
                 case 'b':
@@ -59,26 +59,26 @@ void GraphicsDisplay::match(char a, int y, int x, int scale){
                 }
                 case 'q':
                 {
-                    //window->drawQueen(x, y, 1,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->drawQueen(x, y, 1,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,1);
                     break;
                 }
                 case 'Q':
                 {
-                    //window->drawQueen(x, y, 0,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,0);
+                    window->drawQueen(x, y, 0,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,0);
                     break;
                 }
                 case 'k':
                 {
-                    //window->drawKing(x, y, 1,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,1);
+                    window->drawKing(x, y, 1,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,1);
                     break;
                 }
                 case 'K':
                 {
-                    //window->drawKing(x, y, 0,scale);
-                    window->fillRectangle(x * scale, y * scale,scale,scale,0);      
+                    window->drawKing(x, y, 0,scale);
+                    //window->fillRectangle(x * scale, y * scale,scale,scale,0);      
                     break;
                 }
                 case ' ':
