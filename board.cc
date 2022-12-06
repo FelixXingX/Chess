@@ -238,6 +238,7 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
         }
         char promoChar; // REMOVE THIS LATER       // removes to piece and adds from piece
         board[toRow][toCol].addPiece(p);
+        board[fromRow][fromCol].removePiece();
         if (p->getName() == 'P' && toRow == 8) { //swaps pawn out for promotion piece
             while(cin >> promoChar){
                 if(isupper(promoChar) && promoChar != 'P' && promoChar != 'K'){
