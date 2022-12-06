@@ -127,11 +127,16 @@ void Board::render(char type,int x,int y){
 
 bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
     shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();
-    if (toRow - fromRow == 2) { // move right
+    if (toCol - fromCol == 2) { // move right
         if (p == nullptr || p->getMoved() == true){
+            cout << "test\n" << endl;
             return false;
         }
-        if (this->getSquare(fromRow, 6) == 0 && this->getSquare(fromRow, 7) == 0) { // checks empty squares between them
+        if (this->getSquare(fromRow, 6) == 0 && this->getSquare(fromRow, 7) == 0 && this->getSquare(fromRow, 8) == 1) { // checks empty squares between them
+            if (this->getPiece(fromRow, 8)->getName() != 'r' && this->getPiece(fromRow, 8)->getName() != 'R'){
+                cout << this->getPiece(fromRow, 8)->getName() << endl;
+                return false;
+            }
             board[fromRow][5].removePiece();  // removes to piece and adds from piece
             board[fromRow][6].addPiece(p);
             if (checked(turn) == false){
@@ -139,18 +144,31 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
                 board[fromRow][7].addPiece(p);
                 if (checked(turn) == false) {
                     board[fromRow][7].removePiece();
+                    shared_ptr<Piece> p = board[fromRow][8].getPiece();
                     board[fromRow][6].addPiece(p);
                     board[fromRow][8].removePiece();  // adds the rook
+                    p->setMoved(true);
                     return true;
+                } else {
+                    board[fromRow][5].addPiece(p);
+                    board[fromRow][7].removePiece();
+                    return false;
                 }
+            } else {
+                board[fromRow][5].addPiece(p);
+                board[fromRow][6].removePiece();
+                return false;
             }
         }
     }
-    if (toRow - fromRow == -2) {  // move left
+    if (toCol - fromCol == -2) {  // move left
         if (p == nullptr || p->getMoved() == true) {
             return false;
         }
-        if (this->getSquare(fromRow, 4) == 0 && this->getSquare(fromRow, 3) == 0 && this->getSquare(fromRow, 2) == 0) {  // checks empty squares between them
+        if (this->getSquare(fromRow, 4) == 0 && this->getSquare(fromRow, 3) == 0 && this->getSquare(fromRow, 2) == 0 && this->getSquare(fromRow, 1) == 1) {  // checks empty squares between them
+            if (this->getPiece(fromRow, 8)->getName() != 'r' || this->getPiece(fromRow, 8)->getName() != 'R') {
+                return false;
+            }
             board[fromRow][5].removePiece();  // removes to piece and adds from piece
             board[fromRow][4].addPiece(p);
             if (checked(turn) == false) {
@@ -158,13 +176,24 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
                 board[fromRow][3].addPiece(p);
                 if (checked(turn) == false) {
                     board[fromRow][3].removePiece();
+                    shared_ptr<Piece> p = board[fromRow][1].getPiece();
                     board[fromRow][4].addPiece(p);
                     board[fromRow][1].removePiece(); // adds the rook
+                    p->setMoved(true);
                     return true;
+                } else {
+                    board[fromRow][5].addPiece(p);
+                    board[fromRow][3].removePiece();
+                    return false;
                 }
+            } else {
+                board[fromRow][5].addPiece(p);
+                board[fromRow][4].removePiece();
+                return false;
             }
         }
     }
+    cout << "test3\n" << endl;
     return false;
 }
 bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
@@ -185,12 +214,12 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
                 cout << "Illegal move" << endl;
                 return false;
             }
-            if (abs(toRow - fromRow) == 2){ // casteling 
+            if (abs(toCol - fromCol) == 2){ // casteling 
                 if (this->Castle(fromRow, fromCol, toRow, toCol, turn) == false){
                     cout << "Illegal move" << endl;
                     return false;
                 }
-            } 
+            }
             p->setMoved(true);
         }
         char promoChar; // REMOVE THIS LATER
