@@ -196,8 +196,17 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
             } 
             king->setMoved(true);
         }
+        char promoChar; // REMOVE THIS LATER
         board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
         board[toRow][toCol].addPiece(p);
+        if (p->getName() == 'P' && toRow == 8) { //swaps pawn out for promotion piece
+            board[toRow][toCol].removePiece();
+            addPiece(toRow, toCol, promoChar);
+        }
+        if (p->getName() == 'p' && toRow == 1) {
+            board[toRow][toCol].removePiece();
+            addPiece(toRow,toCol,promoChar);
+        }
         //possibleMoves(board[toRow][toCol].getPiece(), toRow, toCol);
         //is enemy king in check -> is he checkmated
         if (this->checked(turn) == true){
