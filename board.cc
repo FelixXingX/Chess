@@ -65,11 +65,11 @@ void Board::removePiece(int row, int col){
 void Board::addPiece(int row, int col, char name){
     switch(name){
         case 'p':
-            {shared_ptr<Piece> p = make_shared<Pawn>("black", name, row,col, true, false);
+            {shared_ptr<Piece> p = make_shared<Pawn>("black", name, row,col, false);
             board[row][col].addPiece(p);
             break;}
         case 'P':
-            {shared_ptr<Piece> p = make_shared<Pawn>("white", name, row,col,true, false);
+            {shared_ptr<Piece> p = make_shared<Pawn>("white", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'r':
@@ -81,27 +81,27 @@ void Board::addPiece(int row, int col, char name){
             board[row][col].addPiece(p);
             break;}
         case 'n':
-            {shared_ptr<Piece> p = make_shared<Knight>("black", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Knight>("black", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'N':
-            {shared_ptr<Piece> p = make_shared<Knight>("white", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Knight>("white", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'b':
-            {shared_ptr<Piece> p = make_shared<Bishop>("black", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Bishop>("black", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'B':
-            {shared_ptr<Piece> p = make_shared<Bishop>("white", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Bishop>("white", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'q':
-            {shared_ptr<Piece> p = make_shared<Queen>("black", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Queen>("black", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'Q':
-            {shared_ptr<Piece> p = make_shared<Queen>("white", name, row,col);
+            {shared_ptr<Piece> p = make_shared<Queen>("white", name, row,col,false);
             board[row][col].addPiece(p);
             break;}
         case 'k':
@@ -127,8 +127,7 @@ void Board::render(char type,int x,int y){
 bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
     shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();
     if (toRow - fromRow == 2) { // move right
-        shared_ptr<Rook> r = board[fromRow][8].getPiece();
-        if (r == nullptr || r->getMoved() == true){
+        if (p == nullptr || p->getMoved() == true){
             return false;
         }
         if (this->getSquare(fromRow, 6) == 0 && this->getSquare(fromRow, 7) == 0) { // checks empty squares between them
@@ -139,7 +138,7 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
                 board[fromRow][7].addPiece(p);
                 if (checked(turn) == false) {
                     board[fromRow][7].removePiece();
-                    board[fromRow][6].addPiece(r);
+                    board[fromRow][6].addPiece(p);
                     board[fromRow][8].removePiece();  // adds the rook
                     return true;
                 }
@@ -147,8 +146,7 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
         }
     }
     if (toRow - fromRow == -2) {  // move left
-        shared_ptr<Rook> r = board[fromRow][1].getPiece();
-        if (r == nullptr || r->getMoved() == true) {
+        if (p == nullptr || p->getMoved() == true) {
             return false;
         }
         if (this->getSquare(fromRow, 4) == 0 && this->getSquare(fromRow, 3) == 0 && this->getSquare(fromRow, 2) == 0) {  // checks empty squares between them
@@ -159,7 +157,7 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
                 board[fromRow][3].addPiece(p);
                 if (checked(turn) == false) {
                     board[fromRow][3].removePiece();
-                    board[fromRow][4].addPiece(r);
+                    board[fromRow][4].addPiece(p);
                     board[fromRow][1].removePiece(); // adds the rook
                     return true;
                 }
@@ -174,17 +172,15 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
         shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();  // copy the piece
         // if its a pawn, check if first step or not and set it to false
         if (p->getName() == 'p' || p->getName() == 'P') {
-            auto pawn =  dynamic_cast<shared_ptr<Pawn>>(p);
-            if (pawn->getFirstStep() == false && abs(toCol - fromCol) == 2) {
+            if (p->getMoved() == false && abs(toCol - fromCol) == 2) {
                 cout << "Illegal move" << endl;
                 return false;
             }
-            pawn->setFirstStep(false);
+            p->setMoved(true);
         }
         // if its king check if it can castle or not and set it to false...
         if (p->getName() == 'k' || p->getName() == 'K') {
-            King* king = static_cast<shared_ptr<King>>(p);
-            if (king->getStatusMoved() == true){
+            if (p->getMoved() == true) {
                 cout << "Illegal move" << endl;
                 return false;
             }
@@ -194,7 +190,7 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
                     return false;
                 }
             } 
-            king->setMoved(true);
+            p->setMoved(true);
         }
         char promoChar; // REMOVE THIS LATER
         board[fromRow][fromCol].removePiece();                     // removes to piece and adds from piece
@@ -398,9 +394,8 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
     char name = piece->getName();
     string color = piece->getColor();
     if (name == 'p' || name == 'P') {
-        Pawn* pawn = static_cast<Piece*>(piece);
         if (color == "white"){
-            if ( pawn->getFirstStep()== false){ // checks if its first step or not
+            if (piece->getMoved() == false) {            // checks if its first step or not
                 if (this->getSquare(row,col + 1) == 0) { // empty square
                     moves.emplace_back(row, col + 1); // adds move to vector
                 }
@@ -410,7 +405,7 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
                 if (this->getSquare(row - 1, col + 1) == 1 && this->getPiece(row - 1, col + 1)->getColor() == "black") {  // checks if there is a capture available;
                     moves.emplace_back(row - 1, col + 1);
                 }
-            } else if (pawn->getFirstStep() == true) {  // first move
+            } else if (piece->getMoved() == true) {  // first move
                 if (this->getSquare(row, col + 1) == 0) {
                     moves.emplace_back(row, col + 1);
                 }
@@ -419,7 +414,7 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
                 }
             }
         } else if (color == "black") { // black pieces moves the other direction
-            if (pawn->getFirstStep() == false) {
+            if (piece->getMoved() == false) {
                 if (this->getSquare(row, col - 1) == 0) {
                     moves.emplace_back(row, col - 1);
                 }
@@ -429,7 +424,7 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
                 if (this->getSquare(row - 1, col - 1) == 1 && this->getPiece(row - 1, col - 1)->getColor() == "white") {
                     moves.emplace_back(row - 1, col - 1);
                 }
-            } else if (pawn->getFirstStep() == true) {
+            } else if (piece->getMoved() == true) {
                 if (this->getSquare(row, col - 1) == 0) {
                     moves.emplace_back(row, col - 1);
                 }
