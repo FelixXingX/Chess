@@ -231,7 +231,7 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
         board[toRow][toCol].addPiece(p);
         if (p->getName() == 'P' && toRow == 8) { //swaps pawn out for promotion piece
             cin >> promoChar;
-            if(isupper(promoChar) && p->getName() != 'P' ){
+            if(isupper(promoChar) && promoChar != 'P' ){
                 board[toRow][toCol].removePiece();
                 addPiece(toRow, toCol, promoChar);
             }else{
@@ -239,7 +239,7 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
             }
         }
         if (p->getName() == 'p' && toRow == 1) {
-           if(!isupper(promoChar) && p->getName() != 'p' ){
+           if(!isupper(promoChar) && promoChar != 'p' ){
                 board[toRow][toCol].removePiece();
                 addPiece(toRow, toCol, promoChar);
             }else{
