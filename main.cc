@@ -270,7 +270,13 @@ int main(){
 							mainBoard.render();
 							break;
 						}
-						if(stat == "stalemate"){}
+						if(stat == "stalemate"){
+							scoreW += 0.5;
+							scoreB += 0.5;
+							cout << "Stalemate!" <<endl;
+							mainBoard.render();
+							break;
+						}
 			}
 		}else{
 		       cout << "invalid" << endl;
