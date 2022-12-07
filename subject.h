@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 class TextDisplay;
-class GraphicsDisplay;
+//class GraphicsDisplay;
 class Observer;
 
 class Subject {

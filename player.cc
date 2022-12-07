@@ -234,6 +234,7 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	map<pair<int,int>,vector<pair<int,int>>> takes;
 	map<pair<int,int>,vector<pair<int,int>>> moves;
 	map<pair<int,int>,vector<pair<int,int>>> safeMoves;
+	map<pair<int,int>,vector<pair<int,int>>> KeepsafeMoves;
 	//set up list of all pieces that we can move and a map of with key pieces and vector<Vec> of their possible move
 	for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
@@ -289,7 +290,7 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 						for(size_t k = 0; k < possiMoves.size(); ++k){
 							if(mainBoard.isLegalMove(row,col,possiMoves[k].first,possiMoves[k].second,p->getColor())){//if piece can make a legal move at that place
 								for(pair<int,int> pp : list){
-									if(possiMoves[k].first == pp.first && possiMoves[k].second == pp.second){//if the piece
+									if(possiMoves[k].first == pp.first && possiMoves[k].second == pp.second){//if the piece is in direct danger
 										pair<int,int> tmp(possiMoves[k].first,possiMoves[k].second);
 										vector<pair<int,int>> avoidMoves = trans(mainBoard.possibleMoves(mainBoard.getPiece(pp.first,pp.second),pp.first,pp.second));
 										if(avoidMoves.size() != 0){
@@ -300,6 +301,18 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 											}
 										}
 										
+									}else{//piece is not in direct danger, but got to check if moving it will make it get captured
+										vector<pair<int,int>> avoidMoves = trans(mainBoard.possibleMoves(mainBoard.getPiece(pp.first,pp.second),pp.first,pp.second));
+										if(avoidMoves.size() != 0){
+											for(size_t k = 0; k < avoidMoves.size(); ++k){
+												if(mainBoard.isLegalMove(row,col,avoidMoves[k].first,avoidMoves[k].second,getColour())){
+													vector<pair<int,int>> verifiedsafe = compare(avoidMoves, possiMoves);
+													if(verifiedsafe.size() != 0){
+														KeepsafeMoves[pp] = verifiedsafe;
+													}
+												}
+											}
+										}
 									}
 									
 								}
@@ -324,6 +337,7 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 		//get all moves of the pieces in the map
 		int random2 = rand() % tmpmoves. size();
 		vsmove = tmpmoves[random2]; 
+		//cout<< "check" << endl;
 	}else if(listt.size() != 0){
 		int random = rand() % listt.size();
 		vs = listt[random];//get a random piece from the list
@@ -331,13 +345,23 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 		//get all moves of the pieces in the map
 		int random2 = rand() % tmpmoves. size();
 		vsmove = tmpmoves[random2]; 
+		//cout<< "takes" << endl;
 	}else if(listDanger.size()!= 0){
 		int random = rand() % listDanger.size();
 		vs = listDanger[random];
 		vector<pair<int,int>> tmpmoves = safeMoves[vs];
 		int random2 = rand() % tmpmoves. size();
 		vsmove = tmpmoves[random2]; 
-	}else{
+		//cout<< "Danger" << endl;
+	}else if(KeepsafeMoves.size() !=0){
+		int random = rand() % list.size();
+		vs = list[random];
+		vector<pair<int,int>> tmpmoves = KeepsafeMoves[vs];
+		int random2 = rand() % tmpmoves. size();
+		vsmove = tmpmoves[random2]; 
+		//cout<< "PRE AVOIDED" << endl;
+	}
+	else{
 		int random = rand() % list.size();
 		vs = list[random];//get a random piece from the list
 		vector<pair<int,int>> tmpmoves = moves[vs];
