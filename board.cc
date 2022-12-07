@@ -2,13 +2,15 @@
 
 #include <string>
 #include <cctype>
+#include "player.h"
 #include "piece.h"
 #include "squares.h"
 #include "textdisplay.h"
 using namespace std;
 
 //note: col = x, row = y
-
+char blackvals[4] = {'r','n','b','q'};
+char whitevals[4] = {'R','N','B','Q'};
 //ctor
 Board::Board(vector<vector<Squares>> board, bool whiteCheck, bool blackCheck,string Won):
 board{board},whiteCheck{whiteCheck},blackCheck{blackCheck},Won{Won}{}
@@ -199,7 +201,7 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
     }
     return false;
 }
-bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
+bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn, Player* player) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
     if (this->isLegalMove(fromRow, fromCol, toRow, toCol, turn) == true) {
         //move
         shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();  // copy the piece
@@ -238,31 +240,46 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn) { 
         board[toRow][toCol].addPiece(p);
         board[fromRow][fromCol].removePiece();
         if (p->getName() == 'P' && toRow == 8) { //swaps pawn out for promotion piece
-            while(cin >> promoChar){
-                if(isupper(promoChar) && promoChar != 'P' && promoChar != 'K'){
+            if(dynamic_cast<Human *>(player) != nullptr){
+                while(cin >> promoChar){
+                    if(isupper(promoChar) && promoChar != 'P' && promoChar != 'K'){
+                        board[toRow][toCol].removePiece();
+                        addPiece(toRow, toCol, promoChar);
+                        break;
+                    }else{
+                        cout << "invalid piece for promotion" << endl;
+                        board[fromRow][fromCol].addPiece(p);
+                        board[toRow][toCol].removePiece();
+                        return false;
+                    }
+                }
+            }else{
+                    int piece = rand() % 4;
+                    promoChar = whitevals[piece];
                     board[toRow][toCol].removePiece();
                     addPiece(toRow, toCol, promoChar);
-                    break;
-                }else{
-                    cout << "invalid piece for promotion" << endl;
-                    board[fromRow][fromCol].addPiece(p);
-                    board[toRow][toCol].removePiece();
-                    return false;
-                }
             }
+            
         }
         if (p->getName() == 'p' && toRow == 1) {
-           while(cin >> promoChar){
-                if(!isupper(promoChar) && promoChar != 'p' && promoChar != 'k'){
-                    board[toRow][toCol].removePiece();
-                    addPiece(toRow, toCol, promoChar);
-                    break;
-                }else{
-                    cout << "invalid piece for promotion" << endl;
-                    board[fromRow][fromCol].addPiece(p);
-                    board[toRow][toCol].removePiece();
-                    return false;
-                }
+            if(dynamic_cast<Human *>(player) != nullptr){
+                while(cin >> promoChar){
+                        if(!isupper(promoChar) && promoChar != 'p' && promoChar != 'k'){
+                            board[toRow][toCol].removePiece();
+                            addPiece(toRow, toCol, promoChar);
+                            break;
+                        }else{
+                            cout << "invalid piece for promotion" << endl;
+                            board[fromRow][fromCol].addPiece(p);
+                            board[toRow][toCol].removePiece();
+                            return false;
+                        }
+                    }
+            }else{
+                int piece = rand() % 4;
+                promoChar = blackvals[piece];
+                board[toRow][toCol].removePiece();
+                addPiece(toRow, toCol, promoChar);
             }
         }
         p->setMoved(true);
