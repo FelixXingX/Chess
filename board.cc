@@ -482,9 +482,9 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
             } else if (piece->getMoved() == false) {  // first move
                 if (this->getSquare(row + 1, col) == 0) {
                     moves.emplace_back(row + 1, col);
-                }
-                if (this->getSquare(row + 2, col) == 0) {  // moves 2 steps if
-                    moves.emplace_back(row + 2, col);
+                    if (this->getSquare(row + 2, col) == 0) {  // moves 2 steps if
+                        moves.emplace_back(row + 2, col);
+                    }
                 }
                 if (this->getSquare(row + 1, col + 1) == 1 && this->getPiece(row + 1, col + 1)->getColor() == "black") {  // checks if there is a capture available;
                     moves.emplace_back(row + 1, col + 1);
@@ -507,9 +507,9 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
             } else if (piece->getMoved() == false) {
                 if (this->getSquare(row - 1, col) == 0) {
                     moves.emplace_back(row - 1, col);
-                }
-                if (this->getSquare(row - 2, col) == 0) {
-                    moves.emplace_back(row - 2, col);
+                    if (this->getSquare(row - 2, col) == 0) {
+                        moves.emplace_back(row - 2, col);
+                    }
                 }
                 if (this->getSquare(row - 1, col + 1) == 1 && this->getPiece(row - 1, col + 1)->getColor() == "white") {
                     moves.emplace_back(row - 1, col + 1);
