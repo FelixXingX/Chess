@@ -76,8 +76,8 @@ void Human::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	if (pass == true){
         ++curTurn;
 		mainBoard.render('t',1,1);
-		//mainBoard.render('g',fromRow,fCol);
-		//mainBoard.render('g',toRow,tCol);
+		mainBoard.render('g',fromRow,fCol);
+		mainBoard.render('g',toRow,tCol);
     }
     cout << curTurn << endl;
     //mainBoard.render('t',1,1);
@@ -128,7 +128,7 @@ void Computer1::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	int random2 = rand() % tmpmoves. size();
 	pair<int,int> vsmove = tmpmoves[random2]; 
 	//get a random move from all the moves
-	cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
+	//cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
 	mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour(),this);
 	mainBoard.render('t',1,1);
 	//mainBoard.render('g',vs.first,vs.second);
@@ -213,11 +213,11 @@ void Computer2::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 		//get a random move from all the moves
 	}
 	if((vs.first != 0 && vs.second != 0 )|| (vsmove.first != 0 && vsmove.second != 0)){
-		cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
+		//cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
 		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour(),this);
 		mainBoard.render('t',1,1);
-		//mainBoard.render('g',vs.first,vs.second);
-		//mainBoard.render('g',vsmove.first,vsmove.second);
+		mainBoard.render('g',vs.first,vs.second);
+		mainBoard.render('g',vsmove.first,vsmove.second);
 		++curTurn;
 	}else{
 		cout << "Fatal error occured: check computer 2 move" << endl;
@@ -371,11 +371,11 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 		//get a random move from all the moves
 	}
 	if((vs.first != 0 && vs.second != 0 )|| (vsmove.first != 0 && vsmove.second != 0)){
-		cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
+		//cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
 		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour(), this);
 		mainBoard.render('t',1,1);
-		//mainBoard.render('g',vs.first,vs.second);
-		//mainBoard.render('g',vsmove.first,vsmove.second);
+		mainBoard.render('g',vs.first,vs.second);
+		mainBoard.render('g',vsmove.first,vsmove.second);
 		++curTurn;
 	}else{
 		cout << "Fatal error occured: check computer 3 move" << endl;

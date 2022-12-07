@@ -14,8 +14,8 @@
 #include "board.h"
 #include "piece.h"
 #include "player.h"
-//#include "graphicdisplay.h"
-//#include "window.h"
+#include "graphicdisplay.h"
+#include "window.h"
 using namespace std;
 void createCopy(vector<vector<Squares>> & copy, const vector<vector<Squares>> &main){
 	for(size_t i = 0; i < main.size() ; ++i){
@@ -107,8 +107,7 @@ int main(){
 	int whoStart = 0, curTurn = 0;//0 for white start, 1 for black start
 	double scoreW = 0, scoreB = 0;
 	int numBk = 1, numWk = 1;
-	//bool start = false;
-	//bool bChecked = false, wChecked = false;
+	int rendernum = 0;
 	//Set up the board, text and graphic display
 	int scale = 80;
 	int rows = 8, cols = 8;
@@ -124,19 +123,13 @@ int main(){
 	}
 	Board mainBoard{board,false,false," "};
 	auto text = make_unique<TextDisplay>(&mainBoard," ");
-	//auto window = make_shared<Xwindow>((rows + 2) * scale, (cols + 1) *scale);
-	//auto graphic = make_unique<GraphicsDisplay>(&mainBoard,window, rows,cols,scale);
-	//setUp(mainBoard);
-    mainBoard.addPiece(8, 5, 'k');
-    mainBoard.addPiece(1, 5, 'K');
-    mainBoard.addPiece(6, 8, 'R');
-    mainBoard.addPiece(1, 6, 'R');
-    mainBoard.addPiece(1, 4, 'R');
-    mainBoard.addPiece(7, 8, 'p');
-    mainBoard.addPiece(5, 8, 'P');
-    mainBoard.render();
+	auto window = make_shared<Xwindow>((rows + 2) * scale, (cols + 1) *scale);
+	auto graphic = make_unique<GraphicsDisplay>(&mainBoard,window, rows,cols,scale);
+	setUp(mainBoard);
+	mainBoard.render();
     //This is the test harness
 	while(cin >> c){
+		
 		//Setup mode
 		if(c == "setup"){
 			cout << "entering setup mode" << endl;
@@ -169,6 +162,8 @@ int main(){
 					if(!mainBoard.checked("white")&& !mainBoard.checked("black"))
 					{
 						cout << "Exiting setup mode" << endl;
+						mainBoard.render('t',1,1);
+						text->changeMsg(" ");
 						break;
 					}else{
 						cout << "cannot start in check" << endl;
@@ -222,34 +217,42 @@ int main(){
 			}
 			//Game mode
 		}else if(c == "game"){
-				text->changeMsg("in game");
 				curTurn = whoStart;//Start turn at 0 for white to go or Start turn at 1 for black to go
 		    	cin >> white >> black;
 				unique_ptr<Player> p1 = move(createPlayer(white,"white"));
 				unique_ptr<Player> p2 = move(createPlayer(black,"black"));
 				if(!p1 || !p2) continue;//if invalid params just break and go back to loop
-
 				//makes a copy of the main board as the game board. This way changes to board stays
 				vector<vector<Squares>> gmBoard;
+				vector<vector<Squares>> tmBoard;
 				createCopy(gmBoard,mainBoard.getBoard());
+				createCopy(tmBoard,mainBoard.getBoard());
 				Board gameBoard{gmBoard,false,false," "};
+				//Board tmp{tmBoard,false,false," "};
 				auto text2 = make_unique<TextDisplay>(&gameBoard," ");
 				//auto window2 = make_shared<Xwindow>((rows + 2) * scale, (cols + 1) *scale);
-				//auto graphic2 = make_unique<GraphicsDisplay>(&gameBoard,window2, rows,cols,scale);
+				auto graphic2 = make_unique<GraphicsDisplay>(&gameBoard,window, rows,cols,scale);
+				//auto window3 = make_shared<Xwindow>((rows + 2) * scale, (cols + 1) *scale);
 				gameBoard.render('t',1,1);
 			    //create player object depending on the input
 					while(cin >> c){
 						if(c == "resign"){
 							//resign
 							if(curTurn % 2 == 0){
+								++rendernum;
 								++ scoreB;
 								cout << "Black wins!" <<endl;
+								mainBoard.render();
+								
 							}else{
+								++rendernum;
 								++ scoreW;
 								cout << "White wins!" <<endl;
+								mainBoard.render();
+								
 							}
 							//reset the status
-							mainBoard.render();
+							
 							break;
 						}else if(c == "move"){
 							//move stuff
