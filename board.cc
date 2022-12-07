@@ -155,10 +155,6 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
                 board[fromRow][7].addPiece(p);
                 if (checked(turn) == false) {
                     board[fromRow][7].removePiece();
-                    shared_ptr<Piece> p = board[fromRow][8].getPiece();
-                    board[fromRow][6].addPiece(p);
-                    board[fromRow][8].removePiece();  // adds the rook
-                    p->setMoved(true);
                     return true;
                 } else {
                     board[fromRow][5].addPiece(p);
@@ -174,7 +170,6 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
     }
     if (toCol - fromCol == -2) {  // move left
         if (p == nullptr || p->getMoved() == true) {
-            cout << "test1" << endl;
             return false;
         }
         if (this->getSquare(fromRow, 4) == 0 && this->getSquare(fromRow, 3) == 0 && this->getSquare(fromRow, 2) == 0 && this->getSquare(fromRow, 1) == 1) {  // checks empty squares between them
@@ -191,26 +186,19 @@ bool Board::Castle(int fromRow, int fromCol, int toRow, int toCol, string turn){
                 board[fromRow][3].addPiece(p);
                 if (checked(turn) == false) {
                     board[fromRow][3].removePiece();
-                    shared_ptr<Piece> p = board[fromRow][1].getPiece();
-                    board[fromRow][4].addPiece(p);
-                    board[fromRow][1].removePiece(); // adds the rook
-                    p->setMoved(true);
                     return true;
                 } else {
                     board[fromRow][5].addPiece(p);
                     board[fromRow][3].removePiece();
-                    cout << "test3" << endl;
                     return false;
                 }
             } else {
                 board[fromRow][5].addPiece(p);
                 board[fromRow][4].removePiece();
-                cout << "test4" << endl;
                 return false;
             }
         }
     }
-    cout << "test5\n" << endl;
     return false;
 }
 bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn, Player* player) {  // instead of string from, string to etc, i made it into an int cuz seems easier for me :P
@@ -228,13 +216,23 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn, Pl
         if (p->getName() == 'k' || p->getName() == 'K') {
             if (abs(toCol - fromCol) == 2){ // casteling
                 if (p->getMoved() == true) {
-                    cout << "test6" << endl;
                     cout << "Illegal move" << endl;
                     return false;
                 }
                 if (this->Castle(fromRow, fromCol, toRow, toCol, turn) == false){
                     cout << "Illegal move" << endl;
                     return false;
+                }
+                if (toCol - fromCol == 2) {
+                    shared_ptr<Piece> p = board[fromRow][8].getPiece();
+                    board[fromRow][6].addPiece(p);
+                    board[fromRow][8].removePiece();  // adds the rook
+                    p->setMoved(true);
+                } else {
+                    shared_ptr<Piece> p = board[fromRow][1].getPiece();
+                    board[fromRow][4].addPiece(p);
+                    board[fromRow][1].removePiece();  // adds the rook
+                    p->setMoved(true);
                 }
             }
         }
@@ -315,14 +313,8 @@ bool Board::move(int fromRow, int fromCol, int toRow, int toCol, string turn, Pl
 }
 bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string turn) {
     vector<Vec> moves;
-    //cout << turn << endl;
     if (this->getSquare(fromRow, fromCol) == 1 && this->getPiece(fromRow, fromCol)->getColor() == turn) {  // if theyre moving a piece thats theirs
-        //cout << toRow << toCol << endl;
         moves = possibleMoves(this->getPiece(fromRow, fromCol), fromRow, fromCol);
-        //for (int i = 0; i < moves.size(); i ++){
-        //    cout << '{' << moves[i].col << ',' << moves[i].row << '}';
-       // }
-        //cout << endl;
         if (moves.size() == 0){
             return false;
         }
@@ -331,6 +323,18 @@ bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string t
                 // check if you are in check -> does moving prevent you from being in check
                 shared_ptr<Piece> p = board[fromRow][fromCol].getPiece();
                 shared_ptr<Piece> p2 = nullptr;
+                if (p->getName() == 'k' || p->getName() == 'K') {
+                    if (abs(toCol - fromCol) == 2) {  // casteling
+                        if (p->getMoved() == true) {
+                            return false;
+                        }
+                        if (this->Castle(fromRow, fromCol, toRow, toCol, turn) == false) {
+                            return false;
+                        } else {
+
+                        }
+                    }
+                }
                 if (this->getSquare(toRow, toCol) == 1 && this->getPiece(toRow, toCol)->getColor() == turn){
                     return false;
                 }
@@ -339,11 +343,9 @@ bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string t
                 }
                 board[fromRow][fromCol].removePiece();
                 board[toRow][toCol].addPiece(p);  // temp removes the piece
-                //cout << this->getPiece(toRow, toCol)->getName() << endl;
                 if (amIChecked(turn) == true) {   // still in check after move
                     board[toRow][toCol].removePiece();
                     board[fromRow][fromCol].addPiece(p);  // adds piece back
-                    //cout << (p2 != nullptr) << endl;
                     if (p2 != nullptr) {
                         board[toRow][toCol].addPiece(p2);
                     }
@@ -351,7 +353,6 @@ bool Board::isLegalMove(int fromRow, int fromCol, int toRow, int toCol, string t
                 }
                 board[toRow][toCol].removePiece();
                 board[fromRow][fromCol].addPiece(p);  // puts board to how it was
-                //cout << (p2 != nullptr) << endl;
                 if (p2 != nullptr) {
                     board[toRow][toCol].addPiece(p2);
                 }
@@ -376,7 +377,6 @@ bool Board::amIChecked(string turn){ // there is a way to combine this with chec
             }
         }
     }
-    //cout << '{' << kingRow << ',' << kingCol << '}' << endl;
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
             auto p = board[row][col].getPiece();
@@ -407,7 +407,6 @@ bool Board::checked(string turn){ //checks if you can capture enemy king.
             }
         }
     }
-    //cout << '{' << kingRow << ',' << kingCol << '}' << endl;
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++){
             auto p = board[row][col].getPiece();
@@ -437,7 +436,6 @@ bool Board::botChecked(int x, int y, string turn){ //checks if you can capture e
             }
         }
     }
-    //cout << '{' << kingRow << ',' << kingCol << '}' << endl;
             auto p = board[x][y].getPiece();
             if (p != nullptr){
                 vector<Vec> moves = possibleMoves(p, x, y);
@@ -461,9 +459,6 @@ bool Board::checkmate(string turn){ //checks all moves and sees if its a legal m
                     vector<Vec> moves = possibleMoves(p, row, col);
                     int len = moves.size();
                     for (int i = 0; i < len; i++){
-
-                        //cout << moves[i].row << " " << moves [i].col << endl;
-                        
                         if (turn == "white"){
                             if (isLegalMove(row, col, moves[i].row, moves[i].col, "black") == true) {
                                 count++;
@@ -504,9 +499,9 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
             } else if (piece->getMoved() == false) {  // first move
                 if (this->getSquare(row + 1, col) == 0) {
                     moves.emplace_back(row + 1, col);
-                }
-                if (this->getSquare(row + 2, col) == 0) {  // moves 2 steps if
-                    moves.emplace_back(row + 2, col);
+                    if (this->getSquare(row + 2, col) == 0) {  // moves 2 steps if
+                        moves.emplace_back(row + 2, col);
+                    }
                 }
                 if (this->getSquare(row + 1, col + 1) == 1 && this->getPiece(row + 1, col + 1)->getColor() == "black") {  // checks if there is a capture available;
                     moves.emplace_back(row + 1, col + 1);
@@ -529,9 +524,9 @@ vector<Vec> Board::possibleMoves(shared_ptr<Piece> piece, int row, int col) {
             } else if (piece->getMoved() == false) {
                 if (this->getSquare(row - 1, col) == 0) {
                     moves.emplace_back(row - 1, col);
-                }
-                if (this->getSquare(row - 2, col) == 0) {
-                    moves.emplace_back(row - 2, col);
+                    if (this->getSquare(row - 2, col) == 0) {
+                        moves.emplace_back(row - 2, col);
+                    }
                 }
                 if (this->getSquare(row - 1, col + 1) == 1 && this->getPiece(row - 1, col + 1)->getColor() == "white") {
                     moves.emplace_back(row - 1, col + 1);
