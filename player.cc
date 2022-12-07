@@ -72,7 +72,7 @@ void Human::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
     if(outOfBound(toRow,toCol,out))return;
 	int tCol = matchs(toCol);
     //move function
-	bool pass = mainBoard.move(fromRow,fCol,toRow,tCol,getColour());
+	bool pass = mainBoard.move(fromRow,fCol,toRow,tCol,getColour(),this);
 	if (pass == true){
         ++curTurn;
 		mainBoard.render('t',1,1);
@@ -129,7 +129,7 @@ void Computer1::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	pair<int,int> vsmove = tmpmoves[random2]; 
 	//get a random move from all the moves
 	cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
-	mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour());
+	mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour(),this);
 	mainBoard.render('t',1,1);
 	//mainBoard.render('g',vs.first,vs.second);
 	//mainBoard.render('g',vsmove.first,vsmove.second);
@@ -214,7 +214,7 @@ void Computer2::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	}
 	if((vs.first != 0 && vs.second != 0 )|| (vsmove.first != 0 && vsmove.second != 0)){
 		cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
-		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour());
+		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour(),this);
 		mainBoard.render('t',1,1);
 		//mainBoard.render('g',vs.first,vs.second);
 		//mainBoard.render('g',vsmove.first,vsmove.second);
@@ -348,7 +348,7 @@ void Computer3::move(istream &in, ostream &out, Board &mainBoard, int& curTurn){
 	}
 	if((vs.first != 0 && vs.second != 0 )|| (vsmove.first != 0 && vsmove.second != 0)){
 		cout << vs.first << vs.second << " to " <<vsmove.first << vsmove.second << endl;
-		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour());
+		mainBoard.move(vs.first,vs.second,vsmove.first,vsmove.second, getColour(), this);
 		mainBoard.render('t',1,1);
 		//mainBoard.render('g',vs.first,vs.second);
 		//mainBoard.render('g',vsmove.first,vsmove.second);

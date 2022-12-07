@@ -6,6 +6,7 @@
 #include "squares.h"
 #include "textdisplay.h"
 #include "subject.h"
+class Player;
 struct Vec {
     int row, col;
     Vec(int row, int col) : row{row}, col{col} {}
@@ -23,7 +24,7 @@ class Board : public Subject{
 	std::string Won;
 	//chicken nugget
 	public:
-		bool move(int fromX, int fromY, int toX, int toY, std::string turn);
+		bool move(int fromX, int fromY, int toX, int toY, std::string turn, Player * player);
         bool Castle(int fromRow, int fromCol, int toRow, int toCol, std::string turn);
 		bool isLegalMove(int fromX, int fromY, int toX, int toY, std::string turn);
         void addPiece(int row, int col, char name);
